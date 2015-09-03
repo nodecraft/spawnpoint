@@ -1,0 +1,26 @@
+{
+  "name": "appframe",
+  "version": "0.1.0",
+  "description": "Basic framework app ojbect for dependency injection.",
+  "main": "appframe.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodecraft/appframe.js"
+  },
+  "keywords": [
+    "app"
+  ],
+  "author": "NodeCraft Hosting LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nodecraft/appframe.js/issues"
+  },
+  "homepage": "https://github.com/nodecraft/appframe.js",
+  "dependencies": {
+    "hjson": "^1.7.4",
+    "lodash": "^3.10.1"
+  }
+}
