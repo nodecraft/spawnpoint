@@ -1,6 +1,6 @@
 {
   "name": "appframe",
-  "version": "0.1.0",
+  "version": "0.2.6",
   "description": "Basic framework app ojbect for dependency injection.",
   "main": "appframe.js",
   "scripts": {
@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/nodecraft/appframe.js",
   "dependencies": {
-    "hjson": "^1.7.4",
-    "lodash": "^3.10.1"
+    "chalk": "1.1.1",
+    "hjson": "1.7.4",
+    "lodash": "3.10.1",
+    "async": "1.4.2"
   }
 }

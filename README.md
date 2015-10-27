@@ -2,13 +2,13 @@
 Basic Nodejs framework app object for dependency injection
 `npm install appframe --save`
 
-This modulue is intended to bootstrap an app with a variable to be injected to a system.
+This module is intended to bootstrap an app with a variable to be injected to a system. The configuration file specified dictates autoloaded libs, etc.
 
+More documentation coming soon.
 ```javascript
-var appFrame = require('appframe');
+'use strict';
+var appframe = require('appframe'),
+	app = new appframe("./app/config/app.json", __dirname);
 
-var app = appFrame('./config.json');
-require('./controllers.js')(app);
-// by passing in the app we have full access to configuration and any added libraries (such as a database connection)
-
+app.setup();
 ```
