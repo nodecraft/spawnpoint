@@ -1,16 +1,21 @@
 'use strict';
 
+
+// Include core libs
 var fs = require('fs'),
 	crypto = require('crypto'),
 	util = require('util'),
 	path = require('path'),
 	events = require('events');
 
+// Include external libraries
 var _ = require('lodash'),
 	async = require('async'),
 	chalk = require('chalk'),
 	hjson = require('hjson');
 
+
+// Define private helper functions
 var helpers = {
 	tag: function(tag, attrs){
 		attrs = attrs || chalk.grey;
@@ -18,13 +23,21 @@ var helpers = {
 	}
 }
 
+// Actual framework
 var appframe = function(configFile, cwd){
+	// Useful for tracking the cwd of where the application's file live
 	this.cwd = cwd || __dirname;
+
+	// Used to track if the application expects itself to continue running or not
 	this.running = false;
+
+	// Helper function to force itself to be a prototype
 	if(!(this instanceof appframe)){
 		return new appframe(configFile, cwd);
 	}
 
+	// Helper method to load JSON
+	// TODO: This needs to be moved to other methods, however is needed to load the app config below
 	this.requireJSON = function(file, callback){
 		if(!callback){
 			return hjson.parse(String(fs.readFileSync(file)));
@@ -37,16 +50,37 @@ var appframe = function(configFile, cwd){
 		});
 	};
 
+	// load the config file as defined
 	this.config = this.requireJSON(configFile);
-	this.config.debug = this.config.debug || false;
 
+	// Used to track the application debug level
+	this.config.debug = this.config.debug || false;
 	if(process.argv.indexOf('debug') !== -1){
 		this.config.debug = true;
 	}
+
 	events.EventEmitter.call(this);
-	//return this;
 }
 util.inherits(appframe, events.EventEmitter);
+
+
+/*
+	function setup(config [, callback])
+	*** setup - object
+	*** callback - function
+	
+	The setup function is designed to create a "proper"
+	configuration for the application framework. This
+	enables:
+		- autoloading files
+		- error codes
+		- uncaughtexception handlers
+		- proper signal handling (linux)
+		- graceful application stop
+
+	This method is NOT required, but is recommended for
+	any application not simply requiring a micro-framework.
+*/
 
 appframe.prototype.setup = function(config, callback){
 	var self = this,
@@ -67,6 +101,8 @@ appframe.prototype.setup = function(config, callback){
 			}
 		});
 	})
+
+	// app registry is used to track graceful halting
 	self.on('app.register', function(item){
 		if(self.register.indexOf(item) === -1){
 			self.register.push(item);
@@ -108,7 +144,9 @@ appframe.prototype.setup = function(config, callback){
 		self.emit('app.stop');
 	});
 
-	// now, lets handle the init!
+
+	// App autoloading
+
 	var jobs = [];
 
 	// load codes
@@ -156,7 +194,19 @@ appframe.prototype.setup = function(config, callback){
 		self.emit('app.ready');
 		self.log('%s is ready.', self.config.name);
 	});
-}
+};
+
+/*
+	function recursiveList(dir [, ext])
+	*** dir - string 
+	*** ext - string
+	
+	Utility method to recursively list all files of
+	the dir folder provided. This has the option to
+	filter by file extension. 
+
+	Returns array of absolute file names.
+*/
 appframe.prototype.recursiveList = function(dir, ext){
 	ext = ext || '.js';
 	var parent = this,
@@ -180,6 +230,18 @@ appframe.prototype.recursiveList = function(dir, ext){
 	});
 	return list;
 };
+
+/*
+	function random([length])
+	*** length - int 
+	
+	Utility method to generate random strings. This
+	method could probably use a faster or more secure
+	method for doing so. Providing a length will force
+	the size of the string to the size provided.
+
+	Returns string of random characters.
+*/
 appframe.prototype.random = function(length){
 	length = parseInt(length) || 16;
 	if(isNaN(length) || length < 1){
@@ -187,16 +249,37 @@ appframe.prototype.random = function(length){
 	}
 	var random = String(new Date().getTime() + Math.random());
 	return String(crypto.createHash('md5').update(random).digest('hex')).slice(0, length);
-},
-appframe.prototype.errorCode = function(code, data){
-	if(!this.codes[code]){
-		throw new Error("No return code found with code: "+ code);
-	}
-	return _.defaults({
-		code: code,
-		Error: this.codes[code]
-	}, data || {});
 };
+
+/*
+	function isRoot()
+	
+	Quick test to determine if this application is running as root user.
+
+	IMPORTANT: CANNOT DETECT SUPERUSE ACCOUNTS OR SUDO
+
+	TODO: add extra detection to get better results of elevated users
+*/
+appframe.prototype.isRoot = function(){
+	return (process.getuid() === 0 || process.getgid() === 0);
+};
+
+// ERROR CODE METHODS
+
+
+/*
+	function code(code)
+	*** code - string 
+	
+	Error code system to provide better error handling
+	to end users. A string error such as "bad_request"
+	will be turned into a verbose error and the string
+	code for handling by programs and humans alike.
+
+	All codes must be initialized with setup() method.
+
+	Returns object of code and message.
+*/
 appframe.prototype.code = function(code){
 	if(!this.codes[code]){
 		throw new Error("No return code found with code: "+ code);
@@ -206,25 +289,83 @@ appframe.prototype.code = function(code){
 		message: this.codes[code]
 	};
 };
+
+/*
+	function errorCode(code[ , data])
+	*** code - string 
+	*** data - object
+	
+	Similar to the code method above, this returns the
+	code, but as an error object. This is useful when
+	masking errors or creating new Errors for callbacks
+
+	Returns merged object of code and Error.
+*/
+appframe.prototype.errorCode = function(code, data){
+	if(!this.codes[code]){
+		throw new Error("No return code found with code: "+ code);
+	}
+	return _.defaults({
+		code: code,
+		Error: this.codes[code]
+	}, data || {});
+};
+// TODO: perhaps throw new error?
+appframe.prototype.maskError = appframe.prototype.errorCode;
+
+
+
+// OUTPUT METHODS
+
+
+/*
+	function debug([arguements])
+	
+	Essentially a console.log wrapper, which is only triggered
+	when the application is running in a debug state as defined
+	by configuration. Ideally used to output things you don't
+	want to see in production.
+*/
 appframe.prototype.debug = function(){
 	if(this.config.debug){
 		console.log.apply(this, arguments);
 	}
 };
+
+/*
+	function debug([arguements])
+	
+	Essentially a console.log wrapper, provides formatting.
+*/
 appframe.prototype.info = function(){
 	console.log(helpers.tag('INFO', chalk.green) + chalk.white(util.format.apply(this, arguments)));
 };
+
+/*
+	function debug([arguements])
+	
+	Essentially a console.log wrapper, provides formatting.
+*/
 appframe.prototype.log = function(){
 	console.log(helpers.tag('LOG', chalk.cyan) + chalk.white(util.format.apply(this, arguments)));
 };
+
+/*
+	function debug([arguements])
+	
+	Essentially a console.log wrapper, provides formatting.
+*/
 appframe.prototype.warn = function(){
 	console.log(helpers.tag('WARN', chalk.yellow) + chalk.yellow(util.format.apply(this, arguments)));
 };
+
+/*
+	function debug([arguements])
+	
+	Essentially a console.log wrapper, provides formatting.
+*/
 appframe.prototype.error = function(){
 	console.error(helpers.tag('ERROR', chalk.red.bold) + chalk.red(util.format.apply(this, arguments)));
-};
-appframe.prototype.isRoot = function(){
-	return (process.getuid() === 0 || process.getgid() === 0);
 };
 
 module.exports = appframe;
