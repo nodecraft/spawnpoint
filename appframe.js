@@ -23,6 +23,7 @@ var helpers = {
 	}
 }
 
+
 // Actual framework
 var appframe = function(configFile, cwd){
 	// Useful for tracking the cwd of where the application's file live
@@ -38,6 +39,24 @@ var appframe = function(configFile, cwd){
 
 	// Helper method to load JSON
 	// TODO: This needs to be moved to other methods, however is needed to load the app config below
+
+	this._errorCode = function(message, extra){
+		Error.captureStackTrace(this, this.constructor);
+		this.name = this.constructor.name;
+		this.message = message;
+		this.extra = extra;
+	};
+	util.inherits(this._errorCode, Error);
+
+	this._failCode = function(message, extra){
+		Error.captureStackTrace(this, this.constructor);
+		this.name = this.constructor.name;
+		this.message = message;
+		this.extra = extra;
+	};
+	util.inherits(this._failCode, Error);
+
+
 	this.requireJSON = function(file, callback){
 		if(!callback){
 			return hjson.parse(String(fs.readFileSync(file)));
@@ -280,14 +299,14 @@ appframe.prototype.isRoot = function(){
 
 	Returns object of code and message.
 */
-appframe.prototype.code = function(code){
+appframe.prototype.code = function(code, data){
 	if(!this.codes[code]){
 		throw new Error("No return code found with code: "+ code);
 	}
-	return {
+	return _.defaults(data || {}, {
 		code: code,
 		message: this.codes[code]
-	};
+	});
 };
 
 /*
@@ -302,16 +321,13 @@ appframe.prototype.code = function(code){
 	Returns merged object of code and Error.
 */
 appframe.prototype.errorCode = function(code, data){
-	if(!this.codes[code]){
-		throw new Error("No return code found with code: "+ code);
-	}
-	return _.defaults({
-		code: code,
-		Error: this.codes[code]
-	}, data || {});
+	var getCode = this.code(code, data);
+	return new this._errorCode(getCode, _.omit(data, ['code', 'Error']));
 };
-// TODO: perhaps throw new error?
-appframe.prototype.maskError = appframe.prototype.errorCode;
+appframe.prototype.failCode = function(code, data){
+	var getCode = this.code(code, data);
+	return new this._failCode(getCode, _.omit(data, ['code', 'Error']));
+};
 
 
 
