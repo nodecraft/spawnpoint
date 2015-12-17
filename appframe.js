@@ -71,7 +71,7 @@ util.inherits(appframe, events.EventEmitter);
 
 /*
 	function initConfig()
-	
+
 	Private method used to initialize config loading. Loads default
 	config for the app instance.
 */
@@ -100,7 +100,7 @@ appframe.prototype.initConfig = function(){
 /*
 	function loadConfig(cwd)
 	*** cwd - string
-	
+
 	Private method used to load configs. cwd sets the dir to start
 	Loaded in this order:
 
@@ -142,7 +142,7 @@ appframe.prototype.loadConfig = function(cwd){
 
 /*
 	function initCodes()
-	
+
 	Private method to initialize error codes. Loads default
 	appframe system codes.
 */
@@ -158,7 +158,7 @@ appframe.prototype.initCodes = function(){
 /*
 	function loadCodes(cwd)
 	*** cwd - string
-	
+
 	Private method used to load error codes. cwd sets the
 	dir to start. Loaded in this order:
 
@@ -189,7 +189,7 @@ appframe.prototype.loadCodes = function(cwd){
 
 /*
 	function initRegistry()
-	
+
 	Private method to handle application events:
 
 	app.ready - emitted when framework is online and running
@@ -273,7 +273,7 @@ appframe.prototype.initRegistry = function(){
 
 /*
 	function loadPlugins()
-	
+
 	Private method used to initialize plugin loading
 */
 appframe.prototype.loadPlugins = function(){
@@ -288,7 +288,7 @@ appframe.prototype.loadPlugins = function(){
 
 /*
 	function loadErrorMap()
-	
+
 	Private method used to initialize error maps:
 	Loaded in this order:
 	- plugins
@@ -307,7 +307,7 @@ appframe.prototype.loadErrorMap = function(){
 	function registerPlugin(config [, callback])
 	*** setup - object
 	*** callback - function
-	
+
 	The setup function is designed to create a "proper"
 	configuration for the application framework. This
 	enables:
@@ -341,7 +341,7 @@ appframe.prototype.registerPlugin = function(opts){
 	function setup(config [, callback])
 	*** setup - object
 	*** callback - function
-	
+
 	The setup function is designed to create a "proper"
 	configuration for the application framework. This
 	enables:
@@ -419,12 +419,12 @@ appframe.prototype.setup = function(callback){
 
 /*
 	function recursiveList(dir [, ext])
-	*** dir - string 
+	*** dir - string
 	*** ext - string
-	
+
 	Utility method to recursively list all files of
 	the dir folder provided. This has the option to
-	filter by file extension. 
+	filter by file extension.
 
 	Returns array of absolute file names.
 */
@@ -454,8 +454,8 @@ appframe.prototype.recursiveList = function(dir, ext){
 
 /*
 	function random([length])
-	*** length - int 
-	
+	*** length - int
+
 	Utility method to generate random strings. This
 	method could probably use a faster or more secure
 	method for doing so. Providing a length will force
@@ -474,7 +474,7 @@ appframe.prototype.random = function(length){
 
 /*
 	function isRoot()
-	
+
 	Quick test to determine if this application is running as root user.
 
 	IMPORTANT: CANNOT DETECT SUPERUSE ACCOUNTS OR SUDO
@@ -487,8 +487,8 @@ appframe.prototype.isRoot = function(){
 
 /*
 	function code(code)
-	*** code - string 
-	
+	*** code - string
+
 	Error code system to provide better error handling
 	to end users. A string error such as "bad_request"
 	will be turned into a verbose error and the string
@@ -513,9 +513,9 @@ appframe.prototype.code = function(code, data){
 	from soft fails. Useful for API response codes.
 
 	function errorCode(code[ , data])
-	*** code - string 
+	*** code - string
 	*** data - object
-	
+
 	Similar to the code method above, this returns the
 	code, but as an error object. This is useful when
 	masking errors or creating new Errors for callbacks
@@ -536,7 +536,7 @@ appframe.prototype.failCode = function(code, data){
 	error code. Useful for API response code automation
 
 	function errorCode(errors)
-	*** errors - object 
+	*** errors - object
 
 	Key and value object to registered errors which are
 	populated with the below method pramatically.
@@ -586,8 +586,8 @@ appframe.prototype.maskErrorToCode = function(err){
 
 
 /*
-	function debug([arguements])
-	
+	function debug([arguments])
+
 	Essentially a console.log wrapper, which is only triggered
 	when the application is running in a debug state as defined
 	by configuration. Ideally used to output things you don't
@@ -601,8 +601,8 @@ appframe.prototype.debug = function(){
 };
 
 /*
-	function debug([arguements])
-	
+	function debug([arguments])
+
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.info = function(){
@@ -611,8 +611,8 @@ appframe.prototype.info = function(){
 };
 
 /*
-	function debug([arguements])
-	
+	function debug([arguments])
+
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.log = function(){
@@ -621,8 +621,8 @@ appframe.prototype.log = function(){
 };
 
 /*
-	function debug([arguements])
-	
+	function debug([arguments])
+
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.warn = function(){
@@ -631,8 +631,8 @@ appframe.prototype.warn = function(){
 };
 
 /*
-	function debug([arguements])
-	
+	function debug([arguments])
+
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.error = function(){
