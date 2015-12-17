@@ -6,6 +6,10 @@
 	],
 	"autoload": [
 		{
+			"name": "models",
+			"folder": "/models",
+			"callback": true
+		}, {
 			"name": "controllers",
 			"folder": "/controllers"
 		}

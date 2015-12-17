@@ -22,6 +22,11 @@ var helpers = {
 	tag: function(tag, attrs){
 		attrs = attrs || chalk.grey;
 		return chalk.gray('[') + attrs(tag) + chalk.gray(']') + chalk.reset(' ');
+	},
+	camelCase: function(input){
+		return input.split('.').map(function(word){
+			return _.camelCase(word);
+		}).join('.');
 	}
 };
 
@@ -85,8 +90,9 @@ appframe.prototype.initConfig = function(){
 		plugins: [],
 		autoload: [],
 		codes: '/config/codes',
-		stop_attempts: 3,
-		stop_timeout: 15000
+		stopAttempts: 3,
+		stopTimeout: 15000,
+		logFormat: '%t %m %p %l'
 	});
 	self.config.get = function(key){
 		return _.get(self.config, key);
@@ -121,7 +127,7 @@ appframe.prototype.loadConfig = function(cwd){
 	});
 
 	// load local json files
-	_.each(self.recursiveList(cwd + '/config', '.json5'), function(file){
+	_.each(self.recursiveList(cwd + '/config', ['.json', 'json5']), function(file){
 		// prevent loading base config and codes
 		if(['/config/app.json5', self.config.codes].indexOf(file) === -1){
 			self.config[path.basename(file, '.json5')] = require(file);
@@ -130,12 +136,12 @@ appframe.prototype.loadConfig = function(cwd){
 
 	// handle process flags
 	_.each(minimist(process.argv.slice(2)), function(value, key){
-		return _.set(self.config, String(key).toLowerCase(), value);
+		return _.set(self.config, helpers.camelCase(key), value);
 	});
 
 	// handle environment variables
 	_.each(process.env, function(value, key){
-		return _.set(self.config, String(key).toLowerCase(), value);
+		return _.set(self.config, helpers.camelCase(key), value);
 	});
 	return this;
 }
@@ -149,7 +155,7 @@ appframe.prototype.loadConfig = function(cwd){
 appframe.prototype.initCodes = function(){
 	var self = this;
 	self.codes = {};
-	_.each(self.recursiveList(__dirname + '/codes', '.json5'), function(file){
+	_.each(self.recursiveList(__dirname + '/codes', ['.json', 'json5']), function(file){
 		_.merge(self.codes, require(file));
 	});
 	return this;
@@ -178,7 +184,7 @@ appframe.prototype.loadCodes = function(cwd){
 
 	// handle local files
 	try{
-		_.each(self.recursiveList(cwd, '.json5'), function(file){
+		_.each(self.recursiveList(cwd, ['.json', 'json5']), function(file){
 			_.merge(self.codes, require(file));
 		});
 	}catch(err){
@@ -233,11 +239,11 @@ appframe.prototype.initRegistry = function(){
 		}
 	});
 	self.on('app.stop', function(timeout){
-		timeout = timeout || self.config.stop_timeout;
+		timeout = timeout || self.config.stopTimeout;
 		if(self.status.stopping){
 			self.status.stopAttempts++;
-			if(self.status.stopAttempts < self.config.stop_attempts){
-				return self.warn('%s already stopping. Attempt %s more times to kill process', self.config.name, self.config.stop_attempts - self.status.stopAttempts);
+			if(self.status.stopAttempts < self.config.stopAttempts){
+				return self.warn('%s already stopping. Attempt %s more times to kill process', self.config.name, self.config.stopAttempts - self.status.stopAttempts);
 			}else{
 				self.error('Forcefully killing %s', self.config.name);
 				return self.emit('app.exit');
@@ -428,8 +434,11 @@ appframe.prototype.setup = function(callback){
 
 	Returns array of absolute file names.
 */
-appframe.prototype.recursiveList = function(dir, ext){
-	ext = ext || '.js';
+appframe.prototype.recursiveList = function(dir, exts){
+	exts = exts || ['.js'];
+	if(!(exts instanceof Array)){
+		exts = [exts];
+	}
 	var parent = this,
 		stat = fs.statSync(dir),
 		list = [];
@@ -439,12 +448,12 @@ appframe.prototype.recursiveList = function(dir, ext){
 	dir = String(dir + '/').replace(/\//g, '/'); // ensure proper trailing slash
 	_.each(fs.readdirSync(dir), function(file){
 		if(fs.statSync(dir + file).isDirectory()){
-			var recursive = parent.recursiveList(dir + file, ext);
+			var recursive = parent.recursiveList(dir + file, exts);
 			if(recursive instanceof Array && recursive.length > 0){
 				list = list.concat(recursive); // add results
 			}
 		}else{
-			if(!ext || path.extname(file) === ext){
+			if(!exts || exts.indexOf(path.extname(file)) !== -1){
 				list.push(dir + file);
 			}
 		}

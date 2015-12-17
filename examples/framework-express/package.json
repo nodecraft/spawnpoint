@@ -9,6 +9,7 @@
   "author": "NodeCraft Hosting LLC",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.13.3"
+    "appframe": "0.3.0",
+    "appframe-express": "0.1.0"
   }
 }
