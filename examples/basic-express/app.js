@@ -1,7 +1,7 @@
 var appFrame = require('../appframe.js'),
     express = require('express');
 
-var app = new appFrame('./config.json');
+var app = new appFrame();
 
 // setup our express server instance
 app.server = express();
@@ -14,7 +14,7 @@ app.server.use(function(req, res){
 	return res.status(404).text('404 not found');;
 });
 
-app.server.listen(app.config.server.port, function(err){
+app.server.listen(8080, function(err){
 	if(err){
 		app.error('Failed to startup server');
 		app.debug(err);

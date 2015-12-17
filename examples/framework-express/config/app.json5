@@ -1,0 +1,17 @@
+{
+	"name": "appframe test",
+	"debug": true,
+	"plugins": [
+		"appframe-express"
+	],
+	"autoload": [
+		{
+			"name": "models",
+			"folder": "/models",
+			"callback": true
+		}, {
+			"name": "controllers",
+			"folder": "/controllers"
+		}
+	]
+}
