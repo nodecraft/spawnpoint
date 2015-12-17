@@ -14,14 +14,19 @@ require('json5/lib/require');
 var _ = require('lodash'),
 	async = require('async'),
 	chalk = require('chalk'),
-	minimist = require('minimist');
+	minimist = require('minimist'),
+	format = require("string-template"),
+	moment = require('moment');
 
 
 // Define private helper functions
 var helpers = {
 	tag: function(tag, attrs){
+		if(!tag){
+			return '';
+		}
 		attrs = attrs || chalk.grey;
-		return chalk.gray('[') + attrs(tag) + chalk.gray(']') + chalk.reset(' ');
+		return chalk.gray('[') + attrs(tag) + chalk.gray(']') + chalk.reset('');
 	},
 	camelCase: function(input){
 		return input.split('.').map(function(word){
@@ -51,6 +56,10 @@ var appframe = function(){
 	this.codes = {};
 	this.errorMaps = {};
 	this.plugins = {};
+	this.logs = {
+		prefix: null,
+		date: null
+	}
 
 	this._errorCode = function(codeObject){
 		Error.captureStackTrace(this, this.constructor);
@@ -92,7 +101,11 @@ appframe.prototype.initConfig = function(){
 		codes: '/config/codes',
 		stopAttempts: 3,
 		stopTimeout: 15000,
-		logFormat: '%t %m %p %l'
+		log: {
+			format: '{date} {type}: {line}',
+			time: "HH:mm:ss",
+			date: "dddd, MMMM Do YYYY"
+		}
 	});
 	self.config.get = function(key){
 		return _.get(self.config, key);
@@ -115,9 +128,10 @@ appframe.prototype.initConfig = function(){
 		- process flags
 		- environment variables
 */
-appframe.prototype.loadConfig = function(cwd){
+appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	var self = this;
 	cwd = cwd || self.cwd;
+	ignoreExtra = ignoreExtra || false;
 
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
@@ -127,22 +141,27 @@ appframe.prototype.loadConfig = function(cwd){
 	});
 
 	// load local json files
-	_.each(self.recursiveList(cwd + '/config', ['.json', 'json5']), function(file){
+	_.each(self.recursiveList(cwd + '/config', ['.json', '.json5']), function(file){
 		// prevent loading base config and codes
-		if(['/config/app.json5', self.config.codes].indexOf(file) === -1){
-			self.config[path.basename(file, '.json5')] = require(file);
+		if(file.indexOf('/config/app.json5') === -1 && file.indexOf(self.config.codes) === -1){
+			if(!self.config[path.parse(file).name]){
+				self.config[path.parse(file).name] = {};
+			}
+			_.merge(self.config[path.parse(file).name], require(file));
 		}
 	});
 
-	// handle process flags
-	_.each(minimist(process.argv.slice(2)), function(value, key){
-		return _.set(self.config, helpers.camelCase(key), value);
-	});
+	if(!ignoreExtra){
+		// handle process flags
+		_.each(minimist(process.argv.slice(2)), function(value, key){
+			return _.merge(self.config[key], value);
+		});
 
-	// handle environment variables
-	_.each(process.env, function(value, key){
-		return _.set(self.config, helpers.camelCase(key), value);
-	});
+		// handle environment variables
+		_.each(process.env, function(value, key){
+			return _.set(self.config, helpers.camelCase(key), value);
+		});
+	}
 	return this;
 }
 
@@ -155,7 +174,7 @@ appframe.prototype.loadConfig = function(cwd){
 appframe.prototype.initCodes = function(){
 	var self = this;
 	self.codes = {};
-	_.each(self.recursiveList(__dirname + '/codes', ['.json', 'json5']), function(file){
+	_.each(self.recursiveList(__dirname + '/codes', ['.json', '.json5']), function(file){
 		_.merge(self.codes, require(file));
 	});
 	return this;
@@ -184,7 +203,7 @@ appframe.prototype.loadCodes = function(cwd){
 
 	// handle local files
 	try{
-		_.each(self.recursiveList(cwd, ['.json', 'json5']), function(file){
+		_.each(self.recursiveList(cwd, ['.json', '.json5']), function(file){
 			_.merge(self.codes, require(file));
 		});
 	}catch(err){
@@ -334,7 +353,8 @@ appframe.prototype.registerPlugin = function(opts){
 	assert(opts.name, 'Plugin is missing required `name` option.');
 	assert(opts.namespace, 'Plugin is missing required `namespace` option.');
 	assert(opts.name, 'Plugin is missing required `exports` function.');
-	self.loadConfig(opts.dir);
+	//self.logs.prefix = opts.namespace;
+	self.loadConfig(opts.dir, true);
 	self.loadCodes(opts.dir);
 
 	return _.merge(opts, {
@@ -382,13 +402,13 @@ appframe.prototype.setup = function(callback){
 	var jobs = [];
 
 	_.each(self.plugins, function(plugin){
-		console.log(plugin.namespace);
 		if(plugin.callback){
 			return jobs.push(function(cb){
 				return plugin.exports(self, cb);
 			});
 		}
 		jobs.push(function(cb){
+			console.log(plugin);
 			plugin.exports(self);
 			return cb();
 		});
@@ -614,8 +634,25 @@ appframe.prototype.debug = function(){
 
 	Essentially a console.log wrapper, provides formatting.
 */
+appframe.prototype._log = function(opts, type){
+	var self = this;
+	var day = moment().format(self.config.log.date);
+	if(!self.logs.date || self.logs.date !== day){
+		self.logs.date = day;
+		console.log(helpers.tag(day, chalk.green));
+	}
+	type = type || 'log';
+	console[type](format(self.config.log.format, _.defaults(opts, {
+		date: helpers.tag(moment().format(self.config.log.time), chalk.grey)
+		//prefix: helpers.tag(self.logs.prefix || null, chalk.grey),
+	})));
+}
 appframe.prototype.info = function(){
-	console.log(helpers.tag('INFO', chalk.green) + chalk.white(util.format.apply(this, arguments)));
+	var self = this;
+	self._log({
+		type: helpers.tag('INFO', chalk.green),
+		line: chalk.white(util.format.apply(this, arguments))
+	});
 	return this;
 };
 
@@ -625,7 +662,11 @@ appframe.prototype.info = function(){
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.log = function(){
-	console.log(helpers.tag('LOG', chalk.cyan) + chalk.white(util.format.apply(this, arguments)));
+	var self = this;
+	self._log({
+		type: helpers.tag('LOG', chalk.cyan),
+		line: chalk.white(util.format.apply(this, arguments))
+	});
 	return this;
 };
 
@@ -635,7 +676,11 @@ appframe.prototype.log = function(){
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.warn = function(){
-	console.log(helpers.tag('WARN', chalk.yellow) + chalk.yellow(util.format.apply(this, arguments)));
+	var self = this;
+	self._log({
+		type: helpers.tag('WARN', chalk.yellow),
+		line: chalk.yellow(util.format.apply(this, arguments))
+	});
 	return this;
 };
 
@@ -645,7 +690,11 @@ appframe.prototype.warn = function(){
 	Essentially a console.log wrapper, provides formatting.
 */
 appframe.prototype.error = function(){
-	console.error(helpers.tag('ERROR', chalk.red.bold) + chalk.red(util.format.apply(this, arguments)));
+	var self = this;
+	self._log({
+		type: helpers.tag('ERROR', chalk.red.bold),
+		line: chalk.red(util.format.apply(this, arguments))
+	}, 'error');
 	return this;
 };
 
