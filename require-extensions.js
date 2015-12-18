@@ -11,9 +11,13 @@ require.extensions['.json'] = function (module, filename){
     var content = fs.readFileSync(filename, 'utf8');
     content = stripJsonComments(content);
     var lint = jsonLint(content);
-    if(lint.error){
-        var errorText = util.format('%s (%s:%s:%s)', lint.error, filename, lint.line, lint.character);
-        throw new SyntaxError(errorText, filename, lint.line);
+    try{
+        module.exports = JSON.parse(content);
+    }catch(err){
+        if(lint.error){
+            var errorText = util.format('%s (%s:%s:%s)', lint.error, filename, lint.line, lint.character);
+            throw new SyntaxError(errorText, filename, lint.line);
+        }        
+        throw new SyntaxError(errorText, filename);
     }
-    module.exports = JSON.parse(content);
 };;

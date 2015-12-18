@@ -16,8 +16,6 @@ var _ = require('lodash'),
 	format = require("string-template"),
 	moment = require('moment');
 
-require('./require-extensions.js');
-
 // Define private helper functions
 var helpers = {
 	tag: function(tag, attrs){
@@ -383,6 +381,9 @@ appframe.prototype.registerPlugin = function(opts){
 appframe.prototype.setup = function(callback){
 	var self = this,
 		callback = callback || function(){};
+
+	// force .json parsing with comments :)
+	require('./require-extensions.js');
 
 	// prevent repeated setup
 	if(self.status.setup){
