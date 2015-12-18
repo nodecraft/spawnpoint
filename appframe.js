@@ -92,7 +92,7 @@ appframe.prototype.initConfig = function(){
 	var self = this;
 
 	// reset config variable for reloading
-	self.config = _.defaults(require(self.cwd + '/config/app.json5'), {
+	self.config = _.defaults(require(self.cwd + '/config/app.json'), {
 		name: "unnamed project",
 		debug: false,
 		plugins: [],
@@ -140,9 +140,9 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	});
 
 	// load local json files
-	_.each(self.recursiveList(cwd + '/config', ['.json', '.json5']), function(file){
+	_.each(self.recursiveList(cwd + '/config', '.json'), function(file){
 		// prevent loading base config and codes
-		if(file.indexOf('/config/app.json5') === -1 && file.indexOf(self.config.codes) === -1){
+		if(file.indexOf('/config/app.json') === -1 && file.indexOf(self.config.codes) === -1){
 			if(!self.config[path.parse(file).name]){
 				self.config[path.parse(file).name] = {};
 			}
@@ -173,7 +173,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 appframe.prototype.initCodes = function(){
 	var self = this;
 	self.codes = {};
-	_.each(self.recursiveList(__dirname + '/codes', ['.json', '.json5']), function(file){
+	_.each(self.recursiveList(__dirname + '/codes', '.json'), function(file){
 		_.merge(self.codes, require(file));
 	});
 	return this;
@@ -202,7 +202,7 @@ appframe.prototype.loadCodes = function(cwd){
 
 	// handle local files
 	try{
-		_.each(self.recursiveList(cwd, ['.json', '.json5']), function(file){
+		_.each(self.recursiveList(cwd, '.json'), function(file){
 			_.merge(self.codes, require(file));
 		});
 	}catch(err){

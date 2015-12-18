@@ -3,14 +3,20 @@
 var fs = require('fs'),
 	util = require('util');
 
-var json5 = require('./json5'),
+var _ = require('lodash'),
+	jsonLint = require('json-lint');
 
-require.extensions['.json5'] = function (module, filename) {
+var hash = /(\#(?:.*)$)/gm,
+	whitespace = /(?:\/\*(?:[\s\S]*?)\*\/)|((?:\/\/|\#)(?:.*)$)/gm
+
+require.extensions['.json'] = function (module, filename){
     var content = fs.readFileSync(filename, 'utf8');
-    try{
-    	module.exports = JSON5.parse(content);
-    }catch(err){
-    	var errorText = util.format('JSON5 parse: %s (%s:%s)', err.message, filename, err.at);
-    	throw new SyntaxError(errorText);
+    var lint = jsonLint(content.replace(hash, ''), {
+    	comments: true
+    });
+    if(lint.error){
+  		var errorText = util.format('%s (%s:%s:%s)', lint.error, filename, lint.line, lint.character);
+    	throw new SyntaxError(errorText, filename, lint.line);
     }
-};
+    module.exports = JSON.parse(content.replace(whitespace, ''));
+};;
