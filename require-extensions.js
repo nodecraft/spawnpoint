@@ -1,22 +1,19 @@
 'use strict';
 
 var fs = require('fs'),
-	util = require('util');
+    util = require('util');
 
 var _ = require('lodash'),
-	jsonLint = require('json-lint');
-
-var hash = /(\#(?:.*)$)/gm,
-	whitespace = /(?:\/\*(?:[\s\S]*?)\*\/)|((?:\/\/|\#)(?:.*)$)/gm
+    jsonLint = require('json-lint'),
+    stripJsonComments = require('strip-json-comments');
 
 require.extensions['.json'] = function (module, filename){
     var content = fs.readFileSync(filename, 'utf8');
-    var lint = jsonLint(content.replace(hash, ''), {
-    	comments: true
-    });
+    content = stripJsonComments(content);
+    var lint = jsonLint(content);
     if(lint.error){
-  		var errorText = util.format('%s (%s:%s:%s)', lint.error, filename, lint.line, lint.character);
-    	throw new SyntaxError(errorText, filename, lint.line);
+        var errorText = util.format('%s (%s:%s:%s)', lint.error, filename, lint.line, lint.character);
+        throw new SyntaxError(errorText, filename, lint.line);
     }
-    module.exports = JSON.parse(content.replace(whitespace, ''));
+    module.exports = JSON.parse(content);
 };;

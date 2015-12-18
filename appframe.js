@@ -434,7 +434,7 @@ appframe.prototype.setup = function(callback){
 	async.series(jobs, function(err){
 		if(err){
 			self.error("Failed to start up").debug(err);
-			return app.emit('app.exit');
+			return self.emit('app.exit');
 		}
 		self.emit('app.ready');
 		self.log('%s is ready.', self.config.name);
