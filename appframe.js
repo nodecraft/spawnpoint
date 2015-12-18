@@ -8,8 +8,6 @@ var fs = require('fs'),
 	assert = require('assert'),
 	events = require('events');
 
-require('json5/lib/require');
-
 // Include external libraries
 var _ = require('lodash'),
 	async = require('async'),
@@ -18,6 +16,7 @@ var _ = require('lodash'),
 	format = require("string-template"),
 	moment = require('moment');
 
+require('./require-extensions.js');
 
 // Define private helper functions
 var helpers = {
