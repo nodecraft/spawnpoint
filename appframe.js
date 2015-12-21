@@ -199,12 +199,16 @@ appframe.prototype.loadCodes = function(cwd){
 	});
 
 	// handle local files
+	var list = null;
 	try{
-		_.each(self.recursiveList(cwd, '.json'), function(file){
-			_.merge(self.codes, require(file));
-		});
+		list = self.recursiveList(cwd, ['.json'])
 	}catch(err){
 		self.debug('No codes folder found (%s), skipping', self.config.codes);
+	}
+	if(list){
+		list.forEach(function(file){
+			_.merge(self.codes, require(file));
+		});
 	}
 	return this;
 }
@@ -408,7 +412,6 @@ appframe.prototype.setup = function(callback){
 			});
 		}
 		jobs.push(function(cb){
-			console.log(plugin);
 			plugin.exports(self);
 			return cb();
 		});

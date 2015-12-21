@@ -1,6 +1,6 @@
 {
 	"name": "appframe",
-	"version": "0.3.5",
+	"version": "0.3.6",
 	"description": "Basic framework app object for dependency injection, event propagation, and error handling.",
 	"main": "appframe.js",
 	"scripts": {
