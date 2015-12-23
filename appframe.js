@@ -422,7 +422,7 @@ appframe.prototype.setup = function(callback){
 		var list = self.recursiveList(util.format('%s/%s', self.cwd, jobDetails.folder), jobDetails.extension || '.js');
 		if(jobDetails.callback){
 			return jobs.push(function(callback){
-				async.each(list, function(file, acb){
+				async.eachSeries(list, function(file, acb){
 					require(file)(self, acb);
 				}, callback);
 			});
