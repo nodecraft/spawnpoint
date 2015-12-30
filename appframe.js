@@ -356,7 +356,7 @@ appframe.prototype.registerPlugin = function(opts){
 	assert(opts.name, 'Plugin is missing required `exports` function.');
 	//self.logs.prefix = opts.namespace;
 	self.loadConfig(opts.dir, true);
-	self.loadCodes(opts.dir);
+	self.loadCodes(opts.dir + '/codes');
 
 	return _.merge(opts, {
 		codes: self.codes || null,
