@@ -23,12 +23,12 @@
 	},
 	"homepage": "https://github.com/nodecraft/appframe.js",
 	"dependencies": {
-		"async": "1.4.2",
+		"async": "1.5.2",
 		"chalk": "1.1.1",
 		"json-lint": "0.1.0",
 		"minimist": "1.2.0",
-		"moment": "2.10.6",
-		"string-template": "0.2.1",
-		"strip-json-comments": "2.0.0"
+		"moment": "2.11.2",
+		"string-template": "1.0.0",
+		"strip-json-comments": "2.0.1"
 	}
 }
