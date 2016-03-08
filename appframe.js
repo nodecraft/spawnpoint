@@ -470,7 +470,10 @@ appframe.prototype.recursiveList = function(dir, exts){
 	}
 	dir = String(dir + '/').replace(/\//g, '/'); // ensure proper trailing slash
 	_.each(fs.readdirSync(dir), function(file){
-		if(fs.statSync(dir + file).isDirectory()){
+		var isDir = fs.statSync(dir + file).isDirectory();
+		if(isDir && exts.indexOf('/') !== -1){
+			list.push(dir + file);
+		}else if(isDir){
 			var recursive = parent.recursiveList(dir + file, exts);
 			if(recursive instanceof Array && recursive.length > 0){
 				list = list.concat(recursive); // add results

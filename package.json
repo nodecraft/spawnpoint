@@ -1,34 +1,35 @@
 {
-	"name": "appframe",
-	"version": "0.3.9",
-	"description": "Basic framework app object for dependency injection, event propagation, and error handling.",
-	"main": "appframe.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/nodecraft/appframe.js"
-	},
-	"keywords": [
-		"app",
-		"framework",
-		"events",
-		"errors"
-	],
-	"author": "NodeCraft Hosting LLC",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/nodecraft/appframe.js/issues"
-	},
-	"homepage": "https://github.com/nodecraft/appframe.js",
-	"dependencies": {
-		"async": "1.5.2",
-		"chalk": "1.1.1",
-		"json-lint": "0.1.0",
-		"minimist": "1.2.0",
-		"moment": "2.11.2",
-		"string-template": "1.0.0",
-		"strip-json-comments": "2.0.1"
-	}
+  "name": "appframe",
+  "version": "0.3.10",
+  "description": "Basic framework app object for dependency injection, event propagation, and error handling.",
+  "main": "appframe.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodecraft/appframe.js"
+  },
+  "keywords": [
+    "app",
+    "framework",
+    "events",
+    "errors"
+  ],
+  "author": "NodeCraft Hosting LLC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nodecraft/appframe.js/issues"
+  },
+  "homepage": "https://github.com/nodecraft/appframe.js",
+  "dependencies": {
+    "async": "1.5.2",
+    "chalk": "1.1.1",
+    "json-lint": "0.1.0",
+    "lodash": "^4.6.1",
+    "minimist": "1.2.0",
+    "moment": "2.11.2",
+    "string-template": "1.0.0",
+    "strip-json-comments": "2.0.1"
+  }
 }
