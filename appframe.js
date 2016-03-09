@@ -194,7 +194,7 @@ appframe.prototype.loadCodes = function(cwd){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.codes){
-			_.merge(self.codes, plugin.codes);
+			self.registerCodes(plugin.codes)
 		}
 	});
 
@@ -207,10 +207,23 @@ appframe.prototype.loadCodes = function(cwd){
 	}
 	if(list){
 		list.forEach(function(file){
-			_.merge(self.codes, require(file));
+			self.registerCodes(require(file))
 		});
 	}
 	return this;
+}
+
+/*
+	function registerCodes(cwd)
+	*** codes - object
+
+	Private method used to load object of error codes.
+	into the app error codes.
+
+*/
+appframe.prototype.registerCodes = function(codes){
+	var self = this;
+	_.merge(self.codes, _.cloneDeep(codes));
 }
 
 /*
