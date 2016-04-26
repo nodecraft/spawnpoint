@@ -304,8 +304,10 @@ appframe.prototype.initRegistry = function(){
 	});
 
 	// gracefully handle ctrl+c
-	process.on('SIGINT', function(){
-		self.emit('app.stop');
+	_.each(['SIGINT', 'SIGUSR2'], function(event){
+		process.on(event, function(){
+			self.emit('app.stop');
+		});
 	});
 	return this;
 }
