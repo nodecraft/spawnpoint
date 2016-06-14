@@ -2,6 +2,7 @@
 
 // Include core libs
 var fs = require('fs'),
+	child_process = require('child_process'),
 	crypto = require('crypto'),
 	util = require('util'),
 	path = require('path'),
@@ -52,6 +53,7 @@ var appframe = function(){
 	this.config = {};
 	this.codes = {};
 	this.errorMaps = {};
+	this.limitMaps = {};
 	this.plugins = {};
 	this.logs = {
 		prefix: null,
@@ -114,6 +116,25 @@ appframe.prototype.initConfig = function(){
 }
 
 /*
+	function registerConfig(cwd)
+	*** config - object
+
+	Private method used to load object of config objects
+	into the app.
+
+*/
+appframe.prototype.registerConfig = function(name, config){
+	var self = this,
+		data = {};
+	if(name && !config){
+		data = name;
+	}else{
+		data[name] = config;
+	}
+	_.merge(self.config, _.cloneDeep(data));
+}
+
+/*
 	function loadConfig(cwd)
 	*** cwd - string
 
@@ -133,7 +154,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.config){
-			_.merge(self.config, plugin.config);
+			self.registerConfig(plugin.config);
 		}
 	});
 
@@ -144,14 +165,14 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			if(!self.config[path.parse(file).name]){
 				self.config[path.parse(file).name] = {};
 			}
-			_.merge(self.config[path.parse(file).name], require(file));
+			self.registerConfig(path.parse(file).name, require(file));
 		}
 	});
 
 	if(!ignoreExtra){
 		// handle process flags
 		_.each(minimist(process.argv.slice(2)), function(value, key){
-			return _.merge(self.config[key], value);
+			return self.registerConfig(key, value);
 		});
 
 		// handle environment variables
@@ -312,6 +333,40 @@ appframe.prototype.initRegistry = function(){
 	return this;
 }
 
+appframe.prototype.initListers = function(){
+	var self = this;
+	var issues = {
+		errorCode: {},
+		failCode: {}
+	};
+	_.each(['errorCode', 'failCode'], function(type){
+		self.on(type, function(error){
+			if(!self.limitMaps[type] || !self.limitMaps[type][error.code]){
+				return; // no issue being tracked
+			}
+
+			// new issue
+			if(!issues[type][error.code]){
+				issues[type][error.code] = {
+					occurances: 0,
+					firstDate: moment(),
+					lastDate: null,
+					triggered: false,
+					timerMap: {},
+					timers: []
+				};
+			}
+			issues[type][error.code].balance++;
+			issues[type][error.code].lastDate = moment();
+			var timer = self.random();
+			
+			issues[type][error.code].timerMap[timer] = setTimeout(function(){
+
+			});
+		});
+	});
+};
+
 /*
 	function loadPlugins()
 
@@ -368,7 +423,7 @@ appframe.prototype.registerPlugin = function(opts){
 	}
 	assert(opts.name, 'Plugin is missing required `name` option.');
 	assert(opts.namespace, 'Plugin is missing required `namespace` option.');
-	assert(opts.name, 'Plugin is missing required `exports` function.');
+	assert(opts.exports, 'Plugin is missing required `exports` function.');
 	//self.logs.prefix = opts.namespace;
 	self.loadConfig(opts.dir, true);
 	self.loadCodes(opts.dir + '/codes');
@@ -377,6 +432,17 @@ appframe.prototype.registerPlugin = function(opts){
 		codes: self.codes || null,
 		config: self.config || null
 	});
+}
+
+/*
+	function setupJSONHandler()
+
+	Sets up require handler to parse commented
+	JSON files for config and codes.
+*/
+
+appframe.prototype.setupJSONHandler = function(){
+	require(__dirname + '/require-extensions.js');
 }
 
 /*
@@ -402,7 +468,7 @@ appframe.prototype.setup = function(callback){
 		callback = callback || function(){};
 
 	// force .json parsing with comments :)
-	require('./require-extensions.js');
+	self.setupJSONHandler();
 
 	// prevent repeated setup
 	if(self.status.setup){
@@ -414,10 +480,11 @@ appframe.prototype.setup = function(callback){
 	self.initConfig();
 	self.initCodes();
 	self.initRegistry();
+	self.initListers();
 	self.loadPlugins();
 	self.loadConfig();
 	self.loadCodes();
-	self.loadErrorMap()
+	self.loadErrorMap();
 	var jobs = [];
 
 	_.each(self.plugins, function(plugin){
@@ -531,8 +598,39 @@ appframe.prototype.random = function(length){
 
 	TODO: add extra detection to get better results of elevated users
 */
-appframe.prototype.isRoot = function(){
-	return (process.getuid() === 0 || process.getgid() === 0);
+appframe.prototype.isSecure = function(uid, gid){
+	var self = this;
+	if(uid && !gid){
+		gid = uid;
+	}
+	var checks = {
+		uid: process.getuid(),
+		gid: process.getgid(),
+		groups: String(child_process.execSync('groups'))
+	};
+	if(checks.uid === 0 || checks.gid === 0){
+		return self.errorCode('usercheck.is_root', {checks: checks });
+	}
+	if(checks.groups.indexOf('root') !== -1){
+		return self.errorCode('usercheck.is_root_group', {checks: checks });
+	}
+	if(uid && gid && (uid !== checks.uid || gid !== checks.gid)){
+		return self.errorCode('usercheck.incorrect_user', {checks: checks });	
+	}
+	return true;
+};
+
+/*
+	function require(code)
+	*** code - string
+
+	Dumb helper function to pass "app" into
+	a required file.
+*/
+
+appframe.prototype.require = function(path){
+	var self = this;
+	return require(path)(self);
 };
 
 /*
@@ -574,10 +672,12 @@ appframe.prototype.code = function(code, data){
 */
 appframe.prototype.errorCode = function(code, data){
 	var getCode = this.code(code, data);
+	this.emit('errorCode', getCode);
 	return new this._errorCode(getCode);
 };
 appframe.prototype.failCode = function(code, data){
 	var getCode = this.code(code, data);
+	this.emit('failCode', getCode);
 	return new this._failCode(getCode);
 };
 
@@ -630,6 +730,32 @@ appframe.prototype.maskErrorToCode = function(err){
 	return returnedError;
 };
 
+/*
+	function registerLimit(code, options, callback)
+	*** code - string
+	*** options - object
+	*** callback - function to call when limit is reached
+
+	Registered limits will be tracked and will eventually trigger
+	the callback function when threshold is met
+*/
+appframe.prototype.registerLimit = function(code, options, callback){
+	var opts = _.defaults(options, {
+		error: 'errorCode', // or failCode
+		reset: true, // reset number track on "clear"
+		limit: null, // number of occurances to trigger
+		threshold: null, // timer called to identify "clear"
+		index: null, // 'object.to.path' of unique index to track by
+		callback: callback
+	});
+	if(!this.limitMaps[opts.error]){
+		this.limitMaps[opts.error] = {};
+	}
+	if(!this.limitMaps[opts.error][code]){
+		this.limitMaps[opts.error][code] = [];
+	}
+	this.limitMaps[opts.error][code].push(opts);
+};
 
 
 // OUTPUT METHODS
