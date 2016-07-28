@@ -1,6 +1,6 @@
 {
   "name": "appframe",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "Basic framework app object for dependency injection, event propagation, and error handling.",
   "main": "appframe.js",
   "scripts": {
@@ -23,12 +23,12 @@
   },
   "homepage": "https://github.com/nodecraft/appframe.js",
   "dependencies": {
-    "async": "1.5.2",
+    "async": "2.0.1",
     "chalk": "1.1.3",
     "json-lint": "0.1.0",
-    "lodash": "^4.11.1",
+    "lodash": "^4.14.0",
     "minimist": "1.2.0",
-    "moment": "2.13.0",
+    "moment": "2.14.1",
     "string-template": "1.0.0",
     "strip-json-comments": "2.0.1"
   }
