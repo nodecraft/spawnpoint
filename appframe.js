@@ -438,13 +438,29 @@ appframe.prototype.setup = function(callback){
 		if(jobDetails.callback){
 			return jobs.push(function(callback){
 				async.eachSeries(list, function(file, acb){
-					require(file)(self, acb);
+					var error;
+					try{
+						require(file)(self, acb);
+					}catch(err){
+						error = err;
+					}
+					if(error){
+						return acb(error);
+					}
 				}, callback);
 			});
 		}
 		jobs.push(function(callback){
 			_.each(list, function(file){
-				require(file)(self);
+				var error;
+				try{
+					require(file)(self);
+				}catch(err){
+					error = err;
+				}
+				if(error){
+					return console.error(error);
+				}
 			});
 			return callback();
 		});
