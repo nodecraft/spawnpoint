@@ -88,11 +88,12 @@ util.inherits(appframe, events.EventEmitter);
 	Private method used to initialize config loading. Loads default
 	config for the app instance.
 */
-appframe.prototype.initConfig = function(){
+appframe.prototype.initConfig = function(file){
 	var self = this;
+	file = file || '/config/app.json';
 
 	// reset config variable for reloading
-	self.config = _.defaults(require(self.cwd + '/config/app.json'), {
+	self.config = _.defaults(require(self.cwd + file), {
 		name: "unnamed project",
 		debug: false,
 		plugins: [],
@@ -227,7 +228,7 @@ appframe.prototype.loadCodes = function(cwd){
 		self.debug('No codes folder found (%s), skipping', self.config.codes);
 	}
 	if(list){
-		list.forEach(function(file){
+		_.each(list, function(file){
 			self.registerCodes(require(file))
 		});
 	}
@@ -333,37 +334,51 @@ appframe.prototype.initRegistry = function(){
 	return this;
 }
 
-appframe.prototype.initListers = function(){
+appframe.prototype.initLimitListeners = function(){
 	var self = this;
 	var issues = {
 		errorCode: {},
 		failCode: {}
 	};
 	_.each(['errorCode', 'failCode'], function(type){
-		self.on(type, function(error){
+		function limitToErrors(error){
 			if(!self.limitMaps[type] || !self.limitMaps[type][error.code]){
 				return; // no issue being tracked
 			}
 
+			var limit = self.limitMaps[type][error.code];
+
 			// new issue
 			if(!issues[type][error.code]){
 				issues[type][error.code] = {
-					occurances: 0,
-					firstDate: moment(),
-					lastDate: null,
-					triggered: false,
-					timerMap: {},
-					timers: []
+					occurrences: 0, // long count, track
+					balance: 0, // time-based balance
+					dateFirst: moment().unix(),
+					dateLast: null,
+					datesTriggered: [],
+					triggered: false // track if we've triggered the current balance
 				};
 			}
+			issues[type][error.code].occurrences++;
 			issues[type][error.code].balance++;
-			issues[type][error.code].lastDate = moment();
-			var timer = self.random();
-			
-			issues[type][error.code].timerMap[timer] = setTimeout(function(){
+			issues[type][error.code].dateLast = moment().unix();
 
-			});
-		});
+			if(limit.time){
+				setTimeout(function(){
+					issues[type][error.code].balance--;
+					if(issues[type][error.code].balance <= 0){
+						issues[type][error.code].balance = 0;
+						issues[type][error.code].triggered = false;
+					}
+				}, limit.time);
+			}
+			if(!issues[type][error.code].triggered && issues[type][error.code].balance > limit.threshold){
+				issues[type][error.code].triggered = true;
+				limit.callback(_.clone(issues[type][error.code]));
+				issues[type][error.code].datesTriggered.push(issues[type][error.code].dateLast); // add after callback, to avoid double dates
+			}
+		}
+		self.on(type, limitToErrors);
 	});
 };
 
@@ -374,7 +389,7 @@ appframe.prototype.initListers = function(){
 */
 appframe.prototype.loadPlugins = function(){
 	var self = this;
-	self.config.plugins.forEach(function(plugin){
+	_.each(self.config.plugins, function(plugin){
 		var pluginFile = require(plugin);
 		self.info('Loading plugin: %s', pluginFile.name);
 		self.plugins[pluginFile.namespace] = pluginFile;
@@ -480,7 +495,7 @@ appframe.prototype.setup = function(callback){
 	self.initConfig();
 	self.initCodes();
 	self.initRegistry();
-	self.initListers();
+	self.initLimitListeners();
 	self.loadPlugins();
 	self.loadConfig();
 	self.loadCodes();
@@ -505,13 +520,29 @@ appframe.prototype.setup = function(callback){
 		if(jobDetails.callback){
 			return jobs.push(function(callback){
 				async.eachSeries(list, function(file, acb){
-					require(file)(self, acb);
+					var error;
+					try{
+						require(file)(self, acb);
+					}catch(err){
+						error = err;
+					}
+					if(error){
+						return acb(error);
+					}
 				}, callback);
 			});
 		}
 		jobs.push(function(callback){
 			_.each(list, function(file){
-				require(file)(self);
+				var error;
+				try{
+					require(file)(self);
+				}catch(err){
+					error = err;
+				}
+				if(error){
+					return console.error(error);
+				}
 			});
 			return callback();
 		});
@@ -594,9 +625,22 @@ appframe.prototype.random = function(length){
 
 	Quick test to determine if this application is running as root user.
 
-	IMPORTANT: CANNOT DETECT SUPERUSE ACCOUNTS OR SUDO
+	IMPORTANT: CANNOT DETECT SUPERUSER ACCOUNTS OR SUDO
+*/
+appframe.prototype.isRoot = function(){
+	if(this.isSecure() === true){
+		return false;
+	}else{
+		return true;
+	}
+}
 
-	TODO: add extra detection to get better results of elevated users
+
+/*
+	function isSecure()
+
+	Quick test to determine if this application is running as root
+	user or as a defined uid/gid specific user.
 */
 appframe.prototype.isSecure = function(uid, gid){
 	var self = this;
@@ -739,15 +783,20 @@ appframe.prototype.maskErrorToCode = function(err){
 	Registered limits will be tracked and will eventually trigger
 	the callback function when threshold is met
 */
-appframe.prototype.registerLimit = function(code, options, callback){
+appframe.prototype.registerLimit = function(code, threshold, options, callback){
+	if(!callback && options){
+		callback = options;
+		options = {};
+	}
 	var opts = _.defaults(options, {
+		callback: callback,
+		threshold: threshold,
 		error: 'errorCode', // or failCode
-		reset: true, // reset number track on "clear"
-		limit: null, // number of occurances to trigger
-		threshold: null, // timer called to identify "clear"
 		index: null, // 'object.to.path' of unique index to track by
-		callback: callback
+		reset: true, // reset balance counter on callback
+		time: null
 	});
+
 	if(!this.limitMaps[opts.error]){
 		this.limitMaps[opts.error] = {};
 	}
