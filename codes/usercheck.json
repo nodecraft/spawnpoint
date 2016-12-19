@@ -1,0 +1,5 @@
+{
+	"usercheck.is_root": "Security violation: Process is running as root user and/or group.",
+	"usercheck.is_root_group": "Security violation: Process is running with root group access.",
+	"usercheck.incorrect_user": "Security violation: Process is running as the incorrect user and/or group."
+}

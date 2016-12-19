@@ -2,6 +2,7 @@
 
 // Include core libs
 var fs = require('fs'),
+	child_process = require('child_process'),
 	crypto = require('crypto'),
 	util = require('util'),
 	path = require('path'),
@@ -52,6 +53,7 @@ var appframe = function(){
 	this.config = {};
 	this.codes = {};
 	this.errorMaps = {};
+	this.limitMaps = {};
 	this.plugins = {};
 	this.logs = {
 		prefix: null,
@@ -86,11 +88,12 @@ util.inherits(appframe, events.EventEmitter);
 	Private method used to initialize config loading. Loads default
 	config for the app instance.
 */
-appframe.prototype.initConfig = function(){
+appframe.prototype.initConfig = function(file){
 	var self = this;
+	file = file || '/config/app.json';
 
 	// reset config variable for reloading
-	self.config = _.defaults(require(self.cwd + '/config/app.json'), {
+	self.config = _.defaults(require(self.cwd + file), {
 		name: "unnamed project",
 		debug: false,
 		plugins: [],
@@ -114,6 +117,25 @@ appframe.prototype.initConfig = function(){
 }
 
 /*
+	function registerConfig(cwd)
+	*** config - object
+
+	Private method used to load object of config objects
+	into the app.
+
+*/
+appframe.prototype.registerConfig = function(name, config){
+	var self = this,
+		data = {};
+	if(name && !config){
+		data = name;
+	}else{
+		data[name] = config;
+	}
+	_.merge(self.config, _.cloneDeep(data));
+}
+
+/*
 	function loadConfig(cwd)
 	*** cwd - string
 
@@ -133,7 +155,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.config){
-			_.merge(self.config, plugin.config);
+			self.registerConfig(plugin.config);
 		}
 	});
 
@@ -144,14 +166,14 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			if(!self.config[path.parse(file).name]){
 				self.config[path.parse(file).name] = {};
 			}
-			_.merge(self.config[path.parse(file).name], require(file));
+			self.registerConfig(path.parse(file).name, require(file));
 		}
 	});
 
 	if(!ignoreExtra){
 		// handle process flags
 		_.each(minimist(process.argv.slice(2)), function(value, key){
-			return _.merge(self.config[key], value);
+			return self.registerConfig(key, value);
 		});
 
 		// handle environment variables
@@ -206,7 +228,7 @@ appframe.prototype.loadCodes = function(cwd){
 		self.debug('No codes folder found (%s), skipping', self.config.codes);
 	}
 	if(list){
-		list.forEach(function(file){
+		_.each(list, function(file){
 			self.registerCodes(require(file))
 		});
 	}
@@ -312,6 +334,54 @@ appframe.prototype.initRegistry = function(){
 	return this;
 }
 
+appframe.prototype.initLimitListeners = function(){
+	var self = this;
+	var issues = {
+		errorCode: {},
+		failCode: {}
+	};
+	_.each(['errorCode', 'failCode'], function(type){
+		function limitToErrors(error){
+			if(!self.limitMaps[type] || !self.limitMaps[type][error.code]){
+				return; // no issue being tracked
+			}
+
+			var limit = self.limitMaps[type][error.code];
+
+			// new issue
+			if(!issues[type][error.code]){
+				issues[type][error.code] = {
+					occurrences: 0, // long count, track
+					balance: 0, // time-based balance
+					dateFirst: moment().unix(),
+					dateLast: null,
+					datesTriggered: [],
+					triggered: false // track if we've triggered the current balance
+				};
+			}
+			issues[type][error.code].occurrences++;
+			issues[type][error.code].balance++;
+			issues[type][error.code].dateLast = moment().unix();
+
+			if(limit.time){
+				setTimeout(function(){
+					issues[type][error.code].balance--;
+					if(issues[type][error.code].balance <= 0){
+						issues[type][error.code].balance = 0;
+						issues[type][error.code].triggered = false;
+					}
+				}, limit.time);
+			}
+			if(!issues[type][error.code].triggered && issues[type][error.code].balance > limit.threshold){
+				issues[type][error.code].triggered = true;
+				limit.callback(_.clone(issues[type][error.code]));
+				issues[type][error.code].datesTriggered.push(issues[type][error.code].dateLast); // add after callback, to avoid double dates
+			}
+		}
+		self.on(type, limitToErrors);
+	});
+};
+
 /*
 	function loadPlugins()
 
@@ -319,7 +389,7 @@ appframe.prototype.initRegistry = function(){
 */
 appframe.prototype.loadPlugins = function(){
 	var self = this;
-	self.config.plugins.forEach(function(plugin){
+	_.each(self.config.plugins, function(plugin){
 		var pluginFile = require(plugin);
 		self.info('Loading plugin: %s', pluginFile.name);
 		self.plugins[pluginFile.namespace] = pluginFile;
@@ -368,7 +438,7 @@ appframe.prototype.registerPlugin = function(opts){
 	}
 	assert(opts.name, 'Plugin is missing required `name` option.');
 	assert(opts.namespace, 'Plugin is missing required `namespace` option.');
-	assert(opts.name, 'Plugin is missing required `exports` function.');
+	assert(opts.exports, 'Plugin is missing required `exports` function.');
 	//self.logs.prefix = opts.namespace;
 	self.loadConfig(opts.dir, true);
 	self.loadCodes(opts.dir + '/codes');
@@ -377,6 +447,17 @@ appframe.prototype.registerPlugin = function(opts){
 		codes: self.codes || null,
 		config: self.config || null
 	});
+}
+
+/*
+	function setupJSONHandler()
+
+	Sets up require handler to parse commented
+	JSON files for config and codes.
+*/
+
+appframe.prototype.setupJSONHandler = function(){
+	require(__dirname + '/require-extensions.js');
 }
 
 /*
@@ -402,7 +483,7 @@ appframe.prototype.setup = function(callback){
 		callback = callback || function(){};
 
 	// force .json parsing with comments :)
-	require('./require-extensions.js');
+	self.setupJSONHandler();
 
 	// prevent repeated setup
 	if(self.status.setup){
@@ -414,10 +495,11 @@ appframe.prototype.setup = function(callback){
 	self.initConfig();
 	self.initCodes();
 	self.initRegistry();
+	self.initLimitListeners();
 	self.loadPlugins();
 	self.loadConfig();
 	self.loadCodes();
-	self.loadErrorMap()
+	self.loadErrorMap();
 	var jobs = [];
 
 	_.each(self.plugins, function(plugin){
@@ -543,12 +625,56 @@ appframe.prototype.random = function(length){
 
 	Quick test to determine if this application is running as root user.
 
-	IMPORTANT: CANNOT DETECT SUPERUSE ACCOUNTS OR SUDO
-
-	TODO: add extra detection to get better results of elevated users
+	IMPORTANT: CANNOT DETECT SUPERUSER ACCOUNTS OR SUDO
 */
 appframe.prototype.isRoot = function(){
-	return (process.getuid() === 0 || process.getgid() === 0);
+	if(this.isSecure() === true){
+		return false;
+	}else{
+		return true;
+	}
+}
+
+
+/*
+	function isSecure()
+
+	Quick test to determine if this application is running as root
+	user or as a defined uid/gid specific user.
+*/
+appframe.prototype.isSecure = function(uid, gid){
+	var self = this;
+	if(uid && !gid){
+		gid = uid;
+	}
+	var checks = {
+		uid: process.getuid(),
+		gid: process.getgid(),
+		groups: String(child_process.execSync('groups'))
+	};
+	if(checks.uid === 0 || checks.gid === 0){
+		return self.errorCode('usercheck.is_root', {checks: checks });
+	}
+	if(checks.groups.indexOf('root') !== -1){
+		return self.errorCode('usercheck.is_root_group', {checks: checks });
+	}
+	if(uid && gid && (uid !== checks.uid || gid !== checks.gid)){
+		return self.errorCode('usercheck.incorrect_user', {checks: checks });	
+	}
+	return true;
+};
+
+/*
+	function require(code)
+	*** code - string
+
+	Dumb helper function to pass "app" into
+	a required file.
+*/
+
+appframe.prototype.require = function(path){
+	var self = this;
+	return require(path)(self);
 };
 
 /*
@@ -590,10 +716,12 @@ appframe.prototype.code = function(code, data){
 */
 appframe.prototype.errorCode = function(code, data){
 	var getCode = this.code(code, data);
+	this.emit('errorCode', getCode);
 	return new this._errorCode(getCode);
 };
 appframe.prototype.failCode = function(code, data){
 	var getCode = this.code(code, data);
+	this.emit('failCode', getCode);
 	return new this._failCode(getCode);
 };
 
@@ -646,6 +774,37 @@ appframe.prototype.maskErrorToCode = function(err){
 	return returnedError;
 };
 
+/*
+	function registerLimit(code, options, callback)
+	*** code - string
+	*** options - object
+	*** callback - function to call when limit is reached
+
+	Registered limits will be tracked and will eventually trigger
+	the callback function when threshold is met
+*/
+appframe.prototype.registerLimit = function(code, threshold, options, callback){
+	if(!callback && options){
+		callback = options;
+		options = {};
+	}
+	var opts = _.defaults(options, {
+		callback: callback,
+		threshold: threshold,
+		error: 'errorCode', // or failCode
+		index: null, // 'object.to.path' of unique index to track by
+		reset: true, // reset balance counter on callback
+		time: null
+	});
+
+	if(!this.limitMaps[opts.error]){
+		this.limitMaps[opts.error] = {};
+	}
+	if(!this.limitMaps[opts.error][code]){
+		this.limitMaps[opts.error][code] = [];
+	}
+	this.limitMaps[opts.error][code].push(opts);
+};
 
 
 // OUTPUT METHODS
