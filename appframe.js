@@ -35,7 +35,7 @@ var helpers = {
 
 
 // Actual framework
-var appframe = function(){
+var appframe = function(configFile){
 	// Helper function to force itself to be a prototype
 	if(!(this instanceof appframe)){
 		return new appframe();
@@ -49,6 +49,7 @@ var appframe = function(){
 		stopping: false,
 		stopAttempts: 0
 	};
+	this.configFile = configFile || '/config/app.json';
 	this.register = [];
 	this.config = {};
 	this.codes = {};
@@ -90,10 +91,11 @@ util.inherits(appframe, events.EventEmitter);
 */
 appframe.prototype.initConfig = function(file){
 	var self = this;
-	file = file || '/config/app.json';
-
+	if(file){
+		self.configFile = file;
+	}
 	// reset config variable for reloading
-	self.config = _.defaults(require(self.cwd + file), {
+	self.config = _.defaults(require(self.cwd + self.configFile), {
 		name: "unnamed project",
 		debug: false,
 		plugins: [],
@@ -551,10 +553,12 @@ appframe.prototype.setup = function(callback){
 	async.series(jobs, function(err){
 		if(err){
 			self.error("Failed to start up").debug(err);
-			return self.emit('app.exit');
+			self.emit('app.exit');
+			return callback(err);
 		}
 		self.emit('app.ready');
 		self.log('%s is ready.', self.config.name);
+		return callback();
 	});
 	return this;
 };
