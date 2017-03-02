@@ -180,7 +180,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 		// handle environment variables
 		_.each(process.env, function(value, key){
-			return _.set(self.config, helpers.camelCase(key), value);
+			return _.set(self.config, key, value);
 		});
 	}
 	return this;
