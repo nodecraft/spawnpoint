@@ -611,6 +611,7 @@ appframe.prototype.recursiveList = function(dir, exts){
 			}
 		}
 	});
+	list.sort(); // windows won't sort this like unix will
 	return list;
 };
 
