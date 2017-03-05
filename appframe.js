@@ -115,6 +115,7 @@ appframe.prototype.initConfig = function(file){
 	self.config.has = function(key){
 		return _.has(self.config, key);
 	};
+	self.emit('app.setup.initConfig');
 	return this;
 }
 
@@ -183,6 +184,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			return _.set(self.config, key, value);
 		});
 	}
+	self.emit('app.setup.loadConfig');
 	return this;
 }
 
@@ -198,6 +200,7 @@ appframe.prototype.initCodes = function(){
 	_.each(self.recursiveList(__dirname + '/codes', '.json'), function(file){
 		_.merge(self.codes, require(file));
 	});
+	self.emit('app.setup.initCodes');
 	return this;
 }
 
@@ -234,6 +237,7 @@ appframe.prototype.loadCodes = function(cwd){
 			self.registerCodes(require(file))
 		});
 	}
+	self.emit('app.setup.loadCodes');
 	return this;
 }
 
@@ -333,6 +337,7 @@ appframe.prototype.initRegistry = function(){
 			self.emit('app.stop');
 		});
 	});
+	self.emit('app.setup.initRegistry');
 	return this;
 }
 
@@ -382,6 +387,8 @@ appframe.prototype.initLimitListeners = function(){
 		}
 		self.on(type, limitToErrors);
 	});
+	self.emit('app.setup.initLimitListeners');
+	return this;
 };
 
 /*
@@ -396,6 +403,7 @@ appframe.prototype.loadPlugins = function(){
 		self.info('Loading plugin: %s', pluginFile.name);
 		self.plugins[pluginFile.namespace] = pluginFile;
 	});
+	self.emit('app.setup.loadPlugins');
 	return this;
 }
 
@@ -413,6 +421,7 @@ appframe.prototype.loadErrorMap = function(){
 			self.registerErrors(plugin.errors);
 		}
 	});
+	self.emit('app.setup.loadErrorMap');
 	return this;
 }
 
@@ -560,6 +569,7 @@ appframe.prototype.setup = function(callback){
 		self.log('%s is ready.', self.config.name);
 		return callback();
 	});
+	self.emit('app.setup.done');
 	return this;
 };
 
