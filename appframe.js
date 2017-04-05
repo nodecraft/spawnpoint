@@ -109,6 +109,16 @@ appframe.prototype.initConfig = function(file){
 			date: "dddd, MMMM Do YYYY"
 		}
 	});
+	var packageData = {};
+	try{
+		packageData = require(self.cwd + 'package.json');
+	}catch(e){
+		// do nothing
+	}
+	// allow package.json version to set app.config.version
+	if(packageData.version){
+		self.config.version = packageData.version;
+	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
 	};
