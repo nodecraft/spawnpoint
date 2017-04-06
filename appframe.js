@@ -115,9 +115,12 @@ appframe.prototype.initConfig = function(file){
 	}catch(e){
 		// do nothing
 	}
-	// allow package.json version to set app.config.version
+	// allow package.json version & name to set app.config vars
 	if(packageData.version){
 		self.config.version = packageData.version;
+	}
+	if(packageData.name){
+		self.config.version = packageData.name;
 	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
@@ -195,6 +198,18 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		});
 	}
 	self.emit('app.setup.loadConfig');
+
+	// allow dev-config.json in root directory to override config vars
+	var access = {};
+	try{
+		access = require(path.join(self.cwd, 'dev-config.json'));
+	}catch(err){
+		// do nothing
+	}
+	self.debug('Overriding config with dev-config.json');
+	_.each(access, function(value, key){
+		_.set(self.config, key, value);
+	});
 	return this;
 };
 
