@@ -120,7 +120,7 @@ appframe.prototype.initConfig = function(file){
 		self.config.version = packageData.version;
 	}
 	if(packageData.name){
-		self.config.version = packageData.name;
+		self.config.name = packageData.name;
 	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
