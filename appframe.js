@@ -59,7 +59,7 @@ var appframe = function(configFile){
 	this.logs = {
 		prefix: null,
 		date: null
-	}
+	};
 
 	this._errorCode = function(codeObject){
 		Error.captureStackTrace(this, this.constructor);
@@ -80,7 +80,7 @@ var appframe = function(configFile){
 	util.inherits(this._failCode, Error);
 
 	events.EventEmitter.call(this);
-}
+};
 util.inherits(appframe, events.EventEmitter);
 
 /*
@@ -109,6 +109,19 @@ appframe.prototype.initConfig = function(file){
 			date: "dddd, MMMM Do YYYY"
 		}
 	});
+	var packageData = {};
+	try{
+		packageData = require(path.join(self.cwd, '/package.json'));
+	}catch(e){
+		// do nothing
+	}
+	// allow package.json version & name to set app.config vars
+	if(packageData.version){
+		self.config.version = packageData.version;
+	}
+	if(packageData.name){
+		self.config.name = packageData.name;
+	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
 	};
@@ -117,7 +130,7 @@ appframe.prototype.initConfig = function(file){
 	};
 	self.emit('app.setup.initConfig');
 	return this;
-}
+};
 
 /*
 	function registerConfig(cwd)
@@ -136,7 +149,7 @@ appframe.prototype.registerConfig = function(name, config){
 		data[name] = config;
 	}
 	_.merge(self.config, _.cloneDeep(data));
-}
+};
 
 /*
 	function loadConfig(cwd)
@@ -187,8 +200,20 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		});
 	}
 	self.emit('app.setup.loadConfig');
+
+	// allow dev-config.json in root directory to override config vars
+	var access = {};
+	try{
+		access = require(path.join(self.cwd, 'dev-config.json'));
+	}catch(err){
+		// do nothing
+	}
+	self.debug('Overriding config with dev-config.json');
+	_.each(access, function(value, key){
+		_.set(self.config, key, value);
+	});
 	return this;
-}
+};
 
 /*
 	function initCodes()
@@ -204,8 +229,7 @@ appframe.prototype.initCodes = function(){
 	});
 	self.emit('app.setup.initCodes');
 	return this;
-}
-
+};
 /*
 	function loadCodes(cwd)
 	*** cwd - string
@@ -223,25 +247,24 @@ appframe.prototype.loadCodes = function(cwd){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.codes){
-			self.registerCodes(plugin.codes)
-		}
+			self.registerCodes(plugin.codes);		}
 	});
 
 	// handle local files
 	var list = null;
 	try{
-		list = self.recursiveList(cwd, ['.json'])
+		list = self.recursiveList(cwd, ['.json']);
 	}catch(err){
 		self.debug('No codes folder found (%s), skipping', self.config.codes);
 	}
 	if(list){
 		_.each(list, function(file){
-			self.registerCodes(require(file))
+			self.registerCodes(require(file));
 		});
 	}
 	self.emit('app.setup.loadCodes');
 	return this;
-}
+};
 
 /*
 	function registerCodes(cwd)
@@ -254,7 +277,7 @@ appframe.prototype.loadCodes = function(cwd){
 appframe.prototype.registerCodes = function(codes){
 	var self = this;
 	_.merge(self.codes, _.cloneDeep(codes));
-}
+};
 
 /*
 	function initRegistry()
@@ -282,7 +305,7 @@ appframe.prototype.initRegistry = function(){
 				self.emit('app.stop', true);
 			}
 		});
-	})
+	});
 
 	// app registry is used to track graceful halting
 	self.on('app.register', function(item){
@@ -292,7 +315,7 @@ appframe.prototype.initRegistry = function(){
 		}
 	});
 	self.on('app.deregister', function(item){
-		var i = self.register.indexOf(item)
+		var i = self.register.indexOf(item);
 		if(i !== -1){
 			self.register.splice(i, 1);
 			self.warn('De-registered: %s', item);
@@ -341,7 +364,7 @@ appframe.prototype.initRegistry = function(){
 	});
 	self.emit('app.setup.initRegistry');
 	return this;
-}
+};
 
 appframe.prototype.initLimitListeners = function(){
 	var self = this;
@@ -407,7 +430,7 @@ appframe.prototype.loadPlugins = function(){
 	});
 	self.emit('app.setup.loadPlugins');
 	return this;
-}
+};
 
 /*
 	function loadErrorMap()
@@ -425,7 +448,7 @@ appframe.prototype.loadErrorMap = function(){
 	});
 	self.emit('app.setup.loadErrorMap');
 	return this;
-}
+};
 
 /*
 	function registerPlugin(config [, callback])
@@ -460,7 +483,7 @@ appframe.prototype.registerPlugin = function(opts){
 		codes: self.codes || null,
 		config: self.config || null
 	});
-}
+};
 
 /*
 	function setupJSONHandler()
@@ -471,7 +494,7 @@ appframe.prototype.registerPlugin = function(opts){
 
 appframe.prototype.setupJSONHandler = function(){
 	require(__dirname + '/require-extensions.js');
-}
+};
 
 /*
 	function setup(config [, callback])
@@ -492,8 +515,8 @@ appframe.prototype.setupJSONHandler = function(){
 */
 
 appframe.prototype.setup = function(callback){
-	var self = this,
-		callback = callback || function(){};
+	callback = callback || function(){};
+	var self = this;
 
 	// force .json parsing with comments :)
 	self.setupJSONHandler();
@@ -631,7 +654,7 @@ appframe.prototype.recursiveList = function(dir, exts){
 appframe.prototype.random = function(length){
 	length = parseInt(length) || 16;
 	if(isNaN(length) || length < 1){
-		length = 16
+		length = 16;
 	}
 	var random = String(new Date().getTime() + Math.random());
 	return String(crypto.createHash('md5').update(random).digest('hex')).slice(0, length);
@@ -650,7 +673,7 @@ appframe.prototype.isRoot = function(){
 	}else{
 		return true;
 	}
-}
+};
 
 
 /*
@@ -676,7 +699,7 @@ appframe.prototype.isSecure = function(uid, gid){
 		return self.errorCode('usercheck.is_root_group', {checks: checks });
 	}
 	if(uid && gid && (uid !== checks.uid || gid !== checks.gid)){
-		return self.errorCode('usercheck.incorrect_user', {checks: checks });	
+		return self.errorCode('usercheck.incorrect_user', {checks: checks });
 	}
 	return true;
 };
@@ -859,7 +882,7 @@ appframe.prototype._log = function(opts, type){
 		date: helpers.tag(moment().format(self.config.log.time), chalk.grey)
 		//prefix: helpers.tag(self.logs.prefix || null, chalk.grey),
 	})));
-}
+};
 appframe.prototype.info = function(){
 	var self = this;
 	self._log({
