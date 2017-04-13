@@ -175,9 +175,11 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 	if(!ignoreExtra){
 		// handle process flags
-		_.each(minimist(process.argv.slice(2)), function(value, key){
+		var args = minimist(process.argv.slice(2));
+		_.each(args, function(value, key){
 			return self.registerConfig(key, value);
 		});
+		self.argv = _.clone(args._) || [];
 
 		// handle environment variables
 		_.each(process.env, function(value, key){
