@@ -6,7 +6,7 @@ Basic Nodejs micro-framework app object for dependency injection, error codes, s
  - [Express](https://github.com/nodecraft/appframe-express.js) - Express web server
  - [Redis](https://github.com/nodecraft/appframe-redis) - Redis Key/value database/store
  - [RethinkDB](https://github.com/nodecraft/appframe-rethinkdb) - NoSQL database
- - [NAPS](https://github.com/nodecraft/appframe-rethinkdb) - Pub/Sub Messsage Queue
+ - [NATS](https://github.com/nodecraft/appframe-nats.js) - Pub/Sub Messsage Queue
  - [Ricochet](https://github.com/nodecraft/appframe-ricochet.js) - Pub/Sub Messsage Queue
 
 
