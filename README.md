@@ -2,6 +2,13 @@
 Basic Nodejs micro-framework app object for dependency injection, error codes, signal handling, and a few other neat things.
 `npm install appframe --save`
 
+## Plugins
+ - [Express](https://github.com/nodecraft/appframe-express.js) - Express web server
+ - [Redis](https://github.com/nodecraft/appframe-redis) - Redis Key/value database/store
+ - [RethinkDB](https://github.com/nodecraft/appframe-rethinkdb) - NoSQL database
+ - [NAPS](https://github.com/nodecraft/appframe-rethinkdb) - Pub/Sub Messsage Queue
+ - [Ricochet](https://github.com/nodecraft/appframe-ricochet.js) - Pub/Sub Messsage Queue
+
 
 ## Usage
 This module is intended to improve application design by providing a framework to mount your application into a single object. This object, typically named `app` is injected into load file you manually require or autoload (using the framework).
