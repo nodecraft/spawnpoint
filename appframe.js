@@ -117,10 +117,10 @@ appframe.prototype.initConfig = function(file){
 	}
 	// allow package.json version & name to set app.config vars
 	if(packageData.version){
-		self.config.version = packageData.version;
+		self.config.version = self.config.version || packageData.version;
 	}
 	if(packageData.name){
-		self.config.name = packageData.name;
+		self.config.name = self.config.name || packageData.name;
 	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
@@ -247,7 +247,8 @@ appframe.prototype.loadCodes = function(cwd){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.codes){
-			self.registerCodes(plugin.codes);		}
+			self.registerCodes(plugin.codes);
+		}
 	});
 
 	// handle local files
@@ -340,7 +341,7 @@ appframe.prototype.initRegistry = function(){
 		self.status.stopping = true;
 		self.info('Stopping %s gracefully', self.config.name);
 		self.emit('app.close');
-		if(self.register.length == 0){
+		if(!self.register.length){
 			return self.emit('app.exit', true);
 		}
 		setTimeout(function(){
@@ -732,7 +733,7 @@ appframe.prototype.require = function(path){
 */
 appframe.prototype.code = function(code, data){
 	if(!this.codes[code]){
-		throw new Error("No return code found with code: "+ code);
+		throw new Error("No return code found with code: " + code);
 	}
 	return _.defaults(data || {}, {
 		code: code,
