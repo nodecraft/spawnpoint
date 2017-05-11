@@ -96,7 +96,6 @@ appframe.prototype.initConfig = function(file){
 	}
 	// reset config variable for reloading
 	self.config = _.defaults(require(self.cwd + self.configFile), {
-		name: "unnamed project",
 		debug: false,
 		plugins: [],
 		autoload: [],
@@ -120,7 +119,7 @@ appframe.prototype.initConfig = function(file){
 		self.config.version = self.config.version || packageData.version;
 	}
 	if(packageData.name){
-		self.config.name = self.config.name || packageData.name;
+		self.config.name = self.config.name || packageData.name || "unnamed project";
 	}
 	self.config.get = function(key){
 		return _.get(self.config, key);
