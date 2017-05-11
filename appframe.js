@@ -208,7 +208,9 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	}catch(err){
 		// do nothing
 	}
-	self.debug('Overriding config with dev-config.json');
+	if(_.keys(access).length > 0){
+		self.debug('Overriding config with dev-config.json');
+	}
 	_.each(access, function(value, key){
 		_.set(self.config, key, value);
 	});
@@ -350,6 +352,7 @@ appframe.prototype.initRegistry = function(){
 		}, timeout);
 	});
 	self.on('app.exit', function(graceful){
+		/* eslint-disable no-process-exit */
 		if(!graceful){
 			return process.exit(1);
 		}

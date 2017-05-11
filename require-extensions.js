@@ -3,10 +3,10 @@
 var fs = require('fs'),
 	util = require('util');
 
-var _ = require('lodash'),
-	jsonLint = require('json-lint'),
+var jsonLint = require('json-lint'),
 	stripJsonComments = require('strip-json-comments');
 
+// TODO: stop doing this
 require.extensions['.json'] = function(module, filename){
 	var content = fs.readFileSync(filename, 'utf8');
 	content = stripJsonComments(content);
@@ -20,4 +20,4 @@ require.extensions['.json'] = function(module, filename){
 		}
 		throw new SyntaxError(errorText, filename);
 	}
-};;
+};
