@@ -365,6 +365,12 @@ appframe.prototype.initRegistry = function(){
 			self.emit('app.stop');
 		});
 	});
+
+	// set debug mode on SIGUSR1
+	process.on('SIGUSR1', function(){
+		self.config.debug = !self.config.debug;
+	});
+
 	self.emit('app.setup.initRegistry');
 	return this;
 };
