@@ -197,6 +197,20 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		_.each(process.env, function(value, key){
 			return _.set(self.config, key, value);
 		});
+
+		// handle docker secrets
+		_.each(self.recursiveList('/run/secrets', false), function(file){
+			var key, value, error;
+			try{
+				key = path.basename(file);
+				fs.readFileSync(file);
+			}catch(e){
+				// do something
+				error = e;
+			}
+			if(error){ return; }
+			return _.set(self.config, key, value);
+		});
 	}
 	self.emit('app.setup.loadConfig');
 
@@ -619,8 +633,9 @@ appframe.prototype.setup = function(callback){
 	Returns array of absolute file names.
 */
 appframe.prototype.recursiveList = function(dir, exts){
-	exts = exts || ['.js'];
-	if(!(exts instanceof Array)){
+	if(exts === undefined){
+		exts = ['.js'];
+	}else if(!(exts instanceof Array)){
 		exts = [exts];
 	}
 	var parent = this,
@@ -632,7 +647,7 @@ appframe.prototype.recursiveList = function(dir, exts){
 	dir = String(dir + '/').replace(/\//g, '/'); // ensure proper trailing slash
 	_.each(fs.readdirSync(dir), function(file){
 		var isDir = fs.statSync(dir + file).isDirectory();
-		if(isDir && exts.indexOf('/') !== -1){
+		if(isDir && exts && exts.indexOf('/') !== -1){
 			list.push(dir + file);
 		}else if(isDir){
 			var recursive = parent.recursiveList(dir + file, exts);

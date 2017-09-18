@@ -7,6 +7,7 @@ var jsonLint = require('json-lint'),
 	stripJsonComments = require('strip-json-comments');
 
 // TODO: stop doing this
+/*eslint-disable */
 require.extensions['.json'] = function(module, filename){
 	var content = fs.readFileSync(filename, 'utf8');
 	content = stripJsonComments(content);
@@ -21,3 +22,4 @@ require.extensions['.json'] = function(module, filename){
 		throw new SyntaxError(errorText, filename);
 	}
 };
+/*eslint-enable */

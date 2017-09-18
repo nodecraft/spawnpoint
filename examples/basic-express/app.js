@@ -1,5 +1,5 @@
 'use strict';
-var appFrame = require('../appframe.js');
+var appFrame = require('../../appframe.js');
 var express = require('express');
 
 var app = new appFrame();
@@ -12,7 +12,7 @@ require('./controllers.js')(app);
 
 app.server.use(function(req, res){
 	app.debug('404 request: %s', req.originalUrl);
-	return res.status(404).text('404 not found');;
+	return res.status(404).text('404 not found');
 });
 
 app.server.listen(8080, function(err){
