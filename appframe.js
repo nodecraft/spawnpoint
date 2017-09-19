@@ -638,11 +638,14 @@ appframe.prototype.recursiveList = function(dir, exts){
 	}else if(!(exts instanceof Array)){
 		exts = [exts];
 	}
-	var parent = this,
-		stat = fs.statSync(dir),
-		list = [];
-	if(!stat.isDirectory()){
-		return false;
+	var parent = this, stat, list = [];
+	try{
+		stat = fs.statSync(dir);
+	}catch(e){
+		stat = false;
+	}
+	if(!stat || !stat.isDirectory()){
+		return list;
 	}
 	dir = String(dir + '/').replace(/\//g, '/'); // ensure proper trailing slash
 	_.each(fs.readdirSync(dir), function(file){
