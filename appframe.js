@@ -200,15 +200,15 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 		// handle docker secrets
 		_.each(self.recursiveList('/run/secrets', false), function(file){
-			var key, value, error;
+			var key, value;
 			try{
 				key = path.basename(file);
-				fs.readFileSync(file);
+				value = fs.readFileSync(file);
+				value = JSON.parse(value); // if it fails it will revert to above value
 			}catch(e){
-				// do something
-				error = e;
+				// do nothing
 			}
-			if(error){ return; }
+			if(!value || !key){ return; }
 			return _.set(self.config, key, value);
 		});
 	}

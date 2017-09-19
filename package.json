@@ -1,13 +1,11 @@
 {
   "name": "appframe",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Basic framework app object for dependency injection, event propagation, and error handling.",
   "main": "appframe.js",
   "scripts": {
     "test": "npm run lint",
     "lint": "eslint .",
-    "start": "NODE_ENV=production node app.js",
-    "start:dev": "node app.js",
     "precommit": "lint"
   },
   "repository": {
