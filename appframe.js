@@ -203,7 +203,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			var key, value;
 			try{
 				key = path.basename(file);
-				value = fs.readFileSync(file);
+				value = fs.readFileSync(file, 'utf8');
 				value = JSON.parse(value); // if it fails it will revert to above value
 			}catch(e){
 				// do nothing
@@ -635,7 +635,7 @@ appframe.prototype.setup = function(callback){
 appframe.prototype.recursiveList = function(dir, exts){
 	if(exts === undefined){
 		exts = ['.js'];
-	}else if(!(exts instanceof Array)){
+	}else if(exts && !(exts instanceof Array)){
 		exts = [exts];
 	}
 	var parent = this, stat, list = [];
