@@ -195,6 +195,11 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 		// handle environment variables
 		_.each(process.env, function(value, key){
+			try{
+				value = JSON.parse(value);
+			}catch(e){
+				// do nothing
+			}
 			return _.set(self.config, key, value);
 		});
 
