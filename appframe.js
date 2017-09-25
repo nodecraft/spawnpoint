@@ -99,6 +99,7 @@ appframe.prototype.initConfig = function(file){
 		debug: false,
 		plugins: [],
 		autoload: [],
+		secrets: '/run/secrets',
 		codes: '/config/codes',
 		stopAttempts: 3,
 		stopTimeout: 15000,
@@ -177,7 +178,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	// load local json files
 	_.each(self.recursiveList(cwd + '/config', '.json'), function(file){
 		// prevent loading base config and codes
-		if(file.indexOf('/config/app.json') === -1 && file.indexOf(self.config.codes) === -1){
+		if(file.indexOf(self.configFile) === -1 && file.indexOf(self.config.codes) === -1){
 			if(!self.config[path.parse(file).name]){
 				self.config[path.parse(file).name] = {};
 			}
@@ -200,22 +201,28 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			}catch(e){
 				// do nothing
 			}
+			self.debug('Setting ENV variable [%s]', key);
 			return _.set(self.config, key, value);
 		});
 
-		// handle docker secrets
-		_.each(self.recursiveList('/run/secrets', false), function(file){
-			var key, value;
-			try{
-				key = path.basename(file);
-				value = fs.readFileSync(file, 'utf8');
-				value = JSON.parse(value); // if it fails it will revert to above value
-			}catch(e){
-				// do nothing
-			}
-			if(!value || !key){ return; }
-			return _.set(self.config, key, value);
-		});
+		if(self.config.secrets){
+			// handle docker secrets
+			_.each(self.recursiveList(self.config.secrets, false), function(file){
+				var key, value;
+				try{
+					key = path.basename(file);
+					value = fs.readFileSync(file, 'utf8');
+					value = JSON.parse(value); // if it fails it will revert to above value
+				}catch(e){
+					// do nothing
+				}
+				if(!value || !key){ return; }
+				self.debug('Setting secret [%s]', key);
+				return _.set(self.config, key, value);
+			});
+		}
+	}else{
+		self.debug("Ignoring config extra loading");
 	}
 	self.emit('app.setup.loadConfig');
 
