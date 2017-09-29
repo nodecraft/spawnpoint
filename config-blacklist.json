@@ -13,28 +13,6 @@
 			"CommonProgramW6432",
 			"COMPUTERNAME",
 			"ComSpec",
-			"ConEmuANSI",
-			"ConEmuAnsiLog",
-			"ConEmuArgs",
-			"ConEmuArgs2",
-			"ConEmuBackHWND",
-			"ConEmuBaseDir",
-			"ConEmuBuild",
-			"ConEmuConfig",
-			"ConEmuDir",
-			"ConEmuDrawHWND",
-			"ConEmuDrive",
-			"ConEmuHooks",
-			"ConEmuHWND",
-			"ConEmuPalette",
-			"ConEmuPID",
-			"ConEmuServerPID",
-			"ConEmuTask",
-			"ConEmuWorkDir",
-			"ConEmuWorkDrive",
-			"ConEmuBaseDirShort",
-			"ConEmuCfgDir",
-			"ConEmuIsAdmin",
 			"JAVA_HOME",
 			"FPS_BROWSER_APP_PROFILE_STRING",
 			"FPS_BROWSER_USER_PROFILE_STRING",
@@ -91,7 +69,7 @@
 		"patterns": [
 			"^npm_config_[a-z-_]+$",
 			"^npm_package_[a-z-_]+$",
-			"npm"
+			"^ConEmu.*$"
 		]
 	},
 	"secrets": {
@@ -99,8 +77,7 @@
 		"patterns": []
 	},
 	"args": {
-		"list": [
-		],
+		"list": [],
 		"patterns": []
 	}
 }
