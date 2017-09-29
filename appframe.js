@@ -163,14 +163,14 @@ appframe.prototype.registerConfig = function(name, config, whiteListCheck){
 		data = {};
 
 	if(whiteListCheck && self.configBlacklist[whiteListCheck]){
-		if(self.configBlacklist[whiteListCheck].list.includes(name)){ return; }
+		if(self.configBlacklist[whiteListCheck].list.includes(name)){ return self.debug('ignoring blacklist', name); }
 		var found = false;
 		_.each(self.configBlacklist[whiteListCheck].patterns, function(pattern){
 			if(!found && pattern.test(name)){
 				found = true;
 			}
 		});
-		if(found){ return; }
+		if(found){ return self.debug('ignoring blacklist pattern', name); }
 		self.log('Setting %s variable [%s]', whiteListCheck, name);
 	}
 	if(name && !config){
@@ -179,7 +179,6 @@ appframe.prototype.registerConfig = function(name, config, whiteListCheck){
 		data[name] = config;
 	}
 	switch(whiteListCheck){
-		case "args":
 		case "env":
 		case "secrets":
 		case "dev-config":
