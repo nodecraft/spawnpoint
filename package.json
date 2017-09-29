@@ -1,6 +1,6 @@
 {
   "name": "appframe",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "Basic framework app object for dependency injection, event propagation, and error handling.",
   "main": "appframe.js",
   "scripts": {
@@ -36,7 +36,7 @@
     "strip-json-comments": "2.0.1"
   },
   "devDependencies": {
-    "eslint": "4.7.2",
+    "eslint": "4.8.0",
     "eslint-config-nodecraft": "1.0.8",
     "eslint-plugin-json": "1.2.0",
     "eslint-plugin-node": "5.2.0"

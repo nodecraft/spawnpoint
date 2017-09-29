@@ -233,6 +233,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 		// handle environment variables
 		_.each(process.env, function(value, key){
+			key = key.replace(/__/g, '.'); // replace double underscores to dots, to allow object notation in environment vars
 			try{
 				value = JSON.parse(value);
 			}catch(e){
