@@ -15,7 +15,8 @@ var _ = require('lodash'),
 	chalk = require('chalk'),
 	minimist = require('minimist'),
 	format = require("string-template"),
-	moment = require('moment');
+	moment = require('moment'),
+	containerized = require('containerized');
 
 // Define private helper functions
 var helpers = {
@@ -49,7 +50,9 @@ var appframe = function(configFile){
 		stopping: false,
 		stopAttempts: 0
 	};
+	this.containerized = containerized();
 	this.configFile = configFile || '/config/app.json';
+	this.configBlacklist = require('./config-blacklist.json');
 	this.register = [];
 	this.config = {};
 	this.codes = {};
@@ -109,6 +112,21 @@ appframe.prototype.initConfig = function(file){
 			date: "dddd, MMMM Do YYYY"
 		}
 	});
+	if(self.config.resetConfigBlackListDefaults){
+		self.configBlacklist = {
+			env: {list: [], patterns: []},
+			secrets: {list: [], patterns: []},
+			args: {list: [], patterns: []}
+		};
+	}
+	if(self.config.configBlacklist){
+		_.merge(self.configBlacklist, self.config.configBlacklist);
+	}
+	_.each(self.configBlacklist, function(items){
+		items.patterns = _.map(items.patterns, function(pattern){
+			return new RegExp(pattern);
+		});
+	});
 	var packageData = {};
 	try{
 		packageData = require(path.join(self.cwd, '/package.json'));
@@ -140,15 +158,35 @@ appframe.prototype.initConfig = function(file){
 	into the app.
 
 */
-appframe.prototype.registerConfig = function(name, config){
+appframe.prototype.registerConfig = function(name, config, whiteListCheck){
 	var self = this,
 		data = {};
+
+	if(whiteListCheck && self.configBlacklist[whiteListCheck]){
+		if(self.configBlacklist[whiteListCheck].list.includes(name)){ return; }
+		var found = false;
+		_.each(self.configBlacklist[whiteListCheck].patterns, function(pattern){
+			if(!found && pattern.test(name)){
+				found = true;
+			}
+		});
+		if(found){ return; }
+		self.log('Setting %s variable [%s]', whiteListCheck, name);
+	}
 	if(name && !config){
 		data = name;
 	}else{
 		data[name] = config;
 	}
-	_.merge(self.config, _.cloneDeep(data));
+	switch(whiteListCheck){
+		case "args":
+		case "env":
+		case "secrets":
+		case "dev-config":
+			return _.set(self.config, name, config);
+		default:
+			return _.merge(self.config, _.cloneDeep(data));
+	}
 };
 
 /*
@@ -190,7 +228,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		// handle process flags
 		var args = minimist(process.argv.slice(2));
 		_.each(args, function(value, key){
-			return self.registerConfig(key, value);
+			return self.registerConfig(key, value, 'args');
 		});
 		self.argv = _.clone(args._) || [];
 
@@ -201,8 +239,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 			}catch(e){
 				// do nothing
 			}
-			self.debug('Setting ENV variable [%s]', key);
-			return _.set(self.config, key, value);
+			return self.registerConfig(key, value, 'env');
 		});
 
 		if(self.config.secrets){
@@ -217,8 +254,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 					// do nothing
 				}
 				if(!value || !key){ return; }
-				self.debug('Setting secret [%s]', key);
-				return _.set(self.config, key, value);
+				return self.registerConfig(key, value, 'secrets');
 			});
 		}
 	}else{
@@ -237,7 +273,7 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		self.debug('Overriding config with dev-config.json');
 	}
 	_.each(access, function(value, key){
-		_.set(self.config, key, value);
+		return self.registerConfig(key, value, 'dev-config');
 	});
 	return this;
 };
