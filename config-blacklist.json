@@ -71,7 +71,8 @@
 			"CMDER_START",
 			"ESET_OPTIONS",
 			"VS140COMNTOOLS",
-			"__COMPAT_LAYER"
+			"__COMPAT_LAYER",
+			".COMPAT_LAYER"
 		],
 		"patterns": [
 			"^npm_config_[a-z-_]+$",

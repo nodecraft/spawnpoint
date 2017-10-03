@@ -276,8 +276,8 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 		}catch(err){
 			// do nothing
 		}
-		if(!access){
-			self.debug('Overriding config with dev-config.json');
+		if(access){
+			self.debug('Overriding config with custom overrides');
 			_.each(access, function(value, key){
 				return self.registerConfig(key, value, 'config-hoist');
 			});
