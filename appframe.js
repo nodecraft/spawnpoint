@@ -104,6 +104,7 @@ appframe.prototype.initConfig = function(file){
 		autoload: [],
 		secrets: '/run/secrets',
 		codes: '/config/codes',
+		configOverride: null,
 		stopAttempts: 3,
 		stopTimeout: 15000,
 		log: {
@@ -112,6 +113,11 @@ appframe.prototype.initConfig = function(file){
 			date: "dddd, MMMM Do YYYY"
 		}
 	});
+	if(self.config.debug){
+		if(!self.config.configOverride){
+			self.config.configOverride = 'dev-config.json';
+		}
+	}
 	if(self.config.resetConfigBlackListDefaults){
 		self.configBlacklist = {
 			env: {list: [], patterns: []},
@@ -181,7 +187,7 @@ appframe.prototype.registerConfig = function(name, config, whiteListCheck){
 	switch(whiteListCheck){
 		case "env":
 		case "secrets":
-		case "dev-config":
+		case "config-hoist":
 			return _.set(self.config, name, config);
 		default:
 			return _.merge(self.config, _.cloneDeep(data));
@@ -262,19 +268,21 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	}
 	self.emit('app.setup.loadConfig');
 
-	// allow dev-config.json in root directory to override config vars
-	var access = {};
-	try{
-		access = require(path.join(self.cwd, 'dev-config.json'));
-	}catch(err){
-		// do nothing
+	if(self.config.configOverride){
+		// allow dev-config.json in root directory to override config vars
+		var access = null;
+		try{
+			access = require(path.join(self.cwd, self.config.configOverride));
+		}catch(err){
+			// do nothing
+		}
+		if(!access){
+			self.debug('Overriding config with dev-config.json');
+			_.each(access, function(value, key){
+				return self.registerConfig(key, value, 'config-hoist');
+			});
+		}
 	}
-	if(_.keys(access).length > 0){
-		self.debug('Overriding config with dev-config.json');
-	}
-	_.each(access, function(value, key){
-		return self.registerConfig(key, value, 'dev-config');
-	});
 	return this;
 };
 
