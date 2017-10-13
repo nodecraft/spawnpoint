@@ -1,6 +1,6 @@
 {
   "name": "appframe",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Basic framework app object for dependency injection, event propagation, and error handling.",
   "main": "appframe.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "json-lint": "0.1.0",
     "lodash": "*",
     "minimist": "1.2.0",
-    "moment": "2.18.1",
+    "moment": "2.x",
     "string-template": "1.0.0",
     "strip-json-comments": "2.0.1"
   },
