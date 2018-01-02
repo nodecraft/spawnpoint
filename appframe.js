@@ -2,6 +2,7 @@
 
 // Include core libs
 var fs = require('fs'),
+	cluster = require('cluster'),
 	child_process = require('child_process'),
 	crypto = require('crypto'),
 	util = require('util'),
@@ -50,6 +51,7 @@ var appframe = function(configFile){
 		stopping: false,
 		stopAttempts: 0
 	};
+	this.workerID = null;
 	this.containerized = containerized();
 	this.configFile = configFile || '/config/app.json';
 	this.configBlacklist = require('./config-blacklist.json');
@@ -102,6 +104,7 @@ appframe.prototype.initConfig = function(file){
 		debug: false,
 		plugins: [],
 		autoload: [],
+		cluster: false,
 		secrets: '/run/secrets',
 		codes: '/config/codes',
 		configOverride: null,
@@ -382,7 +385,7 @@ appframe.prototype.initRegistry = function(){
 	// app registry is used to track graceful halting
 	self.on('app.register', function(item){
 		if(self.register.indexOf(item) === -1){
-			self.log('Plugin registered: %s', item);
+			self.log('Registered: %s', item);
 			self.register.push(item);
 		}
 	});
@@ -613,8 +616,63 @@ appframe.prototype.setup = function(callback){
 	self.initLimitListeners();
 	self.loadPlugins();
 	self.loadConfig();
+	// if(self.config.cluster){
+	// 	if(self.config.log.format === '{date} {type}: {line}'){
+	// 		self.config.log.format = '{date} [{workerID}]{type}: {line}';
+	// 	}
+	// 	if(cluster.isMaster){
+	// 		self.workerID = 'MASTER';
+	// 	}else{
+	// 		self.workerID = 'WORKER:' + cluster.worker.id;
+	// 	}
+	// }
 	self.loadCodes();
 	self.loadErrorMap();
+
+
+	if(self.config.cluster && cluster.isMaster){
+		return self.initMaster(callback);
+	}
+	return self.initWorker(callback);
+};
+
+appframe.prototype.spawnWorker = function(){
+	var self = this;
+	if(!cluster.isMaster){ return; }
+	var worker = cluster.fork();
+	self.emit('cluster.worker.connect');
+	self.emit('app.register', 'cluster_worker_' + worker.id);
+	worker.on('disconnect', function(){
+		setTimeout(function(){
+			self.emit('app.deregister', 'cluster_worker_' + worker.id);
+		}, 0);
+		self.emit('cluster.worker.disconnect');
+	});
+	return worker;
+};
+
+appframe.prototype.initMaster = function(callback){
+	var self = this;
+	self.log('Setting up cluster of (%s) workers', self.config.cluster);
+	self.status.running = true;
+	for(var i = 0; i < self.config.cluster; i++){
+		self.spawnWorker();
+	}
+	self.on('cluster.worker.disconnect', function(){
+		if(self.status.running){
+			self.spawnWorker();
+		}
+	});
+	cluster.on('message', function(worker, message, handle){
+		self.emit('cluster.worker.message', worker, message, handle);
+	});
+	self.emit('cluster.ready');
+	callback();
+	return this;
+};
+
+appframe.prototype.initWorker = function(callback){
+	var self = this;
 	var jobs = [];
 
 	_.each(self.plugins, function(plugin){
@@ -963,6 +1021,7 @@ appframe.prototype._log = function(opts, type){
 	}
 	type = type || 'log';
 	opts.date = opts.date || helpers.tag(currentTime.format(self.config.log.time), chalk.grey),
+	opts.workerID = self.workerID;
 	console[type](format(self.config.log.format, opts));
 };
 appframe.prototype.info = function(){
