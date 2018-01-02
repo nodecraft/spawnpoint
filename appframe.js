@@ -955,16 +955,15 @@ appframe.prototype.debug = function(){
 */
 appframe.prototype._log = function(opts, type){
 	var self = this;
-	var day = moment().format(self.config.log.date);
+	var currentTime = moment();
+	var day = currentTime.format(self.config.log.date);
 	if(!self.logs.date || self.logs.date !== day){
 		self.logs.date = day;
 		console.log(helpers.tag(day, chalk.green));
 	}
 	type = type || 'log';
-	console[type](format(self.config.log.format, _.defaults(opts, {
-		date: helpers.tag(moment().format(self.config.log.time), chalk.grey)
-		//prefix: helpers.tag(self.logs.prefix || null, chalk.grey),
-	})));
+	opts.date = opts.date || helpers.tag(currentTime.format(self.config.log.time), chalk.grey),
+	console[type](format(self.config.log.format, opts));
 };
 appframe.prototype.info = function(){
 	var self = this;
