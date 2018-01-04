@@ -3,6 +3,7 @@
 		"list": [
 			"aliases",
 			"ALLUSERSPROFILE",
+			"ANDROID_HOME",
 			"ANSICON",
 			"ANSICON_DEF",
 			"APPDATA",

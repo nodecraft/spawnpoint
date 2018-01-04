@@ -669,8 +669,8 @@ appframe.prototype.setup = function(callback){
 			self.emit('app.exit');
 			return callback(err);
 		}
-		self.emit('app.ready');
 		self.log('%s is ready.', self.config.name);
+		self.emit('app.ready');
 		return callback();
 	});
 	self.emit('app.setup.done');
