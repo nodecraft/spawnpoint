@@ -18,7 +18,7 @@
     "events",
     "errors"
   ],
-  "author": "NodeCraft Hosting LLC",
+  "author": "Nodecraft Inc.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nodecraft/appframe.js/issues"
@@ -26,19 +26,19 @@
   "homepage": "https://github.com/nodecraft/appframe.js",
   "dependencies": {
     "async": "*",
-    "chalk": "2.3.0",
-    "containerized": "1.0.2",
-    "json-lint": "0.1.0",
+    "chalk": "^2.4.1",
+    "containerized": "^1.0.2",
+    "json-lint": "^0.1.0",
     "lodash": "*",
-    "minimist": "1.2.0",
+    "minimist": "^1.2.0",
     "moment": "2.x",
-    "string-template": "1.0.0",
-    "strip-json-comments": "2.0.1"
+    "string-template": "^1.0.0",
+    "strip-json-comments": "^2.0.1"
   },
   "devDependencies": {
-    "eslint": "4.14.0",
-    "eslint-config-nodecraft": "1.0.10",
-    "eslint-plugin-json": "1.2.0",
-    "eslint-plugin-node": "5.2.1"
+    "eslint": "^4.19.1",
+    "eslint-config-nodecraft": "^1.0.11",
+    "eslint-plugin-json": "^1.2.0",
+    "eslint-plugin-node": "^6.0.1"
   }
 }
