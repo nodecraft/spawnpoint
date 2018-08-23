@@ -396,10 +396,16 @@ appframe.prototype.initRegistry = function(){
 			self.emit('app.exit', true);
 		}
 	});
-	self.on('app.stop', function(timeout){
-		timeout = timeout || self.config.stopTimeout;
+	self.on('app.stop', function(){
 		if(self.status.stopping){
 			self.status.stopAttempts++;
+			if(self.status.stopAttempts === 1){
+				self.warn('%s will be closed in %sms if it does not shut down gracefully.', self.config.name, self.config.stopTimeout);
+				setTimeout(function(){
+					self.error('%s took too long to close. Killing process.', self.config.name);
+					self.emit('app.exit');
+				}, self.config.stopTimeout);
+			}
 			if(self.status.stopAttempts < self.config.stopAttempts){
 				return self.warn('%s already stopping. Attempt %s more times to kill process', self.config.name, self.config.stopAttempts - self.status.stopAttempts);
 			}else{
@@ -415,10 +421,6 @@ appframe.prototype.initRegistry = function(){
 		if(!self.register.length){
 			return self.emit('app.exit', true);
 		}
-		setTimeout(function(){
-			self.error('%s took too long to close. Killing process.', self.config.name);
-			self.emit('app.exit');
-		}, timeout);
 	});
 	self.on('app.exit', function(graceful){
 		/* eslint-disable no-process-exit */
