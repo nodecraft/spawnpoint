@@ -177,7 +177,7 @@ appframe.prototype.registerConfig = function(name, config, whiteListCheck){
 			}
 		});
 		if(found){ return self.debug('ignoring blacklist pattern', name); }
-		self.log('Setting %s variable [%s]', whiteListCheck, name);
+		self.log('Setting %s ENV variable [%s]', whiteListCheck, name);
 	}
 	if(name && !config){
 		data = name;
@@ -214,6 +214,11 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 	// load plugin defaults
 	_.each(self.plugins, function(plugin){
 		if(plugin.config){
+			// ensure sideloaded plugins retain original config
+			if(plugin.original_namespace){
+				plugin.config[plugin.namespace] = plugin.config[plugin.original_namespace];
+				delete plugin.config[plugin.original_namespace];
+			}
 			self.registerConfig(plugin.config);
 		}
 	});
@@ -505,9 +510,31 @@ appframe.prototype.initLimitListeners = function(){
 appframe.prototype.loadPlugins = function(){
 	var self = this;
 	_.each(self.config.plugins, function(plugin){
-		var pluginFile = require(plugin);
-		self.info('Loading plugin: %s', pluginFile.name);
-		self.plugins[pluginFile.namespace] = pluginFile;
+	self.config.plugins = _.map(self.config.plugins, function(plugin){
+		if(typeof(plugin) === 'string'){
+			plugin = {
+				plugin: plugin,
+				name: null,
+				namespace: null
+			};
+		}
+		var pluginFile = require(plugin.plugin);
+		// remove node modules cache to allow reuse of plugins under new namespaces
+		delete require.cache[require.resolve(plugin.plugin)];
+
+		if(plugin.namespace){
+			pluginFile.original_namespace = pluginFile.namespace;
+			plugin.original_namespace = pluginFile.namespace;
+			pluginFile.namespace = plugin.namespace;
+			pluginFile.name = plugin.name;
+			self.info('Sideloading [%s] as plugin: [%s]', plugin.namespace, plugin.name);
+		}else{
+			plugin.namespace = pluginFile.namespace;
+			plugin.name = pluginFile.name;
+			self.info('Loading plugin: [%s]', plugin.name);
+		}
+		self.plugins[plugin.namespace] = pluginFile;
+		return plugin;
 	});
 	self.emit('app.setup.loadPlugins');
 	return this;
