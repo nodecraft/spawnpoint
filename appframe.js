@@ -509,7 +509,6 @@ appframe.prototype.initLimitListeners = function(){
 */
 appframe.prototype.loadPlugins = function(){
 	var self = this;
-	_.each(self.config.plugins, function(plugin){
 	self.config.plugins = _.map(self.config.plugins, function(plugin){
 		if(typeof(plugin) === 'string'){
 			plugin = {
@@ -691,16 +690,17 @@ appframe.prototype.setup = function(callback){
 			return callback();
 		});
 	});
-
-	async.series(jobs, function(err){
-		if(err){
-			self.error("Failed to start up").debug(err);
-			self.emit('app.exit');
-			return callback(err);
-		}
-		self.log('%s is ready.', self.config.name);
-		self.emit('app.ready');
-		return callback();
+	process.nextTick(function(){
+		async.series(jobs, function(err){
+			if(err){
+				self.error("Failed to start up").debug(err);
+				self.emit('app.exit');
+				return callback(err);
+			}
+			self.log('%s is ready.', self.config.name);
+			self.emit('app.ready');
+			return callback();
+		});
 	});
 	self.emit('app.setup.done');
 	return this;
