@@ -44,7 +44,6 @@
 	"EISCONN": "Socket is already connected.",
 	"EISDIR": "Illegal operation on a directory.",
 	"EISNAM": "Illegal operation on a named file type.",
-	"EKEYEXPIRED": "Key has expired.",
 	"EKEYREJECTED": "Key was rejected by service.",
 	"EKEYREVOKED": "Key has been revoked.",
 	"EKEYEXPIRED": "Key has expired.",

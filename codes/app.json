@@ -1,0 +1,5 @@
+{
+  	"app.register_plugin_on_runtime": "App plugin registration has already occurred.",
+	"app.config.sample_not_array": "The requested config to be sampled must be an array.",
+	"app.config.locked_timeout": "A timeout occurred when fetching the locked config."
+}

@@ -152,6 +152,81 @@ appframe.prototype.initConfig = function(file){
 	self.config.has = function(key){
 		return _.has(self.config, key);
 	};
+	self.config.getRandom = function(key){
+		let items = self.config.get(key);
+		if(!items || !items.length){
+			throw new self._errorCode('app.config.sample_not_array');
+		}
+		return _.sample(items);
+	};
+
+	let rrKeys = {};
+	self.config.getRoundRobbin = function(key){
+		let items = self.config.get(key);
+		if(!items || !items.length){
+			throw new self._errorCode('app.config.sample_not_array');
+		}
+		let keys = _.keys(items);
+		// ensure our pool exists
+		// check if we've filled our RR pool, empty
+		if(!rrKeys[key] || _.size(keys) === _.size(rrKeys[key])){
+			rrKeys[key] = [];
+		}
+		let useKey = _.sample(_.xor(keys, rrKeys[key]));
+		rrKeys[key].push(useKey);
+		return items[useKey];
+	};
+
+	let lockedKeys = {};
+	self.config.getAndLock = function(key, timeout, callback){
+		if(timeout && !callback){
+			callback = timeout;
+			timeout = undefined;
+		}
+		callback = callback || function(){};
+		let hasCB = false;
+
+		const items = self.config.get(key);
+		if(!items || !items.length){
+			return callback(self.failCode('config.sample_not_array'), null, function(){});
+		}
+
+		// set timeout
+		if(timeout !== undefined){
+			setTimeout(function(){
+				hasCB = true;
+				return callback(self.failCode('config.locked_timeout'), null, function(){});
+			}, timeout.timeout);
+		}
+
+		// ensure queue exists
+		if(!lockedKeys[key]){
+			const handleQueue = function(queueItem, cb){
+				// ensure timeouts don't lock up the queue
+				if(queueItem.hasCB){
+					return cb();
+				}
+				const keys = _.keys(items);
+				let useKey = _.sample(_.xor(keys, lockedKeys[key].locked));
+				lockedKeys[key].locked.push(useKey);
+				return queueItem.callback(null, items[useKey], function(){
+					let index = lockedKeys[key].locked.indexOf(useKey);
+					lockedKeys[key].locked.splice(index, 1);
+					return cb();
+				});
+			};
+			lockedKeys[key] = {
+				locked: [],
+				queue: async.queue(handleQueue, items.length)
+			};
+		}
+		// add to queue
+		return lockedKeys[key].queue.push({
+			callback: callback,
+			hasCB: hasCB
+		});
+	};
+
 	self.emit('app.setup.initConfig');
 	return this;
 };
