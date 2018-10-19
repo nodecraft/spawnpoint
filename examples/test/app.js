@@ -34,11 +34,11 @@ app.on('app.ready', function(){
 	let track = 0;
 	while(i < 20){
 		i++;
-		app.config.getAndLock('example.list', {timeout: null}, function(err, result, clear){
+		app.config.getAndLock('example.list', 30000, function(err, result, clear){
 			if(err){ return app.error('Failed').debug(err); }
 			console.log(result);
 			track++;
-			if(track > 0 && track%5 === 0){
+			if(track > 0 && track % 5 === 0){
 				console.log('-----', track);
 			}
 			setTimeout(clear, _.random(2000, 6000));

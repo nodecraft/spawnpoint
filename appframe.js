@@ -188,15 +188,15 @@ appframe.prototype.initConfig = function(file){
 
 		const items = self.config.get(key);
 		if(!items || !items.length){
-			return callback(self.failCode('config.sample_not_array'), null, function(){});
+			return callback(self.failCode('app.config.sample_not_array'), null, function(){});
 		}
 
 		// set timeout
 		if(timeout !== undefined){
 			setTimeout(function(){
 				hasCB = true;
-				return callback(self.failCode('config.locked_timeout'), null, function(){});
-			}, timeout.timeout);
+				return callback(self.failCode('app.config.locked_timeout'), null, function(){});
+			}, timeout);
 		}
 
 		// ensure queue exists
