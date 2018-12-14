@@ -311,11 +311,11 @@ appframe.prototype.loadConfig = function(cwd, ignoreExtra){
 
 	if(!ignoreExtra){
 		// handle process flags
-		var args = minimist(process.argv.slice(2));
-		_.each(args, function(value, key){
+		self.args = minimist(process.argv.slice(2));
+		_.each(self.args, function(value, key){
 			return self.registerConfig(key, value, 'args');
 		});
-		self.argv = _.clone(args._) || [];
+		self.argv = _.clone(self.args._) || [];
 
 		// handle environment variables
 		_.each(process.env, function(value, key){
