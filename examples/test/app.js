@@ -1,12 +1,16 @@
 'use strict';
 const _ = require('lodash');
-const appFrame = require('../../appframe.js');
+const appFrame = require('../../spawnpoint.js');
 let app = new appFrame();
 
 app.setup();
 
 
 app.on('app.ready', function(){
+
+
+	console.log('errorCode', app._errorCode instanceof Error);
+
 	/* Test Random Sample
 	let i = 0;
 	while(i < 120){

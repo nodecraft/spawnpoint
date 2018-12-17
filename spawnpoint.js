@@ -33,16 +33,16 @@ const helpers = {
 		}).join('.');
 	},
 	log(opts, type){
-		var self = this;
 		var currentTime = moment();
-		var day = currentTime.format(self.config.log.date);
-		if(!self.logs.date || self.logs.date !== day){
-			self.logs.date = day;
+		var day = currentTime.format(opts.config.date);
+		if(!opts.logs.date || opts.logs.date !== day){
+			opts.logs.date = day;
+			// announce new timestamp day
 			console.log(helpers.tag(day, chalk.green));
 		}
 		type = type || 'log';
-		opts.date = opts.date || helpers.tag(currentTime.format(self.config.log.time), chalk.grey),
-		console[type](format(self.config.log.format, opts));
+		opts.date = opts.date || helpers.tag(currentTime.format(opts.config.time), chalk.grey),
+		console[type](format(opts.config.format, opts));
 	}
 };
 
@@ -119,6 +119,11 @@ class spawnpoint extends EventEmitter{
 
 		// which plugins are loaded
 		this.plugins = {};
+
+
+		// make errorCode and failCode available
+		this._errorCode = errorCode;
+		this._failCode = failCode;
 
 		// log formatting
 		this.logs = {
@@ -383,6 +388,8 @@ class spawnpoint extends EventEmitter{
 	 */
 	info(){
 		helpers.log({
+			logs: this.logs,
+			config: this.config.log,
 			type: helpers.tag('INFO', chalk.green),
 			line: chalk.white(util.format.apply(this, arguments))
 		});
@@ -396,6 +403,8 @@ class spawnpoint extends EventEmitter{
 	 */
 	log(){
 		helpers.log({
+			logs: this.logs,
+			config: this.config.log,
 			type: helpers.tag('LOG', chalk.cyan),
 			line: chalk.white(util.format.apply(this, arguments))
 		});
@@ -409,6 +418,8 @@ class spawnpoint extends EventEmitter{
 	 */
 	warn(){
 		helpers.log({
+			logs: this.logs,
+			config: this.config.log,
 			type: helpers.tag('WARN', chalk.yellow),
 			line: chalk.yellow(util.format.apply(this, arguments))
 		});
@@ -422,6 +433,8 @@ class spawnpoint extends EventEmitter{
 	 */
 	error(){
 		helpers.log({
+			logs: this.logs,
+			config: this.config.log,
 			type: helpers.tag('ERROR', chalk.red.bold),
 			line: chalk.red(util.format.apply(this, arguments))
 		}, 'error');
