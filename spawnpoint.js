@@ -57,7 +57,7 @@ const helpers = {
 class errorCode extends Error{
 	constructor(codeObject){
 		super(codeObject);
-		this.name = 'failCode';
+		this.name = 'errorCode';
 		this.message = codeObject.message;
 		this.code = codeObject.code;
 		this.data = _.omit(codeObject, ['code', 'message']);
