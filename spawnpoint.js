@@ -7,7 +7,7 @@ const fs = require('fs'),
 	util = require('util'),
 	path = require('path'),
 	assert = require('assert'),
-	events = require('events');
+	EventEmitter = require('events');
 
 // Include external libraries
 const _ = require('lodash'),
@@ -43,24 +43,8 @@ const helpers = {
 		type = type || 'log';
 		opts.date = opts.date || helpers.tag(currentTime.format(self.config.log.time), chalk.grey),
 		console[type](format(self.config.log.format, opts));
-	},
-	errorCode(codeObject){
-		Error.captureStackTrace(this, this.constructor);
-		this.name = 'errorCode';
-		this.message = codeObject.message;
-		this.code = codeObject.code;
-		this.data = _.omit(codeObject, ['code', 'message']);
-	},
-	failCode(codeObject){
-		Error.captureStackTrace(this, this.constructor);
-		this.name = 'failCode';
-		this.message = codeObject.message;
-		this.code = codeObject.code;
-		this.data = _.omit(codeObject, ['code', 'message']);
 	}
 };
-util.inherits(helpers.errorCode, Error);
-util.inherits(helpers.failCode, Error);
 
 /**
  * Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application
@@ -69,37 +53,79 @@ util.inherits(helpers.failCode, Error);
  * Spawnpoint can be configured to manage the entire application life-cycle or standalone as a utility library.
  * @class
  */
-const spawnpoint = class {
 
+class errorCode extends Error{
+	constructor(codeObject){
+		super(codeObject);
+		this.name = 'failCode';
+		this.message = codeObject.message;
+		this.code = codeObject.code;
+		this.data = _.omit(codeObject, ['code', 'message']);
+	}
+}
+
+class failCode extends Error{
+	constructor(codeObject){
+		super(codeObject);
+		this.name = 'failCode';
+		this.message = codeObject.message;
+		this.code = codeObject.code;
+		this.data = _.omit(codeObject, ['code', 'message']);
+	}
+}
+
+class spawnpoint extends EventEmitter{
 	/**
 	 * Creates new instance of spawnpoint
 	 * @param  {string} [configFile] Sets the JSON file spawnpoint uses to setup the framework.
 	 * @return {this}
 	 */
 	constructor(configFile = '/config/app.json'){
+		// init EventEmitter
+		super();
+
+		// set the spawnpoint config file
+		this.configFile = configFile;
+
 		// Used to track if the application expects itself to continue running or not
-		this.cwd = process.cwd();
 		this.status = {
 			setup: false,
 			running: false,
 			stopping: false,
 			stopAttempts: 0
 		};
+		this.cwd = process.cwd();
+
+		// detect if we are in a container
 		this.containerized = containerized();
-		this.configFile = configFile;
+
+		// list of ENV configs that are blacklisted
 		this.configBlacklist = require('./config-blacklist.json');
+
+		// plugin registery
 		this.register = [];
+
+		// config object to store all application config
 		this.config = {};
+
+		// codes object to store all Spawnpoint codes
 		this.codes = {};
+
+		// errorMaps help wrap custom Error types to Spawnpoint codes.
 		this.errorMaps = {};
+
+		// error tracking, debounce detection
 		this.limitMaps = {};
+
+		// which plugins are loaded
 		this.plugins = {};
+
+		// log formatting
 		this.logs = {
 			prefix: null,
 			date: null
 		};
 
-		events.EventEmitter.call(this);
 		return this;
 	}
 
@@ -125,10 +151,10 @@ const spawnpoint = class {
 		self.initConfig();
 		self.initCodes();
 		self.initRegistry();
-		self.initLimitListeners();
 		self.loadPlugins();
 		self.loadConfig();
 		self.loadCodes();
+		self.initLimitListeners();
 		self.loadErrorMap();
 		var jobs = [];
 
@@ -323,7 +349,7 @@ const spawnpoint = class {
 	errorCode(code, data){
 		var getCode = this.code(code, data);
 		this.emit('errorCode', getCode);
-		return new helpers.errorCode(getCode);
+		return new errorCode(getCode);
 	}
 
 	/**
@@ -335,7 +361,7 @@ const spawnpoint = class {
 	failCode(code, data){
 		var getCode = this.code(code, data);
 		this.emit('failCode', getCode);
-		return new helpers.failCode(getCode);
+		return new failCode(getCode);
 	}
 
 	/**
@@ -441,6 +467,7 @@ const spawnpoint = class {
 			configOverride: null,
 			stopAttempts: 3,
 			stopTimeout: 15000,
+			trackErrors: false,
 			log: {
 				format: '{date} {type}: {line}',
 				time: "HH:mm:ss",
@@ -808,6 +835,7 @@ const spawnpoint = class {
 
 	initLimitListeners(){
 		var self = this;
+		if(!this.config.trackErrors){ return this; }
 		var issues = {
 			errorCode: {},
 			failCode: {}
@@ -944,7 +972,6 @@ const spawnpoint = class {
 		}
 		this.limitMaps[opts.error][code].push(opts);
 	}
-};
-util.inherits(spawnpoint, events.EventEmitter);
+}
 
 module.exports = spawnpoint;
