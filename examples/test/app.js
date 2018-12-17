@@ -9,7 +9,7 @@ app.setup();
 app.on('app.ready', function(){
 
 
-	console.log('errorCode', app._errorCode instanceof Error);
+	console.log('errorCode', app.errorCode('app.register_plugin_on_runtime') instanceof app._errorCode);
 
 	/* Test Random Sample
 	let i = 0;
