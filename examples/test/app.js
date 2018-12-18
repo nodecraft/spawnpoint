@@ -1,16 +1,12 @@
 'use strict';
 const _ = require('lodash');
-const appFrame = require('../../spawnpoint.js');
+const appFrame = require('../../');
 let app = new appFrame();
 
 app.setup();
 
 
 app.on('app.ready', function(){
-
-
-	console.log('errorCode', app.errorCode('app.register_plugin_on_runtime') instanceof app._errorCode);
-
 	/* Test Random Sample
 	let i = 0;
 	while(i < 120){
@@ -26,12 +22,13 @@ app.on('app.ready', function(){
 	let i = 0;
 	while(i < 120){
 		i++;
-		console.log(app.config.getRoundRobbin('example.list'));
+		console.log(app.config.getRoundRobin('example.list'));
 		if(i > 0 && i%5 === 0){
 			console.log('-----', i);
 		}
 	}
 	*/
+	
 
 	/* Test locking */
 	let i = 0;

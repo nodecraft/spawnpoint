@@ -1,5 +1,8 @@
 {
 	"app.register_plugin_on_runtime": "App plugin registration has already occurred.",
-	"app.config.sample_not_array": "The requested config to be sampled must be an array.",
-	"app.config.locked_timeout": "A timeout occurred when fetching the locked config."
+	"app.config.sample_not_collection": "The requested config to be sampled must be an array.",
+	"getAndLock.not_array": "`getAndLock.items` must be an array with more than 1 item in it.",
+	"getAndLock.locked_timeout": "Timeout occured when getting the requested getAndLock item",
+	"roundRobin.not_array": "`roundRobin.items` must be an array with more than 1 item in it.",
+	"roundRobin.error": "Failed to get roundRobin results. No available results could be found."
 }
