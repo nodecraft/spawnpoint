@@ -1,0 +1,10 @@
+{
+	"name": "Autoloading sync",
+	"log": false,
+	"autoload": [
+		{
+			"name": "Autoload sync",
+			"folder": "autoload-sync"
+		}
+	]
+}
