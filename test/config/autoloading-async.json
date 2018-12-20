@@ -1,0 +1,13 @@
+{
+	"name": "Autoloading async",
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
+	"autoload": [
+		{
+			"name": "Autoload async",
+			"folder": "autoload-async",
+			"callback": true
+		}
+	]
+}

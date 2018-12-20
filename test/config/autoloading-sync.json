@@ -1,0 +1,12 @@
+{
+	"name": "Autoloading sync",
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
+	"autoload": [
+		{
+			"name": "Autoload sync",
+			"folder": "autoload-sync"
+		}
+	]
+}

@@ -1,6 +1,6 @@
 'use strict';
 const _ = require('lodash');
-const appFrame = require('../../appframe.js');
+const appFrame = require('../../');
 let app = new appFrame();
 
 app.setup();
@@ -22,12 +22,13 @@ app.on('app.ready', function(){
 	let i = 0;
 	while(i < 120){
 		i++;
-		console.log(app.config.getRoundRobbin('example.list'));
+		console.log(app.config.getRoundRobin('example.list'));
 		if(i > 0 && i%5 === 0){
 			console.log('-----', i);
 		}
 	}
 	*/
+	
 
 	/* Test locking */
 	let i = 0;

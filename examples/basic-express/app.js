@@ -1,5 +1,5 @@
 'use strict';
-var appFrame = require('../../appframe.js');
+var appFrame = require('../../');
 var express = require('express');
 
 var app = new appFrame();
