@@ -1,4 +1,5 @@
 ![Async Logo](https://raw.githubusercontent.com/nodecraft/spawnpoint/master/logo/logo-banner.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint?ref=badge_shield)
 
 # Spawnpoint
 Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.
@@ -124,3 +125,6 @@ app.server.post('/add', (req, res) => {
 
 ### Documentation
 Get the [full API Docs here](docs.md).
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint?ref=badge_large)
