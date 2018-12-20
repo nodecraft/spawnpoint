@@ -7,6 +7,9 @@
 		"test": "npm run lint && npm run mocha",
 		"lint": "eslint .",
 		"mocha": "mocha",
+		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
+		"coverage": "nyc report --reporter=text-lcov | coveralls",
+		"nyc": "nyc mocha",
 		"precommit": "lint"
 	},
 	"repository": {
@@ -45,7 +48,6 @@
 	"dependencies": {
 		"async": "^2.6.1",
 		"chalk": "^2.4.1",
-		"containerized": "^1.0.2",
 		"dayjs": "^1.7.8",
 		"json-lint": "^0.1.0",
 		"lodash": "^4.17.11",
@@ -54,10 +56,13 @@
 		"strip-json-comments": "^2.0.1"
 	},
 	"devDependencies": {
+		"coveralls": "^3.0.2",
 		"eslint": "^5.10.0",
 		"eslint-config-nodecraft": "^1.1.5",
 		"eslint-plugin-json": "^1.3.2",
 		"eslint-plugin-node": "^7.0.1",
-		"mocha": "^5.2.0"
+		"jsdoc-to-markdown": "^4.0.1",
+		"mocha": "^5.2.0",
+		"nyc": "^13.1.0"
 	}
 }

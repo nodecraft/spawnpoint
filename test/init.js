@@ -2,7 +2,7 @@
 const assert = require('assert');
 const spawnpoint = require('..');
 
-
+process.chdir(__dirname);
 describe('spawnpoint initialization', () => {
 
 	it('Successfully initializes', () => {
@@ -41,7 +41,8 @@ describe('spawnpoint setup', () => {
 		const app = new spawnpoint('config/autoloading-sync.json');
 		app.setup((err) => {
 			if(err){ return done(err); }
-			done(assert(app.autoload));
+			assert(app.customHoistedVarFromAutoload);
+			done();
 		});
 	});
 
@@ -49,7 +50,8 @@ describe('spawnpoint setup', () => {
 		const app = new spawnpoint('config/autoloading-async.json');
 		app.setup((err) => {
 			if(err){ return done(err); }
-			done(assert(app.autoload));
+			assert(app.customHoistedVarFromAutoload);
+			done();
 		});
 	});
 });

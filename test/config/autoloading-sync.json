@@ -1,6 +1,8 @@
 {
 	"name": "Autoloading sync",
-	"log": false,
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
 	"autoload": [
 		{
 			"name": "Autoload sync",

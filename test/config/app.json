@@ -1,4 +1,6 @@
 {
 	"name": "Simple, no extras",
-	"log": false
+	"log": null,
+	"signals": null,
+	"catchExceptions": false
 }

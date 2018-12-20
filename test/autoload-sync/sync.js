@@ -1,4 +1,4 @@
 'use strict';
 module.exports = function(app){
-	app.autoload = true;
+	app.customHoistedVarFromAutoload = true;
 };

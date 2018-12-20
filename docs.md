@@ -29,11 +29,11 @@ Agnostic JS framework that empowers devs to focus on quickly building apps, rath
     * [.recursiveList(dir, [exts])](#spawnpoint+recursiveList) ⇒ <code>Array</code>
     * [.random([length], [hashMethod])](#spawnpoint+random) ⇒ <code>String</code>
     * [.sample(items)](#spawnpoint+sample) ⇒ <code>\*</code>
-    * [.roundRobbin(items)](#spawnpoint+roundRobbin) ⇒ <code>roundRobin</code>
+    * [.roundRobin(items)](#spawnpoint+roundRobin) ⇒ <code>roundRobin</code>
     * [.getAndLock(items)](#spawnpoint+getAndLock) ⇒ <code>roundRobin</code>
     * [.isRoot()](#spawnpoint+isRoot) ⇒ <code>Boolean</code>
     * [.isSecure([uid], [gid])](#spawnpoint+isSecure) ⇒ <code>Boolean</code>
-    * [.require(path)](#spawnpoint+require)
+    * [.require(filePath)](#spawnpoint+require)
     * [.code(code, [data])](#spawnpoint+code) ⇒ <code>Object</code>
     * [.errorCode(code, [data])](#spawnpoint+errorCode) ⇒ <code>Object</code>
     * [.failCode(code, [data])](#spawnpoint+failCode) ⇒ <code>Object</code>
@@ -43,7 +43,7 @@ Agnostic JS framework that empowers devs to focus on quickly building apps, rath
     * [.log()](#spawnpoint+log) ⇒ <code>this</code>
     * [.warn()](#spawnpoint+warn) ⇒ <code>this</code>
     * [.error()](#spawnpoint+error) ⇒ <code>this</code>
-    * [.registerError(The, Instance)](#spawnpoint+registerError) ⇒ <code>this</code>
+    * [.registerError(code, error)](#spawnpoint+registerError) ⇒ <code>this</code>
     * [.registerErrors(errors)](#spawnpoint+registerErrors) ⇒ <code>this</code>
     * [.maskErrorToCode(error)](#spawnpoint+maskErrorToCode) ⇒ <code>errorCode</code> \| <code>false</code>
 
@@ -95,9 +95,9 @@ Utility: get random element from `collection`.This is a copy of the lodash _.sa
 | --- | --- | --- |
 | items | <code>Array</code> \| <code>Object</code> | The collection to sample. |
 
-<a name="spawnpoint+roundRobbin"></a>
+<a name="spawnpoint+roundRobin"></a>
 
-### spawnpoint.roundRobbin(items) ⇒ <code>roundRobin</code>
+### spawnpoint.roundRobin(items) ⇒ <code>roundRobin</code>
 Utility: Creates new `roundRobin` class with collection.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
@@ -141,14 +141,14 @@ Checks if the current application runtime is running as a specific `uid` and/or 
 
 <a name="spawnpoint+require"></a>
 
-### spawnpoint.require(path)
+### spawnpoint.require(filePath)
 Helper method that requires a file and hoists the current spawnpoint application reference.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| path | <code>String</code> | File path to require. |
+| filePath | <code>String</code> | File path to require. |
 
 <a name="spawnpoint+code"></a>
 
@@ -241,15 +241,15 @@ Console.error` wrapper that adds an ERROR tag and timestamp to the log. This pri
 **Params**: <code>String\|Object\|Array\|Number</code> [args..] Arguments to be passed to logging.  
 <a name="spawnpoint+registerError"></a>
 
-### spawnpoint.registerError(The, Instance) ⇒ <code>this</code>
+### spawnpoint.registerError(code, error) ⇒ <code>this</code>
 Registers multiple custom Errors to a specific errorCode. This helps wrap errors into a singular errorCode system.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| The | <code>String</code> | errorCode human readable Spawnpoint code. |
-| Instance | <code>Error</code> | of the error to map to.. |
+| code | <code>String</code> | The errorCode human readable Spawnpoint code. |
+| error | <code>Error</code> | Instance of the error to map to.. |
 
 <a name="spawnpoint+registerErrors"></a>
 
