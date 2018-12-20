@@ -1,4 +1,7 @@
-![Async Logo](https://raw.githubusercontent.com/nodecraft/spawnpoint/master/logo/logo-banner.png)
+![Spawnpoint Logo](https://raw.githubusercontent.com/nodecraft/spawnpoint/master/logo/logo-banner.png)
+[![npm version](https://badge.fury.io/js/spawnpoint.svg)](https://badge.fury.io/js/spawnpoint)
+[![dependencies Status](https://david-dm.org/nodecraft/spawnpoint/status.svg)](https://david-dm.org/nodecraft/spawnpoint)
+[![Build Status](https://travis-ci.org/nodecraft/spawnpoint.svg?branch=master)](https://travis-ci.org/nodecraft/spawnpoint)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint?ref=badge_shield)
 
 # Spawnpoint
