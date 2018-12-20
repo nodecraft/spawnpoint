@@ -62,7 +62,6 @@ Spawnpoint plugins create opinionated & re-usable components that reduce the cod
  - [Redis](https://github.com/nodecraft/spawnpoint-redis) - [Redis](https://redis.io/): Key/value database/store
  - [RethinkDB](https://github.com/nodecraft/spawnpoint-rethinkdb) - [RethinkDB](https://rethinkdb.com/): - NoSQL document database
  - [NATS](https://github.com/nodecraft/spawnpoint-nats) - [Nats.io](https://nats.io/): Pub/Sub Message Queue
- - [Ricochet](https://github.com/nodecraft/spawnpoint-ricochet) - [Ricochet](https://github.com/nodecraft/ricochet.js): Pub/Sub Message Queue
 
 
 ### Another JS Framework? Why?
