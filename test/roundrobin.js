@@ -1,6 +1,7 @@
 'use strict';
 const assert = require('assert');
-const spawnpoint = require('..');
+const _ = require('lodash'),
+	spawnpoint = require('..');
 
 describe('spawnpoint.roundRobin', () => {
 	const app = new spawnpoint();
@@ -64,7 +65,7 @@ describe('spawnpoint.roundRobin', () => {
 
 	it('trigger error when list is tampered', () => {
 		const rr = app.roundRobin(test);
-		rr.rrKeys = test;
+		rr.rrKeys = _.keys(test);
 		assert.throws(() => rr.next(), app._errorCode);
 	});
 });
