@@ -2,6 +2,7 @@
 [![npm version](https://badge.fury.io/js/spawnpoint.svg)](https://badge.fury.io/js/spawnpoint)
 [![dependencies Status](https://david-dm.org/nodecraft/spawnpoint/status.svg)](https://david-dm.org/nodecraft/spawnpoint)
 [![Build Status](https://travis-ci.org/nodecraft/spawnpoint.svg?branch=master)](https://travis-ci.org/nodecraft/spawnpoint)
+[![Coverage Status](https://coveralls.io/repos/github/nodecraft/spawnpoint/badge.svg)](https://coveralls.io/github/nodecraft/spawnpoint)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fnodecraft%2Fspawnpoint?ref=badge_shield)
 
 # Spawnpoint
