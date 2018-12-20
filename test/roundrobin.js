@@ -64,7 +64,6 @@ describe('spawnpoint.roundRobin', () => {
 
 	it('trigger error when list is tampered', () => {
 		const rr = app.roundRobin(test);
-		rr.next();
 		rr.rrKeys = test;
 		assert.throws(() => rr.next(), app._errorCode);
 	});
