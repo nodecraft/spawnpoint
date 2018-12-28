@@ -37,6 +37,15 @@ describe('spawnpoint setup', () => {
 		app.setup(done);
 	});
 
+	it('Throws when setup is run more than once', (done) => {
+		const app = new spawnpoint();
+		app.setup();
+		app.setup((err) => {
+			assert(err && err.code === 'spawnpoint.already_setup');
+			done();
+		});
+	});
+
 	it('sync autoloading', (done) => {
 		const app = new spawnpoint('config/autoloading-sync.json');
 		app.setup((err) => {

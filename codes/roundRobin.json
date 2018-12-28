@@ -1,0 +1,4 @@
+{
+	"roundRobin.not_array": "`roundRobin.items` must be an array with more than 1 item in it.",
+	"roundRobin.error": "Failed to get roundRobin results. No available results could be found."
+}

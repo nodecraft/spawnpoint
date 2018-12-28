@@ -5,7 +5,6 @@ const _ = require('lodash'),
 
 describe('spawnpoint.roundRobin', () => {
 	const app = new spawnpoint();
-	app.setup();
 	const test = ['one', 'two', 'three', 'four', 'five'];
 
 	it('fails with bad/invalid options', () => {
@@ -38,6 +37,27 @@ describe('spawnpoint.roundRobin', () => {
 
 	it('item: never calls the same value', () => {
 		const rr = app.roundRobin(test);
+
+		let used = [];
+
+		let i = 0;
+		while(i < (test.length * 15)){
+			i++;
+			const results = rr.item;
+			assert(!used.includes(results), 'roundRobin failed, item was reused unevenly');
+			used.push(results);
+
+			// reset when full
+			if(used.length === test.length){
+				used = [];
+			}
+		}
+	});
+
+	it('Still works when Spawnpoint has been initialized', () => {
+		const newApp = new spawnpoint();
+		newApp.setup();
+		const rr = newApp.roundRobin(test);
 
 		let used = [];
 

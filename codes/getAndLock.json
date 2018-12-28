@@ -1,0 +1,4 @@
+{
+	"getAndLock.not_array": "`getAndLock.items` must be an array with more than 1 item in it.",
+	"getAndLock.locked_timeout": "Timeout occured when getting the requested getAndLock item"
+}

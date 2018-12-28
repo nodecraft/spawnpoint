@@ -1,0 +1,12 @@
+12:freezer:/
+11:devices:/user.slice
+10:rdma:/
+9:blkio:/user.slice
+8:pids:/user.slice/user-1001.slice
+7:memory:/user.slice
+6:hugetlb:/
+5:net_cls,net_prio:/
+4:cpu,cpuacct:/user.slice
+3:cpuset:/
+2:perf_event:/
+1:name=systemd:/user.slice/user-1001.slice/session-c2.scope

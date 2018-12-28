@@ -9,7 +9,7 @@ describe('spawnpoint.code', () => {
 
 	const tests = {
 		system: {
-			code: 'app.register_plugin_on_runtime',
+			code: 'spawnpoint.register_plugin_on_runtime',
 			message: 'App plugin registration has already occurred.'
 		},
 		custom: {
@@ -19,7 +19,7 @@ describe('spawnpoint.code', () => {
 	};
 
 	it('should print a system code', () => {
-		assert.deepStrictEqual(tests.system, app.code('app.register_plugin_on_runtime'));
+		assert.deepStrictEqual(tests.system, app.code('spawnpoint.register_plugin_on_runtime'));
 	});
 	it('should print a app code', () => {
 		assert.deepStrictEqual(tests.custom, app.code('test.code'));

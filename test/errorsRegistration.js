@@ -17,19 +17,30 @@ class customError extends Error{
 	}
 }
 
-const app = new spawnpoint();
-app.setup();
 describe('spawnpoint.registerError', () => {
+	let app;
+	beforeEach((done) => {
+		app = new spawnpoint();
+		app.setup(done);
+	});
+
 	it('can create a customError for testing', () => {
 		assert(new customError('test') instanceof customError, 'customError failed to create test');
 	});
+
 	it('can register an error', () => {
 		app.registerError('test.code', customError);
 		assert(app.errorMaps['test.code']);
 	});
 });
 
-describe('spawnpoint.registerError', () => {
+describe('spawnpoint.maskErrorToCode', () => {
+	let app;
+	beforeEach((done) => {
+		app = new spawnpoint();
+		app.registerError('test.code', customError);
+		app.setup(done);
+	});
 
 	it('can register an error', () => {
 		assert(app.maskErrorToCode(new customError('test')));
@@ -45,5 +56,37 @@ describe('spawnpoint.registerError', () => {
 
 	it('is failCode', () => {
 		assert(app.maskErrorToCode(new customError('test'), 'failCode') instanceof app._failCode);
+	});
+});
+
+describe('spawnpoint.loadErrorMap', () => {
+	let app;
+	beforeEach(() => {
+		app = new spawnpoint();
+	});
+
+	it('Runs correctly, without plugins', (done) => {
+		app.setup(() => {
+			app.on('app.setup.loadErrorMap', done);
+			app.loadErrorMap();
+		});
+	});
+
+	it('Runs correctly, with plugins', (done) => {
+		app.setup(() => {
+			app.plugins = [
+				{
+					name: "fake plugin`",
+					errors: {
+						'test.code': customError
+					}
+				}
+			];
+			app.on('app.setup.loadErrorMap', () => {
+				assert(app.errorMaps['test.code']);
+				done();
+			});
+			app.loadErrorMap();
+		});
 	});
 });
