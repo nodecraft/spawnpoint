@@ -2,6 +2,8 @@
 /store/
 /examples/
 /logo/
-/.editorconfig.json
+/.nyc_output/
+/.editorconfig
+/.eslintignore
 /.eslintrc.json
 /.travis.yml
