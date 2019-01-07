@@ -15,7 +15,9 @@ This quick demo shows that you can create a basic API in just a couple files tha
 
 ```javascript
 // ~/app.js
-const app = require('spawnpoint');
+const spawnpoint = require('spawnpoint');
+
+const app = new spawnpoint();
 app.setup();
 ```
 
