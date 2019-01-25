@@ -19,4 +19,9 @@ describe('spawnpoint.random', () => {
 		assert(app.random(50, 'md5'));
 		assert(app.random(50, 'sha1'));
 	});
+
+	it('defaults to 16 if length is less then 1', () => {
+		assert(app.random(0).length === 16);
+		assert(app.random(-12).length === 16);
+	});
 });
