@@ -1,0 +1,9 @@
+{
+	"name": "Simple, with plugins.",
+	"log": null,
+	"signals": null,
+    "catchExceptions": false,
+    "plugins": [
+        "spawnpoint-redis"
+    ]
+}

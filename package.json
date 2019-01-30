@@ -63,6 +63,9 @@
 		"eslint-plugin-node": "^8.0.1",
 		"jsdoc-to-markdown": "^4.0.1",
 		"mocha": "^5.2.0",
-		"nyc": "^13.1.0"
+		"nyc": "^13.1.0",
+		"spawnpoint-redis": "^1.0.0",
+		"unexpected": "^11.0.1",
+		"unexpected-eventemitter": "^1.1.0"
 	}
 }
