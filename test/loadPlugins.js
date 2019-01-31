@@ -4,7 +4,7 @@ const spawnpoint = require('..');
 
 describe('spawnpoint.loadPlugins', () => {
 	let app;
-	const config = './test/config/loadPlugins.json';
+	const config = './config/loadPlugins.json';
 	beforeEach(() => {
 		app = new spawnpoint(config);
 	});
