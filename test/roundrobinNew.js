@@ -19,9 +19,10 @@ describe('roundrobin', () => {
 	const testStringsUnsorted = _.map(testNumbersUnsorted, numbers);
 	const testSet = [testNumbersSorted, testNumbersUnsorted, testStringsSorted, testStringsUnsorted];
 
-	it('fails with bad/invalid options', () => {
+	it('fails with bad/invalid options', (done) => {
 		const robin = require('../lib/roundRobin.js')(app);
 		badOptions.forEach((item) => expect(() => robin(item), 'to error'));
+		done();
 	});
 
 	it('Constructs the same way directly versus through Spawnpoint.', () => {

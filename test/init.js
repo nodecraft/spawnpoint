@@ -196,7 +196,7 @@ describe('spawnpoint registry', () => {
 			runs += 2;
 			index %= 2;
 			index += 2;
-			if(runs > index){
+			/*if(runs > index){
 				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times and does not emit app.exit on ' + (runs - index) + ' subsequent calls', (done) => {
 					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
@@ -205,8 +205,8 @@ describe('spawnpoint registry', () => {
 					_.times(runs - index, () => expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit'));
 					done();
 				});
-			}
-			if(runs === index){
+			}*/
+			if(runs >= index){
 				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times', (done) => {
 					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
@@ -214,8 +214,7 @@ describe('spawnpoint registry', () => {
 					expect(() => app.emit('app.stop'), 'to emit from', app, 'app.exit');
 					done();
 				});
-			}
-			if(runs < index){
+			}else if(runs < index){
 				it('with ' + index + ' stopAttempts never stops with app.stop being called ' + runs + ' times', (done) => {
 					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
