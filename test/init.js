@@ -69,7 +69,7 @@ describe('spawnpoint setup', () => {
 
 describe('spawnpoint registry', () => {
 	let app;
-	beforeEach(() => {
+	beforeEach('initialization of app', () => {
 		app = new spawnpoint();
 		app.initRegistry();
 	});
@@ -223,6 +223,38 @@ describe('spawnpoint registry', () => {
 					done();
 				});
 			}
+		});
+	});
+
+	describe.skip('app.exit');
+
+	describe('initialization', () => {
+		beforeEach(() => {
+			app = new spawnpoint();
+			app.config.signals = {};
+		});
+		it('emits a signal once done', (done) => {
+			expect(() => app.initRegistry(), 'to emit from', app, 'app.setup.initRegistry');
+			done();
+		});
+
+		it('accepts configuration options for events that close the app', (done) => {
+			app.config.signals.close = ['SIGINT'];
+			expect(() => app.initRegistry(), 'to emit from', process, 'newListener', 'SIGINT');
+			app.removeAllListeners('app.stop');
+			expect(() => process.emit('SIGINT'), 'to emit from', app, 'app.stop');
+			done();
+		});
+
+		it('accepts configuration options for events that toggle debug mode', (done) => {
+			app.config.signals.close = [];
+			app.config.signals.debug = ['SIGUSR1'];
+			app.config.debug = false;
+			expect(() => app.initRegistry(), 'to emit from', process, 'newListener', 'SIGUSR1');
+			expect(() => { return process.emit('SIGUSR1'); }, 'when called').then((result) => {
+				expect(result, 'to be true').and('to equal', app.config.debug);
+				done();
+			});
 		});
 	});
 });
