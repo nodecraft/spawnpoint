@@ -69,7 +69,7 @@ describe('spawnpoint setup', () => {
 
 describe('spawnpoint registry', () => {
 	let app;
-	beforeEach(() => {
+	beforeEach('initialization of app', () => {
 		app = new spawnpoint();
 		app.initRegistry();
 	});
@@ -196,17 +196,7 @@ describe('spawnpoint registry', () => {
 			runs += 2;
 			index %= 2;
 			index += 2;
-			if(runs > index){
-				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times and does not emit app.exit on ' + (runs - index) + ' subsequent calls', (done) => {
-					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
-					app.config.stopAttempts = index;
-					_.times(index, () => expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit'));
-					expect(() => app.emit('app.stop'), 'to emit from', app, 'app.exit');
-					_.times(runs - index, () => expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit'));
-					done();
-				});
-			}
-			if(runs === index){
+			if(runs >= index){
 				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times', (done) => {
 					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
@@ -223,6 +213,40 @@ describe('spawnpoint registry', () => {
 					done();
 				});
 			}
+		});
+	});
+
+	describe.skip('app.exit');
+
+	describe('initialization', () => {
+		beforeEach(() => {
+			app = new spawnpoint();
+			app.config.signals = {};
+		});
+		it('emits a signal once done', (done) => {
+			expect(() => app.initRegistry(), 'to emit from', app, 'app.setup.initRegistry');
+			done();
+		});
+
+		it('accepts configuration options for events that close the app', (done) => {
+			// Testing with SIGINT caused bad things.
+			app.config.signals.close = ['SIGUSR1'];
+			app.config.signals.debug = [];
+			expect(() => app.initRegistry(), 'to emit from', process, 'newListener', 'SIGUSR1');
+			app.removeAllListeners('app.stop');
+			expect(() => process.emit('SIGUSR1'), 'to emit from', app, 'app.stop');
+			done();
+		});
+
+		it('accepts configuration options for events that toggle debug mode', (done) => {
+			app.config.signals.close = [];
+			app.config.signals.debug = ['SIGUSR1'];
+			app.config.debug = false;
+			expect(() => app.initRegistry(), 'to emit from', process, 'newListener', 'SIGUSR1');
+			expect(() => { return process.emit('SIGUSR1'); }, 'when called').then((result) => {
+				expect(result, 'to be true').and('to equal', app.config.debug);
+				done();
+			});
 		});
 	});
 });
