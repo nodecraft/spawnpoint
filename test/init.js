@@ -1,6 +1,7 @@
 'use strict';
 const assert = require('assert');
 const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
+const { fork } = require('child_process');
 const spawnpoint = require('..');
 const _ = require('lodash');
 
@@ -38,6 +39,10 @@ describe('spawnpoint setup', () => {
 		const app = new spawnpoint('/config/app.json');
 		app.setup(done);
 	});
+	it('Basic startup with plugins', (done) => {
+		const app = new spawnpoint('config/loadPlugins');
+		app.setup(done);
+	});
 
 	it('Throws when setup is run more than once', (done) => {
 		const app = new spawnpoint();
@@ -62,6 +67,36 @@ describe('spawnpoint setup', () => {
 		app.setup((err) => {
 			if(err){ return done(err); }
 			assert(app.customHoistedVarFromAutoload);
+			done();
+		});
+	});
+
+	it('autoloading with folder only', (done) => {
+		const app = new spawnpoint('config/autoloading-noName.json');
+		app.setup((err) => {
+			if(err){ return done(err); }
+			expect(app.customHoistedVarFromAutoload, 'to be true');
+			done();
+		});
+	});
+
+	it('sync autoloading error handles correctly', (done) => {
+		const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
+		app.stderr.once('data', (data) => {
+			expect(data, 'when decoded as', 'utf-8', 'to contain', 'TypeError');
+			app.disconnect();
+			done();
+		});
+		app.send({"command": 'setup'});
+	});
+
+	it('async autoloading error handles correctly', (done) => {
+		const app = new spawnpoint('config/autoloading-error-async.json');
+		app.on('app.setup.initRegistry', () => {
+			app.removeAllListeners('app.exit');
+		});
+		app.setup((err) => {
+			expect(err, 'to be an', 'Error');
 			done();
 		});
 	});

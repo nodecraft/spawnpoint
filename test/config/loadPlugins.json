@@ -4,6 +4,11 @@
 	"signals": null,
     "catchExceptions": false,
     "plugins": [
-        "spawnpoint-redis"
+        {
+            "plugin": "../test/spawnpoint-test-cb"
+        },
+        {
+            "plugin": "../test/spawnpoint-test"
+        }
     ]
 }

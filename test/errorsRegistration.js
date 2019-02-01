@@ -17,6 +17,13 @@ class customError extends Error{
 	}
 }
 
+class anotherCustomError extends Error{
+	constructor(err){
+		super(err);
+		this.name = 'customErrorB';
+	}
+}
+
 describe('spawnpoint.registerError', () => {
 	let app;
 	beforeEach((done) => {
@@ -39,6 +46,7 @@ describe('spawnpoint.maskErrorToCode', () => {
 	beforeEach((done) => {
 		app = new spawnpoint();
 		app.registerError('test.code', customError);
+		app.registerError('test.code.b', anotherCustomError);
 		app.setup(done);
 	});
 
@@ -80,6 +88,9 @@ describe('spawnpoint.loadErrorMap', () => {
 					errors: {
 						'test.code': customError
 					}
+				},
+				{
+					name: "Another fake plugin"
 				}
 			];
 			app.on('app.setup.loadErrorMap', () => {

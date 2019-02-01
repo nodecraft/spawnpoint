@@ -14,10 +14,16 @@ describe('spawnpoint.loadPlugins', () => {
 			app.on('app.setup.loadPlugins', () => {
 				expect(app.config.plugins, 'to be an', 'array');
 				expect(app.config.plugins, 'to have an item satisfying', 'to satisfy', {
-					plugin: expect.it('to be', 'spawnpoint-redis'),
-					name: expect.it('to be', 'Redis'),
-					namespace: expect.it('to be', 'redis'),
-					original_namespace: expect.it('to be', 'redis')
+					plugin: expect.it('to contain', 'spawnpoint-test-cb'),
+					name: expect.it('to be', 'TestWCallback'),
+					namespace: expect.it('to be', 'test'),
+					original_namespace: expect.it('to be', 'test')
+				});
+				expect(app.config.plugins, 'to have an item satisfying', 'to satisfy', {
+					plugin: expect.it('to contain', 'spawnpoint-test'),
+					name: expect.it('to be', 'Test'),
+					namespace: expect.it('to be', 'testB'),
+					original_namespace: expect.it('to be', 'testB')
 				});
 				done();
 			});

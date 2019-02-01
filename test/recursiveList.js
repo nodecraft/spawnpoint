@@ -1,5 +1,6 @@
 'use strict';
 const assert = require('assert');
+const expect = require('unexpected');
 const _ = require('lodash'),
 	spawnpoint = require('..');
 
@@ -41,5 +42,32 @@ describe('spawnpoint.recursiveList', () => {
 		assert(!_.xor(tests.default, results.default).length, `default list failed to match expected [${tests.default.join(',')}]. Provided [${results.default.join(',')}]`);
 		assert(!_.xor(tests.js, results.js).length, `js list failed to match expected [${tests.js.join(',')}]. Provided [${results.js.join(',')}]`);
 		assert(!_.xor(tests.txt, results.txt).length, `txt list failed to match expected [${tests.txt.join(',')}]. Provided [${results.txt.join(',')}]`);
+	});
+
+	it('lists files a single directory away', () => {
+		const tests = {
+			json: [
+				"json/bad.json",
+				"json/badLint.json",
+				"json/commented.json",
+				"json/good.json"
+			]
+		};
+		const results = {
+			default: app.recursiveList('json'),
+			json: app.recursiveList('json', '.json')
+		};
+		expect(results.default, 'to equal', []);
+		expect(results.json, 'to equal', tests.json);
+	});
+
+	it('lists directories', () => {
+		const test = [
+			"./config",
+			"./json",
+			"./store"
+		];
+		const results = app.recursiveList('.', '/');
+		expect(results, 'to contain', ...test);
 	});
 });
