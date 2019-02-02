@@ -1,4 +1,5 @@
 {
     "name": "autoload-void",
+    "version": "001",
     "main": "autoload-error.js"
 }

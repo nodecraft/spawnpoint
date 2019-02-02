@@ -5,7 +5,7 @@ const { fork } = require('child_process');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
-	time: "HH:mm:ss",
+	time: "HH:mm",
 	date: "dddd, MMMM DD YYYY"
 };
 
