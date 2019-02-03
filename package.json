@@ -9,7 +9,7 @@
 		"mocha": "mocha",
 		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
 		"coverage": "nyc report --reporter=text-lcov | coveralls",
-		"nyc": "nyc mocha",
+		"nyc": "nyc mocha && nyc report --reporter=lcov",
 		"precommit": "lint"
 	},
 	"repository": {

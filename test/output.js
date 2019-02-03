@@ -1,7 +1,8 @@
 'use strict';
 const expect = require('unexpected'),
 	dayjs = require('dayjs');
-const { fork } = require('child_process');
+
+const processVoid = require('./autoload-void');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
@@ -16,18 +17,17 @@ const timeFormat = {
 
 describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
-		const app = fork('./autoload-void', [''], { 'silent': true });
-		app.stdout.once('data', (data) => {
+		const app = new processVoid(done, '../..', false);
+		void app.stdout.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf-8', 'to equal', 'Test\n');
-			app.disconnect();
-			done();
+			void app.done();
 		});
-		app.send({'set': {'key': 'config.debug', 'value': true}});
-		app.send({'command': 'debug', args: ["Test"]});
+		app.config.debug = true;
+		void app.debug("test");
 	});
 });
 
-describe('spawnpoint.log', () => {
+/*describe('spawnpoint.log', () => {
 	it('should output Test', (done) => {
 		const app = fork('./autoload-void', [''], { 'silent': true });
 		app.stdout.once('data', (data) => {
@@ -101,4 +101,4 @@ describe('spawnpoint.error', () => {
 		app.send({"set": {'key': 'config.log', 'value': timeFormat}});
 		app.send({'command': 'error', args: ["Test"]});
 	});
-});
+});*/

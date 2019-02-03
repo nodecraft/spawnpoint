@@ -1,5 +1,9 @@
 {
     "name": "autoload-void",
+    "description": "helper function to run a module in a child process",
     "version": "001",
-    "main": "autoload-error.js"
+    "main": "void.js",
+    "dependencies": {
+        "lodash": "^4.17.11"
+    }
 }
