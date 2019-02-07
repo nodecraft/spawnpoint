@@ -1,0 +1,12 @@
+{
+	"name": "Simple, with plugins.",
+	"log": null,
+	"signals": null,
+    "catchExceptions": false,
+    "plugins": [
+        {
+            "plugin": "../test/spawnpoint-test-cb"
+        },
+        "../test/spawnpoint-test"
+    ]
+}

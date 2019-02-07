@@ -1,0 +1,7 @@
+{
+	"name": "Simple, tracking errors.",
+	"log": null,
+	"signals": null,
+    "catchExceptions": false,
+    "trackErrors": true
+}

@@ -1,0 +1,12 @@
+{
+	"name": "Autoloading error async",
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
+	"autoload": [
+		{
+            "folder": "autoload-void",
+            "callback": true
+		}
+	]
+}

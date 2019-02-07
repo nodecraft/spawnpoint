@@ -1,0 +1,11 @@
+{
+	"name": "Autoloading error sync",
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
+	"autoload": [
+		{
+			"folder": "autoload-void"
+		}
+	]
+}

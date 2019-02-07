@@ -1,0 +1,5 @@
+{
+	"spawnpoint.already_setup": "Spawnpoint has already run `setup()` method.",
+	"spawnpoint.register_plugin_on_runtime": "App plugin registration has already occurred.",
+	"spawnpoint.config.sample_not_collection": "The requested config to be sampled must be an array."
+}

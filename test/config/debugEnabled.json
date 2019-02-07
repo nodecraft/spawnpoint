@@ -1,0 +1,7 @@
+{
+    "name": "Simple, debug mode enabled.",
+    "log": null,
+    "signals": null,
+    "catchExceptions": false,
+    "debug": true
+}

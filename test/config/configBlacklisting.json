@@ -1,0 +1,12 @@
+{
+    "name": "Simple, with a config blacklist.",
+    "log": null,
+    "signals": null,
+    "configBlacklist": {
+        "env": {
+            "list": [
+                "PATH"
+            ]
+        }
+    }
+}
