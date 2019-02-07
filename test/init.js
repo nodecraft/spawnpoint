@@ -254,12 +254,16 @@ describe('spawnpoint registry', () => {
 	describe('app.exit', () => {
 		it('allows the process to exit gracefully', function(done){
 			this.timeout(5000);
-			const testApp = new processVoid(done, require.resolve('..'), { construct: true });
+			let message;
+			const testApp = new processVoid(() => {
+				expect(message, 'when decoded as', 'utf-8', 'to equal', 'Test gracefully closed.\n');
+				expect(testApp.exited, 'to have property', 'code', 0);
+				done();
+			}, require.resolve('..'), { construct: true });
 			testApp.config.name = 'Test';
 			testApp.config.log = { format: "{line}" };
 			testApp.initRegistry();
-			let message;
-			let date = /^\[\d{4}-[01]\d-[0123]\dT[01]\d:[0-6]\d:[0-6]\d-[01]\d:\d\d]\n$/;
+			let date = /^\[\d{4}-[01]\d-[0123]\dT[01]\d:[0-6]\d:[0-6]\d[+-][01]\d:\d\d]\n$/;
 			testApp.stdout.once('data', (data) => {
 				if(date.test(data)){
 					testApp.stdout.once('data', (data) => { message = data; });
@@ -268,22 +272,16 @@ describe('spawnpoint registry', () => {
 				}
 			});
 			testApp.emit('app.exit', true);
-			void setTimeout(function(){
-				expect(message, 'when decoded as', 'utf-8', 'to equal', 'Test gracefully closed.\n');
-				expect(testApp.exited, 'to have property', 'code', 0);
-				testApp.done();
-			}, 2000);
 		});
 
 		it('allows the process to exit unsafely', function(done){
 			this.timeout(5000);
-			const testApp = new processVoid(done, require.resolve('..'), { construct: true });
+			const testApp = new processVoid(() => {
+				expect(testApp.exited, 'to have property', 'code', 1);
+				done();
+			}, require.resolve('..'), { construct: true });
 			testApp.initRegistry();
 			testApp.emit('app.exit', false);
-			void setTimeout(function(){
-				expect(testApp.exited, 'to have property', 'code', 1);
-				testApp.done();
-			}, 2000);
 		});
 	});
 

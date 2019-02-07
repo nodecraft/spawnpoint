@@ -64,7 +64,7 @@
 		"jsdoc-to-markdown": "^4.0.1",
 		"mocha": "^5.2.0",
 		"nyc": "^13.1.0",
-		"process-void": "^1.0.0",
+		"process-void": "^1.0.2",
 		"unexpected": "^11.0.1",
 		"unexpected-eventemitter": "^1.1.0"
 	}
