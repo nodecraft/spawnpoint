@@ -11,6 +11,8 @@ const timeFormat = {
 	date: "dddd, MMMM DD YYYY"
 };
 
+const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]\d|3[01])|February [012]\d|Ma(rch|y) ([012]\d|3[01])|April ([012]\d|30)|June ([012]\d|30)|July ([012]\d|3[01])|August ([012]\d|3[01])|(Sept|Nov)ember ([012]\d|30)|(Octo|Decem)ber ([012]\d|3[01])) \d{4}\]/;
+
 // resources for creating tests:
 // https://sinonjs.org/
 // https://github.com/elliotf/mocha-sinon
@@ -33,13 +35,19 @@ describe('spawnpoint.log', () => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
-			let date = currentTime.format(timeFormat.date);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
-			app.stdout.once('data', (data) => {
+			if(datePattern.test(data)){
+				let date = currentTime.format(timeFormat.date);
+				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+				app.stdout.once('data', (data) => {
+					let time = currentTime.format(timeFormat.time);
+					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
+					void app.done();
+				});
+			}else{
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
 				void app.done();
-			});
+			}
 		});
 		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
 		app.config.log = timeFormat;
@@ -54,13 +62,19 @@ describe('spawnpoint.info', () => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
-			let date = currentTime.format(timeFormat.date);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
-			app.stdout.once('data', (data) => {
+			if(datePattern.test(data)){
+				let date = currentTime.format(timeFormat.date);
+				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+				app.stdout.once('data', (data) => {
+					let time = currentTime.format(timeFormat.time);
+					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
+					void app.done();
+				});
+			}else{
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
 				void app.done();
-			});
+			}
 		});
 		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
 		app.config.log = timeFormat;
@@ -72,15 +86,15 @@ describe('spawnpoint.info', () => {
 describe('spawnpoint.warn', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		let currentTime = dayjs();
 		app.stdout.once('data', (data) => {
-			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
-			app.stderr.once('data', (data) => {
-				let time = currentTime.format(timeFormat.time);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
-				void app.done();
-			});
+		});
+		app.stderr.once('data', (data) => {
+			let time = currentTime.format(timeFormat.time);
+			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
+			void app.done();
 		});
 		app.config.log = timeFormat;
 		app.warn("Test");
@@ -90,15 +104,15 @@ describe('spawnpoint.warn', () => {
 describe('spawnpoint.error', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		let currentTime = dayjs();
 		app.stdout.once('data', (data) => {
-			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
-			app.stderr.once('data', (data) => {
-				let time = currentTime.format(timeFormat.time);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
-				void app.done();
-			});
+		});
+		app.stderr.once('data', (data) => {
+			let time = currentTime.format(timeFormat.time);
+			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
+			void app.done();
 		});
 		app.config.log = timeFormat;
 		app.error("Test");
