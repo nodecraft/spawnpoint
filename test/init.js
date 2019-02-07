@@ -259,7 +259,7 @@ describe('spawnpoint registry', () => {
 			testApp.config.log = { format: "{line}" };
 			testApp.initRegistry();
 			let message;
-			let date = /^\[\d{4}-[01]\d-[0123]\dT[01]\d:[0-6]\d:[0-6]\d-[01]\d:\d\d]\n$/;
+			let date = /^\[\d{4}-[01]\d-[0123]\dT[01]\d:[0-6]\d:[0-6]\d[+-][01]\d:\d\d]\n$/;
 			testApp.stdout.once('data', (data) => {
 				if(date.test(data)){
 					testApp.stdout.once('data', (data) => { message = data; });
