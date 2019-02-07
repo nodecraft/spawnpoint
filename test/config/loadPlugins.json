@@ -7,8 +7,6 @@
         {
             "plugin": "../test/spawnpoint-test-cb"
         },
-        {
-            "plugin": "../test/spawnpoint-test"
-        }
+        "../test/spawnpoint-test"
     ]
 }

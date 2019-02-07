@@ -21,7 +21,7 @@ describe('spawnpoint.loadPlugins', () => {
 				});
 				expect(app.config.plugins, 'to have an item satisfying', 'to satisfy', {
 					plugin: expect.it('to contain', 'spawnpoint-test'),
-					name: expect.it('to be', 'Test'),
+					name: expect.it('to be', 'test'),
 					namespace: expect.it('to be', 'testB'),
 					original_namespace: expect.it('to be', 'testB')
 				});

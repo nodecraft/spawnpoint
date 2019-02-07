@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('assert');
 const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
-const { fork } = require('child_process');
+const processVoid = require('process-void');
 const spawnpoint = require('..');
 const _ = require('lodash');
 
@@ -81,13 +81,14 @@ describe('spawnpoint setup', () => {
 	});
 
 	it('sync autoloading error handles correctly', (done) => {
-		const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
+		//const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
+		const app = new processVoid(done, require.resolve('..'), { 'construct': true }, 'config/autoloading-error.json');
 		app.stderr.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf-8', 'to contain', 'TypeError');
-			app.disconnect();
-			done();
+			void app.done();
 		});
-		app.send({"command": 'setup'});
+		//app.send({"command": 'setup'});
+		app.setup();
 	});
 
 	it('async autoloading error handles correctly', (done) => {
@@ -250,7 +251,41 @@ describe('spawnpoint registry', () => {
 		});
 	});
 
-	describe.skip('app.exit');
+	describe('app.exit', () => {
+		it('allows the process to exit gracefully', function(done){
+			this.timeout(5000);
+			const testApp = new processVoid(done, require.resolve('..'), { construct: true });
+			testApp.config.name = 'Test';
+			testApp.config.log = { format: "{line}" };
+			testApp.initRegistry();
+			let message;
+			let date = /^\[\d{4}-[01]\d-[0123]\dT[01]\d:[0-6]\d:[0-6]\d-[01]\d:\d\d]\n$/;
+			testApp.stdout.once('data', (data) => {
+				if(date.test(data)){
+					testApp.stdout.once('data', (data) => { message = data; });
+				}else{
+					message = data;
+				}
+			});
+			testApp.emit('app.exit', true);
+			void setTimeout(function(){
+				expect(message, 'when decoded as', 'utf-8', 'to equal', 'Test gracefully closed.\n');
+				expect(testApp.exited, 'to have property', 'code', 0);
+				testApp.done();
+			}, 2000);
+		});
+
+		it('allows the process to exit unsafely', function(done){
+			this.timeout(5000);
+			const testApp = new processVoid(done, require.resolve('..'), { construct: true });
+			testApp.initRegistry();
+			testApp.emit('app.exit', false);
+			void setTimeout(function(){
+				expect(testApp.exited, 'to have property', 'code', 1);
+				testApp.done();
+			}, 2000);
+		});
+	});
 
 	describe('initialization', () => {
 		beforeEach(() => {

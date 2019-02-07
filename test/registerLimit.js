@@ -60,15 +60,57 @@ describe('spawnpoint.initLimitListeners.limitToErrors', () => {
 
 	it('should correctly handle tracked errors', (done) => {
 		app.registerError('test.code', customError);
-		app.registerLimit('test.code', 1, {}, (data) => {
-			app.emit('done', data);
-		});
-		app.on('done', (data) => {
-			expect(data.occurrences, 'to equal', 4);
-			done();
+		app.registerLimit('test.code', 1, { reset: -1 }, (data) => {
+			expect(data.occurrences, 'to equal', 1);
+			app.config.done = true;
 		});
 		app.setup();
+		app.config.done = false;
+		app.errorCode('test.code');
+		expect(app.config.done, 'to be true');
+		done();
+	});
+
+	it('should reset a tracked error', (done) => {
+		app.registerError('test.code', customError);
+		app.registerLimit('test.code', 2, { reset: 1 }, (data) => {
+			expect(data.balance, 'to equal', 2);
+			app.config.done++;
+		});
+		app.setup();
+		app.config.done = 0;
 		app.errorCode('test.code');
 		app.errorCode('test.code');
+		expect(app.config.done, 'to equal', 1);
+		app.errorCode('test.code');
+		app.errorCode('test.code');
+		expect(app.config.done, 'to equal', 2);
+		done();
+	});
+
+	it('should gradually timeout the error', (done) => {
+		app.registerError('test.code', customError);
+		app.registerLimit('test.code', 2, { time: 100 }, (data) => {
+			expect(data.balance, 'to equal', 2);
+			expect(data.occurrences, 'to be one of', [2, 5]);
+			app.config.done++;
+		});
+		app.setup();
+		app.config.done = 0;
+		setTimeout(function(){
+			app.errorCode('test.code');
+		}, 50);
+		setTimeout(function(){
+			app.errorCode('test.code');
+		}, 100);
+		setTimeout(function(){
+			app.errorCode('test.code');
+		}, 300);
+		setTimeout(function(){
+			app.errorCode('test.code');
+			app.errorCode('test.code');
+			expect(app.config.done, 'to equal', 2);
+			done();
+		}, 500);
 	});
 });

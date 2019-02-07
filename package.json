@@ -1,6 +1,6 @@
 {
 	"name": "spawnpoint",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
 	"main": "index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"mocha": "mocha",
 		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
 		"coverage": "nyc report --reporter=text-lcov | coveralls",
-		"nyc": "nyc mocha && nyc report --reporter=lcov",
+		"nyc": "nyc mocha",
 		"precommit": "lint"
 	},
 	"repository": {
@@ -64,6 +64,7 @@
 		"jsdoc-to-markdown": "^4.0.1",
 		"mocha": "^5.2.0",
 		"nyc": "^13.1.0",
+		"process-void": "^1.0.0",
 		"unexpected": "^11.0.1",
 		"unexpected-eventemitter": "^1.1.0"
 	}

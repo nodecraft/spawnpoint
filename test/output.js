@@ -2,7 +2,8 @@
 const expect = require('unexpected'),
 	dayjs = require('dayjs');
 
-const processVoid = require('./autoload-void');
+const processVoid = require('process-void');
+const spawnpoint = require.resolve('..');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
@@ -17,19 +18,19 @@ const timeFormat = {
 
 describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, '../..', false);
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		void app.stdout.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf-8', 'to equal', 'Test\n');
 			void app.done();
 		});
 		app.config.debug = true;
-		void app.debug("test");
+		void app.debug("Test");
 	});
 });
 
-/*describe('spawnpoint.log', () => {
+describe('spawnpoint.log', () => {
 	it('should output Test', (done) => {
-		const app = fork('./autoload-void', [''], { 'silent': true });
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
@@ -37,18 +38,20 @@ describe('spawnpoint.debug', () => {
 			app.stdout.once('data', (data) => {
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
-				app.disconnect();
-				done();
+				void app.done();
 			});
 		});
-		app.send({"set": {'key': 'config.log', 'value': timeFormat}});
-		app.send({'command': 'log', args: ["Test"]});
+		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
+		app.config.log = timeFormat;
+		//app.send({'command': 'log', args: ["Test"]});
+		app.log("Test");
 	});
 });
 
 describe('spawnpoint.info', () => {
 	it('should output Test', (done) => {
-		const app = fork('./autoload-void', [''], { 'silent': true });
+		//const app = fork('./autoload-void', [''], { 'silent': true });
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
@@ -56,18 +59,19 @@ describe('spawnpoint.info', () => {
 			app.stdout.once('data', (data) => {
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
-				app.disconnect();
-				done();
+				void app.done();
 			});
 		});
-		app.send({"set": {'key': 'config.log', 'value': timeFormat}});
-		app.send({'command': 'info', args: ["Test"]});
+		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
+		app.config.log = timeFormat;
+		app.info("Test");
+		//app.send({'command': 'info', args: ["Test"]});
 	});
 });
 
 describe('spawnpoint.warn', () => {
 	it('should output Test', (done) => {
-		const app = fork('./autoload-void', [''], { 'silent': true });
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
@@ -75,18 +79,17 @@ describe('spawnpoint.warn', () => {
 			app.stderr.once('data', (data) => {
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
-				app.disconnect();
-				done();
+				void app.done();
 			});
 		});
-		app.send({"set": {'key': 'config.log', 'value': timeFormat}});
-		app.send({'command': 'warn', args: ["Test"]});
+		app.config.log = timeFormat;
+		app.warn("Test");
 	});
 });
 
 describe('spawnpoint.error', () => {
 	it('should output Test', (done) => {
-		const app = fork('./autoload-void', [''], { 'silent': true });
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			let currentTime = dayjs();
 			let date = currentTime.format(timeFormat.date);
@@ -94,11 +97,10 @@ describe('spawnpoint.error', () => {
 			app.stderr.once('data', (data) => {
 				let time = currentTime.format(timeFormat.time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
-				app.disconnect();
-				done();
+				void app.done();
 			});
 		});
-		app.send({"set": {'key': 'config.log', 'value': timeFormat}});
-		app.send({'command': 'error', args: ["Test"]});
+		app.config.log = timeFormat;
+		app.error("Test");
 	});
-});*/
+});
