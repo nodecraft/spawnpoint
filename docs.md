@@ -20,10 +20,7 @@ folders. This also starts the application life-cycle so the app can stop gracefu
 <a name="spawnpoint"></a>
 
 ## spawnpoint
-Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application
-config, health-checks, application structure, or architecture to build a 12 factor app in Docker.
-
-Spawnpoint can be configured to manage the entire application life-cycle or standalone as a utility library.
+Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on applicationconfig, health-checks, application structure, or architecture to build a 12 factor app in Docker.Spawnpoint can be configured to manage the entire application life-cycle or standalone as a utility library.
 
 **Kind**: global class  
 
@@ -63,8 +60,7 @@ Creates new instance of spawnpoint
 <a name="spawnpoint+recursiveList"></a>
 
 ### spawnpoint.recursiveList(dir, [exts]) ⇒ <code>Array</code>
-Recursively list files in a directory by an optional file extension.
-NOTE: This is an event blocking sync method.
+Recursively list files in a directory by an optional file extension.NOTE: This is an event blocking sync method.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 **Returns**: <code>Array</code> - Absolute/full path of filenames found.  
@@ -90,8 +86,7 @@ Utility: Create random string.
 <a name="spawnpoint+sample"></a>
 
 ### spawnpoint.sample(items) ⇒ <code>\*</code>
-Utility: get random element from `collection`.
-This is a copy of the lodash _.sample method.
+Utility: get random element from `collection`.This is a copy of the lodash _.sample method.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 **Returns**: <code>\*</code> - Returns the random element.  
@@ -158,8 +153,7 @@ Helper method that requires a file and hoists the current spawnpoint application
 <a name="spawnpoint+code"></a>
 
 ### spawnpoint.code(code, [data]) ⇒ <code>Object</code>
-Builds a Spawnpoint code object. Codes are used to create a link between a human readable message
-and a computer readable string. Example: `file.not_found` -> "The requested file was not found."
+Builds a Spawnpoint code object. Codes are used to create a link between a human readable messageand a computer readable string. Example: `file.not_found` -> "The requested file was not found."
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 **Returns**: <code>Object</code> - Code Object with a `message` with the computer readable message and the `code` matching the input code.  
@@ -198,7 +192,7 @@ Spawnpoint code that wraps a Javascript `Error`, as a soft error.
 <a name="spawnpoint+registerLimit"></a>
 
 ### spawnpoint.registerLimit(code, threshold, options, callback) ⇒ <code>this</code>
-Error Monitoring, when enabled. This allows you to track how often an error occurs and issue a callback once that threshold is met.
+Error Monitoring, when enabled. This allows you to track how often an error occurs and issue a callback once that threadhold is met.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 
@@ -271,8 +265,7 @@ Registers multiple custom Errors to a specific errorCode, using the `registerErr
 <a name="spawnpoint+maskErrorToCode"></a>
 
 ### spawnpoint.maskErrorToCode(error) ⇒ <code>errorCode</code> \| <code>false</code>
-Checks for Spawnpoint wrapped code, errorCode, or failCode when a potential error map is found (and previously registered). This method is useful as middleware to your application
-error handling so that you don't have to have the server reply with a generic error.
+Checks for Spawnpoint wrapped code, errorCode, or failCode when a potential error map is found (and previously registered). This method is useful as middleware to your applicationerror handling so that you don't have to have the server reply with a generic error.
 
 **Kind**: instance method of [<code>spawnpoint</code>](#spawnpoint)  
 **Returns**: <code>errorCode</code> \| <code>false</code> - Returns Spawnpoint mapped code, errorCode, or failCode or false when no mapped error was found.  
@@ -284,7 +277,6 @@ error handling so that you don't have to have the server reply with a generic er
 <a name="callback"></a>
 
 ## callback ⇒ <code>this</code>
-Initializes framework to read the `configFile`, init config, Spawnpoint plugins, errorCodes and autoload
-folders. This also starts the application life-cycle so the app can stop gracefully.
+Initializes framework to read the `configFile`, init config, Spawnpoint plugins, errorCodes and autoloadfolders. This also starts the application life-cycle so the app can stop gracefully.
 
 **Kind**: global typedef  
