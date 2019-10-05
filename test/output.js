@@ -11,6 +11,8 @@ const timeFormat = {
 	date: "dddd, MMMM DD YYYY"
 };
 
+console.log(dayjs().format(timeFormat.time));
+
 const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]\d|3[01])|February [012]\d|Ma(rch|y) ([012]\d|3[01])|April ([012]\d|30)|June ([012]\d|30)|July ([012]\d|3[01])|August ([012]\d|3[01])|(Sept|Nov)ember ([012]\d|30)|(Octo|Decem)ber ([012]\d|3[01])) \d{4}\]/;
 
 // resources for creating tests:
