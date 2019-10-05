@@ -7,7 +7,7 @@ const spawnpoint = require.resolve('..');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
-	time: "HH:mm",
+	time: "HH",
 	date: "dddd, MMMM DD YYYY"
 };
 
