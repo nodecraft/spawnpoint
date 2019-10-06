@@ -7,11 +7,9 @@ const spawnpoint = require.resolve('..');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
-	time: "HH",
+	time: "HH:mm",
 	date: "dddd, MMMM DD YYYY"
 };
-
-console.log(dayjs().format(timeFormat.time));
 
 const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]\d|3[01])|February [012]\d|Ma(rch|y) ([012]\d|3[01])|April ([012]\d|30)|June ([012]\d|30)|July ([012]\d|3[01])|August ([012]\d|3[01])|(Sept|Nov)ember ([012]\d|30)|(Octo|Decem)ber ([012]\d|3[01])) \d{4}\]/;
 
@@ -19,6 +17,18 @@ const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]
 // https://sinonjs.org/
 // https://github.com/elliotf/mocha-sinon
 // https://github.com/mochajs/mocha/issues/1582
+
+const reformTimeData = function(buffer, time){
+	time = '[' + time + ']';
+	time = [...Buffer.from(time)];
+	let bufferTime = [...buffer].slice(0, 7);
+	let remains = [...buffer].slice(7, [...buffer].length);
+	if(bufferTime !== time){
+		time = time.concat(remains);
+		return Buffer.from(time);
+	}
+};
+
 
 describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
@@ -42,11 +52,13 @@ describe('spawnpoint.log', () => {
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
 					let time = currentTime.format(timeFormat.time);
+					data = reformTimeData(data, time);
 					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
 					void app.done();
 				});
 			}else{
 				let time = currentTime.format(timeFormat.time);
+				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
 				void app.done();
 			}
@@ -69,11 +81,13 @@ describe('spawnpoint.info', () => {
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
 					let time = currentTime.format(timeFormat.time);
+					data = reformTimeData(data, time);
 					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
 					void app.done();
 				});
 			}else{
 				let time = currentTime.format(timeFormat.time);
+				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
 				void app.done();
 			}
@@ -95,6 +109,7 @@ describe('spawnpoint.warn', () => {
 		});
 		app.stderr.once('data', (data) => {
 			let time = currentTime.format(timeFormat.time);
+			data = reformTimeData(data, time);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
 			void app.done();
 		});
@@ -113,6 +128,7 @@ describe('spawnpoint.error', () => {
 		});
 		app.stderr.once('data', (data) => {
 			let time = currentTime.format(timeFormat.time);
+			data = reformTimeData(data, time);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
 			void app.done();
 		});
