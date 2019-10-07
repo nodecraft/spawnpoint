@@ -67,7 +67,7 @@ const subtractOneMinute = (time) => {
 			if(t[2] < 48){
 				t[2] = 57;
 				t[1]--;
-				if(t[1] === 47){
+				if(t[1] < 48){
 					t[1] = 50;
 					t[2] = 51;
 				}
