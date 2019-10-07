@@ -43,19 +43,28 @@ const reformTimeData = (data, time) => {
 
 /**
  * Adds 1 minute to a buffered string (e.g. [13:37]) converted to Array
- * @param  {Array} time buffered string (e.g. '[13:37]') converted to Array
+ * @param  {Array} time buffered string (e.g. [13:37]) converted to Array
  */
 const subtractOneMinute = (time) => {
 	let t = time;
 	console.log('t: ' + t);
 	t[5]--;
-	if(t[5] === 47){
+	/**
+	 * The two digit numbers here are hex number references to a Buffer
+	 * hexes 48-57 correspond to 0-9 (as string characters)
+	 * The first if loop should be read as:
+	 * if(time[seconds] < 0){
+	 *   time[seconds] = 9;
+	 *   time[minutes]--;
+	 *   ...
+	*/
+	if(t[5] < 48){
 		t[5] = 57;
 		t[4]--;
-		if(t[4] === 47){
+		if(t[4] < 48){
 			t[4] = 53;
 			t[2]--;
-			if(t[2] === 47){
+			if(t[2] < 48){
 				t[2] = 57;
 				t[1]--;
 				if(t[1] === 47){
