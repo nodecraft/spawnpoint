@@ -29,7 +29,7 @@ const reformTimeData = (data, time) => {
 	let remains = [...data].slice(7, [...data].length);
 
 	if(Buffer.from(dataTime).toString() !== time){
-		let newTime = addOneMinute(dataTime);
+		let newTime = subtractOneMinute(dataTime);
 		let newTimeString = Buffer.from(newTime).toString();
 		if(newTimeString !== time){
 			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from(newTime.concat(remains)).toString());
@@ -45,18 +45,23 @@ const reformTimeData = (data, time) => {
  * Adds 1 minute to a buffered string (e.g. [13:37]) converted to Array
  * @param  {Array} time buffered string (e.g. '[13:37]') converted to Array
  */
-const addOneMinute = (time) => {
+const subtractOneMinute = (time) => {
 	let t = time;
-	t[5]++;
-	if(t[5] === 58){
-		t[5] = 48;
-		t[4]++;
-		if(t[4] === 54){
-			t[4] = 48;
-			t[2]++;
-			if(t[2] === 52){
-				t[2] = 48;
-				t[1] = 48;
+	console.log('t: ' + t);
+	t[5]--;
+	if(t[5] === 47){
+		t[5] = 57;
+		t[4]--;
+		if(t[4] === 47){
+			t[4] = 53;
+			t[2]--;
+			if(t[2] === 47){
+				t[2] = 57;
+				t[1]--;
+				if(t[1] === 47){
+					t[1] = 50;
+					t[2] = 51;
+				}
 			}
 		}
 	}
