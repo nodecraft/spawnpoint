@@ -3,11 +3,12 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
         node: [8, 10, 11]
-    name: Node ${{ matrix.node }} Test
+    name: Node ${{ matrix.node }} ${{ matrix.os }} Test
     steps:
       - uses: actions/checkout@v1
       - name: Setup node

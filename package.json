@@ -8,7 +8,7 @@
 		"lint": "eslint .",
 		"mocha": "mocha",
 		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
-		"coverage": "nyc report --reporter=text-lcov",
+		"coverage": "nyc report --reporter=lcov",
 		"nyc": "nyc mocha",
 		"precommit": "lint"
 	},
