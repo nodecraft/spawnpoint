@@ -1,6 +1,6 @@
 {
 	"name": "spawnpoint",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
 	"main": "index.js",
 	"scripts": {
@@ -56,13 +56,13 @@
 		"strip-json-comments": "^3.0.1"
 	},
 	"devDependencies": {
-		"coveralls": "^3.0.6",
+		"coveralls": "^3.0.7",
 		"eslint": "^6.5.1",
-		"eslint-config-nodecraft": "^1.7.3",
-		"eslint-plugin-json": "^2.0.0",
+		"eslint-config-nodecraft": "^1.7.5",
+		"eslint-plugin-json": "^2.0.1",
 		"eslint-plugin-node": "^10.0.0",
-		"jsdoc-to-markdown": "^5.0.1",
-		"mocha": "^6.2.1",
+		"jsdoc-to-markdown": "^5.0.2",
+		"mocha": "^6.2.2",
 		"nyc": "^14.1.1",
 		"process-void": "^1.0.2",
 		"unexpected": "^11.8.0",
