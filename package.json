@@ -47,7 +47,7 @@
 	},
 	"dependencies": {
 		"async": "^2.6.3",
-		"chalk": "^2.4.2",
+		"chalk": "^3.0.0",
 		"dayjs": "^1.8.16",
 		"json-lint": "^0.1.0",
 		"lodash": "^4.17.15",
