@@ -69,7 +69,7 @@ describe('spawnpoint.initConfig', () => {
 		expect(app.config.getRandom, 'when called with', ['numArray'], 'to be one of', app.config.numArray);
 		let used = [];
 		_.times(app.config.numArray.length, () => {
-			let item = app.config.getRoundRobin('numArray');
+			const item = app.config.getRoundRobin('numArray');
 			expect(item, 'to be one of', app.config.numArray).and('not to be one of', used);
 			used.push(item);
 		});

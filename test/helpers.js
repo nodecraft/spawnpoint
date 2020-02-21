@@ -45,7 +45,7 @@ describe('helpers.camelCase', () => {
 	});
 
 	it('correctly outputs camelCase', () => {
-		let tests = {
+		const tests = {
 			"UPPERCASE": "uppercase",
 			"basic camel": "basicCamel",
 			"CamelCase": "camelCase",

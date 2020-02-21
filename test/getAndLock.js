@@ -20,7 +20,7 @@ describe('spawnpoint.getAndLock', () => {
 	it('never calls the same locked value async', (done) => {
 		const lock = app.getAndLock(test);
 
-		let used = {};
+		const used = {};
 		async.times(test.length * 15, (i, cb) => {
 			lock.next((err, results, clear) => {
 				if(err){ return cb(err); }
@@ -43,7 +43,7 @@ describe('spawnpoint.getAndLock', () => {
 		newApp.setup();
 		const lock = newApp.getAndLock(test);
 
-		let used = {};
+		const used = {};
 		async.times(test.length * 15, (i, cb) => {
 			lock.next((err, results, clear) => {
 				if(err){ return cb(err); }

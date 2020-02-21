@@ -10,14 +10,14 @@ const spawnpoint = require('..');
 process.chdir(__dirname);
 
 // define custom error for testing
-class customError extends Error{
+class customError extends Error {
 	constructor(err){
 		super(err);
 		this.name = 'customError';
 	}
 }
 
-class anotherCustomError extends Error{
+class anotherCustomError extends Error {
 	constructor(err){
 		super(err);
 		this.name = 'customErrorB';

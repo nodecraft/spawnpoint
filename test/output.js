@@ -25,12 +25,12 @@ const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]
  */
 const reformTimeData = (data, time) => {
 	time = '[' + time + ']';
-	let dataTime = [...data].slice(0, 7);
-	let remains = [...data].slice(7, [...data].length);
+	const dataTime = [...data].slice(0, 7);
+	const remains = [...data].slice(7, [...data].length);
 
 	if(Buffer.from(dataTime).toString() !== time){
-		let newTime = subtractOneMinute(dataTime);
-		let newTimeString = Buffer.from(newTime).toString();
+		const newTime = subtractOneMinute(dataTime);
+		const newTimeString = Buffer.from(newTime).toString();
 		if(newTimeString !== time){
 			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from(newTime.concat(remains)).toString());
 		}else{
@@ -46,7 +46,7 @@ const reformTimeData = (data, time) => {
  * @param  {Array} time buffered string (e.g. [13:37]) converted to Array
  */
 const subtractOneMinute = (time) => {
-	let t = time;
+	const t = time;
 	console.log('t: ' + t);
 	t[5]--;
 	/**
@@ -95,18 +95,18 @@ describe('spawnpoint.log', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
-			let currentTime = dayjs();
+			const currentTime = dayjs();
 			if(datePattern.test(data)){
-				let date = currentTime.format(timeFormat.date);
+				const date = currentTime.format(timeFormat.date);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
-					let time = currentTime.format(timeFormat.time);
+					const time = currentTime.format(timeFormat.time);
 					data = reformTimeData(data, time);
 					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
 					void app.done();
 				});
 			}else{
-				let time = currentTime.format(timeFormat.time);
+				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
 				void app.done();
@@ -124,18 +124,18 @@ describe('spawnpoint.info', () => {
 		//const app = fork('./autoload-void', [''], { 'silent': true });
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
-			let currentTime = dayjs();
+			const currentTime = dayjs();
 			if(datePattern.test(data)){
-				let date = currentTime.format(timeFormat.date);
+				const date = currentTime.format(timeFormat.date);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
-					let time = currentTime.format(timeFormat.time);
+					const time = currentTime.format(timeFormat.time);
 					data = reformTimeData(data, time);
 					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
 					void app.done();
 				});
 			}else{
-				let time = currentTime.format(timeFormat.time);
+				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
 				void app.done();
@@ -151,13 +151,13 @@ describe('spawnpoint.info', () => {
 describe('spawnpoint.warn', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
-		let currentTime = dayjs();
+		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
-			let date = currentTime.format(timeFormat.date);
+			const date = currentTime.format(timeFormat.date);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 		});
 		app.stderr.once('data', (data) => {
-			let time = currentTime.format(timeFormat.time);
+			const time = currentTime.format(timeFormat.time);
 			data = reformTimeData(data, time);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
 			void app.done();
@@ -170,13 +170,13 @@ describe('spawnpoint.warn', () => {
 describe('spawnpoint.error', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, { 'construct': true });
-		let currentTime = dayjs();
+		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
-			let date = currentTime.format(timeFormat.date);
+			const date = currentTime.format(timeFormat.date);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
 		});
 		app.stderr.once('data', (data) => {
-			let time = currentTime.format(timeFormat.time);
+			const time = currentTime.format(timeFormat.time);
 			data = reformTimeData(data, time);
 			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
 			void app.done();

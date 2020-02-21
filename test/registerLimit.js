@@ -2,7 +2,7 @@
 const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
 const spawnpoint = require('..');
 
-class customError extends Error{
+class customError extends Error {
 	constructor(err){
 		super(err);
 		this.name = 'customError';
@@ -35,7 +35,7 @@ describe('spawnpoint.initLimitListeners', () => {
 
 	it('should register errors correctly', (done) => {
 		app = new spawnpoint('config/limitErrors.json');
-		let listeners = [];
+		const listeners = [];
 		app.on('newListener', (value) => {
 			listeners.push(value);
 		});
