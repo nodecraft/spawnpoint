@@ -47,7 +47,7 @@
 		"npm": ">=6.4.1"
 	},
 	"dependencies": {
-		"async": "^2.6.3",
+		"async": "^3.2.0",
 		"chalk": "^3.0.0",
 		"dayjs": "^1.8.20",
 		"json-lint": "^0.1.0",
