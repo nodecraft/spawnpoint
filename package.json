@@ -52,7 +52,7 @@
 		"dayjs": "^1.8.20",
 		"json-lint": "^0.1.0",
 		"lodash": "^4.17.15",
-		"minimist": "^1.2.0",
+		"minimist": "1.2.2",
 		"string-template": "^1.0.0",
 		"strip-json-comments": "^3.0.1"
 	},
