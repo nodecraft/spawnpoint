@@ -33,12 +33,10 @@ const reformTimeData = (data, time) => {
 		const newTimeString = Buffer.from(newTime).toString();
 		if(newTimeString !== time){
 			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from(newTime.concat(remains)).toString());
-		}else{
-			return Buffer.from(newTime.concat(remains));
 		}
-	}else{
-		return data;
+		return Buffer.from(newTime.concat(remains));
 	}
+	return data;
 };
 
 /**
