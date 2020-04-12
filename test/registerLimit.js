@@ -14,7 +14,7 @@ describe('spawnpoint.registerLimit', () => {
 	let app;
 	// TODO
 
-	beforeEach(() =>{
+	beforeEach(() => {
 		app = new spawnpoint();
 	});
 	it('should trigger the callback', (done) => {
@@ -60,7 +60,7 @@ describe('spawnpoint.initLimitListeners.limitToErrors', () => {
 
 	it('should correctly handle tracked errors', (done) => {
 		app.registerError('test.code', customError);
-		app.registerLimit('test.code', 1, { reset: -1 }, (data) => {
+		app.registerLimit('test.code', 1, {reset: -1}, (data) => {
 			expect(data.occurrences, 'to equal', 1);
 			app.config.done = true;
 		});
@@ -73,7 +73,7 @@ describe('spawnpoint.initLimitListeners.limitToErrors', () => {
 
 	it('should reset a tracked error', (done) => {
 		app.registerError('test.code', customError);
-		app.registerLimit('test.code', 2, { reset: 1 }, (data) => {
+		app.registerLimit('test.code', 2, {reset: 1}, (data) => {
 			expect(data.balance, 'to equal', 2);
 			app.config.done++;
 		});
@@ -90,7 +90,7 @@ describe('spawnpoint.initLimitListeners.limitToErrors', () => {
 
 	it('should gradually timeout the error', (done) => {
 		app.registerError('test.code', customError);
-		app.registerLimit('test.code', 2, { time: 100 }, (data) => {
+		app.registerLimit('test.code', 2, {time: 100}, (data) => {
 			expect(data.balance, 'to equal', 2);
 			expect(data.occurrences, 'to be one of', [2, 5]);
 			app.config.done++;

@@ -6,6 +6,6 @@ module.exports = require('../..').registerPlugin({
 	name: "test",
 	namespace: "testB",
 	exports: function(app){
-		app.config[this.namespace]['test'] = true;
+		app.config[this.namespace].test = true;
 	}
 });

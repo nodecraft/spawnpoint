@@ -7,7 +7,7 @@ module.exports = require('../..').registerPlugin({
 	namespace: "test",
 	callback: true,
 	exports: function(app, cb){
-		app.config[this.namespace]['test'] = true;
+		app.config[this.namespace].test = true;
 		cb();
 	}
 });

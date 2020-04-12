@@ -82,7 +82,7 @@ describe('spawnpoint setup', () => {
 
 	it('sync autoloading error handles correctly', (done) => {
 		//const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
-		const app = new processVoid(done, require.resolve('..'), { 'construct': true }, 'config/autoloading-error.json');
+		const app = new processVoid(done, require.resolve('..'), {'construct': true}, 'config/autoloading-error.json');
 		app.stderr.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf-8', 'to contain', 'TypeError');
 			void app.done();
@@ -192,7 +192,7 @@ describe('spawnpoint registry', () => {
 				expect(() => process.emit('uncaughtException', new Error('Test error')), 'to emit from', app, 'app.stop', expect.it('to be true'));
 			});
 			app.emit('app.ready');
-			_.eachRight(originalListeners, (item) => process.prependListener('uncaughtException', item)); // Adding the original listeners back to process's uncaughtException. Hopefully makes this less dangerous.
+			_.eachRight(originalListeners, item => process.prependListener('uncaughtException', item)); // Adding the original listeners back to process's uncaughtException. Hopefully makes this less dangerous.
 			done();
 		});
 	});
@@ -259,9 +259,9 @@ describe('spawnpoint registry', () => {
 				expect(message, 'when decoded as', 'utf-8', 'to equal', 'Test gracefully closed.\n');
 				expect(testApp.exited, 'to have property', 'code', 0);
 				done();
-			}, require.resolve('..'), { construct: true });
+			}, require.resolve('..'), {construct: true});
 			testApp.config.name = 'Test';
-			testApp.config.log = { format: "{line}" };
+			testApp.config.log = {format: "{line}"};
 			testApp.initRegistry();
 			const date = /^\[\d{4}-[01]\d-[0123]\dT[012]\d:[0-6]\d:[0-6]\d[+-][01]\d:\d\d]\n$/;
 			testApp.stdout.once('data', (data) => {
@@ -279,7 +279,7 @@ describe('spawnpoint registry', () => {
 			const testApp = new processVoid(() => {
 				expect(testApp.exited, 'to have property', 'code', 1);
 				done();
-			}, require.resolve('..'), { construct: true });
+			}, require.resolve('..'), {construct: true});
 			testApp.initRegistry();
 			testApp.emit('app.exit', false);
 		});
@@ -310,7 +310,7 @@ describe('spawnpoint registry', () => {
 			app.config.signals.debug = ['SIGUSR1'];
 			app.config.debug = false;
 			expect(() => app.initRegistry(), 'to emit from', process, 'newListener', 'SIGUSR1');
-			expect(() => { return process.emit('SIGUSR1'); }, 'when called').then((result) => {
+			expect(() => process.emit('SIGUSR1'), 'when called').then((result) => {
 				expect(result, 'to be true').and('to equal', app.config.debug);
 				done();
 			});
