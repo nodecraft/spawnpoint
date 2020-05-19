@@ -67,6 +67,6 @@
 		"nyc": "^15.0.1",
 		"process-void": "^1.0.2",
 		"unexpected": "^11.14.0",
-		"unexpected-eventemitter": "^2.1.0"
+		"unexpected-eventemitter": "^2.2.0"
 	}
 }
