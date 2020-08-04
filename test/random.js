@@ -10,14 +10,14 @@ describe('spawnpoint.random', () => {
 		assert.throws(() => app.random({foo: 'bar'}), Error);
 		assert.throws(() => app.random(['foo', 'bar']), Error);
 		assert.throws(() => app.random("five"), Error);
-		assert.throws(() => app.random(10, "invalid-hash"), Error);
 	});
 
-	it('successfully creates random strings', () => {
-		assert(app.random());
-		assert(app.random(50));
-		assert(app.random(50, 'md5'));
-		assert(app.random(50, 'sha1'));
+	it('successfully creates 10000 random strings', () => {
+		const randomStrings = [];
+		for(let i = 0; i < 10000; i++){
+			randomStrings.push(app.random());
+		}
+		assert(!randomStrings.every(item => item === randomStrings[0]));
 	});
 
 	it('defaults to 16 if length is less then 1', () => {

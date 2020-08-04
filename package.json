@@ -1,6 +1,6 @@
 {
 	"name": "spawnpoint",
-	"version": "1.0.9",
+	"version": "1.1.0",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
 	"main": "index.js",
 	"scripts": {
@@ -48,25 +48,26 @@
 	},
 	"dependencies": {
 		"async": "^2.6.3",
-		"chalk": "^4.0.0",
-		"dayjs": "^1.8.26",
+		"chalk": "^4.1.0",
+		"dayjs": "^1.8.32",
 		"json-lint": "^0.1.0",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.19",
 		"minimist": "^1.2.5",
+		"nanoid": "^3.1.12",
 		"string-template": "^1.0.0",
-		"strip-json-comments": "^3.1.0"
+		"strip-json-comments": "^3.1.1"
 	},
 	"devDependencies": {
 		"coveralls": "^3.1.0",
-		"eslint": "^6.8.0",
-		"eslint-config-nodecraft": "^4.0.0",
-		"eslint-plugin-json": "^2.1.1",
+		"eslint": "^7.6.0",
+		"eslint-config-nodecraft": "^4.1.0",
+		"eslint-plugin-json": "^2.1.2",
 		"eslint-plugin-node": "^11.1.0",
-		"jsdoc-to-markdown": "^5.0.3",
-		"mocha": "^7.1.2",
-		"nyc": "^15.0.1",
+		"jsdoc-to-markdown": "^6.0.1",
+		"mocha": "^8.1.1",
+		"nyc": "^15.1.0",
 		"process-void": "^1.0.2",
 		"unexpected": "^11.14.0",
-		"unexpected-eventemitter": "^2.1.0"
+		"unexpected-eventemitter": "^2.2.0"
 	}
 }
