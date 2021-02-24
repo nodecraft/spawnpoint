@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/custom-error-definition */
 'use strict';
 const assert = require('assert');
 const spawnpoint = require('..');

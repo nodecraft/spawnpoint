@@ -1,8 +1,8 @@
 'use strict';
 const assert = require('assert');
 const expect = require('unexpected');
-const _ = require('lodash'),
-	spawnpoint = require('..');
+const _ = require('lodash');
+const spawnpoint = require('..');
 
 describe('spawnpoint.recursiveList', () => {
 	const app = new spawnpoint();
@@ -39,9 +39,9 @@ describe('spawnpoint.recursiveList', () => {
 			txt: app.recursiveList('store/list', '.txt')
 		};
 
-		assert(!_.xor(tests.default, results.default).length, `default list failed to match expected [${tests.default.join(',')}]. Provided [${results.default.join(',')}]`);
-		assert(!_.xor(tests.js, results.js).length, `js list failed to match expected [${tests.js.join(',')}]. Provided [${results.js.join(',')}]`);
-		assert(!_.xor(tests.txt, results.txt).length, `txt list failed to match expected [${tests.txt.join(',')}]. Provided [${results.txt.join(',')}]`);
+		assert(_.xor(tests.default, results.default).length === 0, `default list failed to match expected [${tests.default.join(',')}]. Provided [${results.default.join(',')}]`);
+		assert(_.xor(tests.js, results.js).length === 0, `js list failed to match expected [${tests.js.join(',')}]. Provided [${results.js.join(',')}]`);
+		assert(_.xor(tests.txt, results.txt).length === 0, `txt list failed to match expected [${tests.txt.join(',')}]. Provided [${results.txt.join(',')}]`);
 	});
 
 	it('lists files a single directory away', () => {

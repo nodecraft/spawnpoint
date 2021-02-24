@@ -1,8 +1,8 @@
 'use strict';
 const assert = require('assert');
-const spawnpoint = require('..'),
-	_ = require('lodash'),
-	async = require('async');
+const spawnpoint = require('..');
+const _ = require('lodash');
+const async = require('async');
 
 describe('spawnpoint.getAndLock', () => {
 	const app = new spawnpoint();

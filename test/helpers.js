@@ -1,9 +1,9 @@
 'use strict';
 const assert = require('assert');
 
-const _ = require('lodash'),
-	dayjs = require('dayjs'),
-	chalk = require('chalk');
+const _ = require('lodash');
+const dayjs = require('dayjs');
+const chalk = require('chalk');
 
 const helpers = require('../lib/helpers');
 
@@ -38,7 +38,7 @@ describe('helpers.tag', () => {
 
 describe('helpers.camelCase', () => {
 	it('throws with invalid input', () => {
-		assert.throws(() => helpers.camelCase(undefined), Error);
+		assert.throws(() => helpers.camelCase(), Error);
 		assert.throws(() => helpers.camelCase(false), Error);
 		assert.throws(() => helpers.camelCase({foo: 'bar'}), Error);
 		assert.throws(() => helpers.camelCase(['foo', 'bar']), Error);

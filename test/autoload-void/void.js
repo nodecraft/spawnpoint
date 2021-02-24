@@ -1,6 +1,5 @@
 'use strict';
 
-class ProcessVoid {
-}
+class ProcessVoid {}
 
 module.exports = ProcessVoid;

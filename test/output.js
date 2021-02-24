@@ -1,6 +1,6 @@
 'use strict';
-const expect = require('unexpected'),
-	dayjs = require('dayjs');
+const expect = require('unexpected');
+const dayjs = require('dayjs');
 
 const processVoid = require('process-void');
 const spawnpoint = require.resolve('..');
@@ -11,7 +11,7 @@ const timeFormat = {
 	date: "dddd, MMMM DD YYYY"
 };
 
-const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]\d|3[01])|February [012]\d|Ma(rch|y) ([012]\d|3[01])|April ([012]\d|30)|June ([012]\d|30)|July ([012]\d|3[01])|August ([012]\d|3[01])|(Sept|Nov)ember ([012]\d|30)|(Octo|Decem)ber ([012]\d|3[01])) \d{4}\]/;
+const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([0-2]\d|3[01])|February [0-2]\d|Ma(rch|y) ([0-2]\d|3[01])|April ([0-2]\d|30)|June ([0-2]\d|30)|July ([0-2]\d|3[01])|August ([0-2]\d|3[01])|(Sept|Nov)ember ([0-2]\d|30)|(Octo|Decem)ber ([0-2]\d|3[01])) \d{4}]/;
 
 // resources for creating tests:
 // https://sinonjs.org/
@@ -24,9 +24,9 @@ const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([012]
  * @param  {Array} time buffered string (e.g. [13:37]) converted to Array
  */
 const subtractOneMinute = (time) => {
-	const t = time;
-	console.log('t: ' + t);
-	t[5]--;
+	const tCopy = time;
+	console.log('t: ' + tCopy);
+	tCopy[5]--;
 	/**
 	 * The two digit numbers here are hex number references to a Buffer
 	 * hexes 48-57 correspond to 0-9 (as string characters)
@@ -36,24 +36,24 @@ const subtractOneMinute = (time) => {
 	 *   time[minutes]--;
 	 *   ...
 	*/
-	if(t[5] < 48){
-		t[5] = 57;
-		t[4]--;
-		if(t[4] < 48){
-			t[4] = 53;
-			t[2]--;
-			if(t[2] < 48){
-				t[2] = 57;
-				t[1]--;
-				if(t[1] < 48){
-					t[1] = 50;
-					t[2] = 51;
+	if(tCopy[5] < 48){
+		tCopy[5] = 57;
+		tCopy[4]--;
+		if(tCopy[4] < 48){
+			tCopy[4] = 53;
+			tCopy[2]--;
+			if(tCopy[2] < 48){
+				tCopy[2] = 57;
+				tCopy[1]--;
+				if(tCopy[1] < 48){
+					tCopy[1] = 50;
+					tCopy[2] = 51;
 				}
 			}
 		}
 	}
 
-	return t;
+	return tCopy;
 };
 
 /**
@@ -70,9 +70,9 @@ const reformTimeData = (data, time) => {
 		const newTime = subtractOneMinute(dataTime);
 		const newTimeString = Buffer.from(newTime).toString();
 		if(newTimeString !== time){
-			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from(newTime.concat(remains)).toString());
+			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from([...newTime, ...remains]).toString());
 		}
-		return Buffer.from(newTime.concat(remains));
+		return Buffer.from([...newTime, ...remains]);
 	}
 	return data;
 };

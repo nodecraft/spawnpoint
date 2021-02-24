@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('assert');
-const _ = require('lodash'),
-	spawnpoint = require('..');
+const _ = require('lodash');
+const spawnpoint = require('..');
 describe('spawnpoint.sample', () => {
 	const app = new spawnpoint();
 	it('fails with bad/invalid options', () => {

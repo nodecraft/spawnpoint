@@ -1,7 +1,7 @@
 'use strict';
 const assert = require('assert');
-const _ = require('lodash'),
-	spawnpoint = require('..');
+const _ = require('lodash');
+const spawnpoint = require('..');
 
 describe('spawnpoint.roundRobin', () => {
 	const app = new spawnpoint();
@@ -80,7 +80,7 @@ describe('spawnpoint.roundRobin', () => {
 		rr.next();
 		rr.next();
 		rr.clear();
-		assert(!rr.rrKeys.length, 'rrKeys is not empty');
+		assert(rr.rrKeys.length === 0, 'rrKeys is not empty');
 	});
 
 	it('trigger error when list is tampered', () => {

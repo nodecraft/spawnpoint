@@ -2,6 +2,7 @@
 const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
 const spawnpoint = require('..');
 
+// eslint-disable-next-line unicorn/custom-error-definition
 class customError extends Error {
 	constructor(err){
 		super(err);

@@ -22,5 +22,11 @@ describe('spawnpoint.failCode', () => {
 		assert.throws(() => app.failCode({foo: "bar"}), Error);
 		assert.throws(() => app.failCode(["foo", "bar"]), Error);
 	});
+
+	it('Ensures data object does not have duplicate code or message', () => {
+		const failCode = app.failCode('UNKNOWN', {foo: 'bar'});
+		assert.notStrictEqual(failCode.message, failCode.data.message);
+		assert.notStrictEqual(failCode.code, failCode.data.code);
+	});
 	// TODO: print a plugin code
 });
