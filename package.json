@@ -1,22 +1,7 @@
 {
 	"name": "spawnpoint",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
-	"main": "index.js",
-	"scripts": {
-		"test": "npm run lint && npm run nyc",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
-		"mocha": "mocha",
-		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
-		"coverage": "nyc report --reporter=lcov",
-		"nyc": "nyc mocha",
-		"precommit": "lint"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/nodecraft/spawnpoint"
-	},
 	"keywords": [
 		"app",
 		"spawnpoint",
@@ -36,20 +21,32 @@
 		"auto",
 		"include"
 	],
-	"author": "Nodecraft, Inc.",
-	"license": "MIT",
+	"homepage": "https://github.com/nodecraft/spawnpoint",
 	"bugs": {
 		"url": "https://github.com/nodecraft/spawnpoint/issues"
 	},
-	"homepage": "https://github.com/nodecraft/spawnpoint",
-	"engines": {
-		"node": ">=18",
-		"npm": ">=8"
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nodecraft/spawnpoint"
+	},
+	"license": "MIT",
+	"author": "Nodecraft, Inc.",
+	"main": "index.js",
+	"scripts": {
+		"coverage": "nyc report --reporter=lcov",
+		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"mocha": "mocha",
+		"nyc": "nyc mocha",
+		"precommit": "lint",
+		"test": "npm run lint && npm run nyc"
 	},
 	"dependencies": {
 		"async": "^2.6.4",
 		"dayjs": "^1.11.10",
 		"json-lint": "^0.1.0",
+		"kleur": "^4.1.5",
 		"lodash": "^4.17.21",
 		"minimist": "^1.2.8",
 		"nanoid": "^3.3.6",
@@ -64,11 +61,14 @@
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-unicorn": "^48.0.1",
 		"jsdoc-to-markdown": "^8.0.0",
-		"kleur": "^4.1.5",
 		"mocha": "^10.2.0",
 		"nyc": "^15.1.0",
 		"process-void": "^1.0.2",
 		"unexpected": "^12.0.5",
 		"unexpected-eventemitter": "^2.4.0"
+	},
+	"engines": {
+		"node": ">=18",
+		"npm": ">=8"
 	}
 }
