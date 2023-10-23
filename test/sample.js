@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const _ = require('lodash');
 const spawnpoint = require('..');
 describe('spawnpoint.sample', () => {
@@ -14,23 +14,23 @@ describe('spawnpoint.sample', () => {
 		const tests = {
 			obj: {
 				foo: 'bar',
-				bar: 'foo'
+				bar: 'foo',
 			},
 			deepObj: {
 				foo: {
 					bar: {
-						one: "two"
-					}
+						one: 'two',
+					},
 				},
 				a: {
 					foo: {
-						three: "four"
-					}
-				}
+						three: 'four',
+					},
+				},
 			},
 			arr: [
-				'foo', 'bar'
-			]
+				'foo', 'bar',
+			],
 		};
 
 

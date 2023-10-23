@@ -1,5 +1,5 @@
 'use strict';
-var appframe = require('../../');
-var app = new appframe();
+const spawnpoint = require('../../');
+const app = new spawnpoint();
 // everything else is handled by the framework :)
 app.setup();

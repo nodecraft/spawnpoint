@@ -4,7 +4,7 @@ const spawnpoint = require('..');
 
 // eslint-disable-next-line unicorn/custom-error-definition
 class customError extends Error {
-	constructor(err){
+	constructor(err) {
 		super(err);
 		this.name = 'customError';
 	}
@@ -98,16 +98,16 @@ describe('spawnpoint.initLimitListeners.limitToErrors', () => {
 		});
 		app.setup();
 		app.config.done = 0;
-		setTimeout(function(){
+		setTimeout(function() {
 			app.errorCode('test.code');
 		}, 50);
-		setTimeout(function(){
+		setTimeout(function() {
 			app.errorCode('test.code');
 		}, 100);
-		setTimeout(function(){
+		setTimeout(function() {
 			app.errorCode('test.code');
 		}, 300);
-		setTimeout(function(){
+		setTimeout(function() {
 			app.errorCode('test.code');
 			app.errorCode('test.code');
 			expect(app.config.done, 'to equal', 2);

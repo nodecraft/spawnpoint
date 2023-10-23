@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const spawnpoint = require('..');
 const _ = require('lodash');
 const async = require('async');
@@ -14,7 +14,7 @@ describe('spawnpoint.getAndLock', () => {
 		assert.throws(() => app.getAndLock(false), Error);
 		assert.throws(() => app.getAndLock(true), Error);
 		assert.throws(() => app.getAndLock({foo: 'bar'}), Error);
-		assert.throws(() => app.getAndLock("five"), Error);
+		assert.throws(() => app.getAndLock('five'), Error);
 	});
 
 	it('never calls the same locked value async', (done) => {
@@ -23,8 +23,8 @@ describe('spawnpoint.getAndLock', () => {
 		const used = {};
 		async.times(test.length * 15, (i, cb) => {
 			lock.next((err, results, clear) => {
-				if(err){ return cb(err); }
-				if(used[results]){
+				if(err) { return cb(err); }
+				if(used[results]) {
 					clear();
 					return cb(new Error('Returned another result that is already in use.'));
 				}
@@ -46,8 +46,8 @@ describe('spawnpoint.getAndLock', () => {
 		const used = {};
 		async.times(test.length * 15, (i, cb) => {
 			lock.next((err, results, clear) => {
-				if(err){ return cb(err); }
-				if(used[results]){
+				if(err) { return cb(err); }
+				if(used[results]) {
 					clear();
 					return cb(new Error('Returned another result that is already in use.'));
 				}
@@ -63,9 +63,9 @@ describe('spawnpoint.getAndLock', () => {
 
 	it('Correctly does not trigger timeout', (done) => {
 		const lock = app.getAndLock(test);
-		for(let i = 0; i < test.length; i++){
+		for(let i = 0; i < test.length; i++) {
 			lock.next((err, results, clear) => {
-				if(err){ return done(err); }
+				if(err) { return done(err); }
 				setTimeout(clear, 1);
 			});
 		}
@@ -77,7 +77,7 @@ describe('spawnpoint.getAndLock', () => {
 
 	it('Correctly triggers timeout', (done) => {
 		const lock = app.getAndLock(test);
-		for(let i = 0; i < test.length; i++){
+		for(let i = 0; i < test.length; i++) {
 			lock.next((err, results, clear) => {
 				setTimeout(clear, 250);
 			});
@@ -91,7 +91,7 @@ describe('spawnpoint.getAndLock', () => {
 	});
 
 	it('Timeout doesn\'t hold up entire queue', (done) => {
-		const lock = app.getAndLock(["singleItem"]);
+		const lock = app.getAndLock(['singleItem']);
 		lock.next((err, results, clear) => {
 			setTimeout(clear, 100);
 		});

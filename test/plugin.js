@@ -1,27 +1,27 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const spawnpoint = require('..');
 
 describe('plugin registration', () => {
 	it('registers sync plugin', () => {
-		const pluginFn = function(app){
+		const pluginFn = function(app) {
 			app.config[this.namespace] = true;
 		};
 
 		const results = {
 			dir: __dirname,
-			name: "Text Plugin",
-			namespace: "testPlugin",
+			name: 'Text Plugin',
+			namespace: 'testPlugin',
 			exports: pluginFn,
 			codes: null,
-			config: null
+			config: null,
 		};
 
 		assert.deepStrictEqual(results, spawnpoint.registerPlugin({
 			dir: __dirname,
-			name: "Text Plugin",
-			namespace: "testPlugin",
-			exports: pluginFn
+			name: 'Text Plugin',
+			namespace: 'testPlugin',
+			exports: pluginFn,
 		}));
 	});
 });

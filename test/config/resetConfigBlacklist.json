@@ -1,6 +1,0 @@
-{
-    "name": "Simple, resetting the config blacklist.",
-    "log": null,
-    "signals": null,
-    "resetConfigBlackListDefaults": true
-}
