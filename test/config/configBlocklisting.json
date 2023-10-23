@@ -1,0 +1,12 @@
+{
+	"name": "Simple, with a config blocklist.",
+	"log": null,
+	"signals": null,
+	"configBlocklist": {
+		"env": {
+			"list": [
+				"PATH"
+			]
+		}
+	}
+}

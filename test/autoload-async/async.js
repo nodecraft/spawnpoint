@@ -1,5 +1,5 @@
 'use strict';
-module.exports = function(app, initCallback){
+module.exports = function(app, initCallback) {
 	setTimeout(() => {
 		app.customHoistedVarFromAutoload = true;
 		initCallback();

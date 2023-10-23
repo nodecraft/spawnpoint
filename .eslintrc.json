@@ -1,9 +1,12 @@
 {
 	"extends": [
-		"nodecraft"
+		"@nodecraft/eslint-config"
 	],
 	"plugins": [
 		"json",
 		"node"
-	]
+	],
+	"rules": {
+		"node/no-missing-require": "off"
+	}
 }

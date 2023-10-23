@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const spawnpoint = require('..');
 
 process.chdir(__dirname);
@@ -10,12 +10,12 @@ describe('spawnpoint.code', () => {
 	const tests = {
 		system: {
 			code: 'spawnpoint.register_plugin_on_runtime',
-			message: 'App plugin registration has already occurred.'
+			message: 'App plugin registration has already occurred.',
 		},
 		custom: {
 			code: 'test.code',
-			message: 'This is a test code.'
-		}
+			message: 'This is a test code.',
+		},
 	};
 
 	it('should print a system code', () => {
@@ -31,8 +31,8 @@ describe('spawnpoint.code', () => {
 		assert.throws(() => app.code(), Error);
 		assert.throws(() => app.code(null), Error);
 		assert.throws(() => app.code(true), Error);
-		assert.throws(() => app.code({foo: "bar"}), Error);
-		assert.throws(() => app.code(["foo", "bar"]), Error);
+		assert.throws(() => app.code({foo: 'bar'}), Error);
+		assert.throws(() => app.code(['foo', 'bar']), Error);
 	});
 	// TODO: print a plugin code
 });

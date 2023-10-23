@@ -10,10 +10,10 @@ describe('spawnpoint.initConfig', () => {
 		const app = new spawnpoint('config/app');
 		app.initConfig();
 		expect(app.config, 'to satisfy', {
-			name: expect.it('to be', "Simple, no extras"),
+			name: expect.it('to be', 'Simple, no extras'),
 			log: expect.it('to be null'),
 			signals: expect.it('to be null'),
-			catchExceptions: expect.it('to be false')
+			catchExceptions: expect.it('to be false'),
 		});
 	});
 
@@ -21,11 +21,11 @@ describe('spawnpoint.initConfig', () => {
 		const app = new spawnpoint('config/app');
 		app.initConfig('config/limitErrors.json');
 		expect(app.config, 'to satisfy', {
-			name: expect.it('to be', "Simple, tracking errors."),
+			name: expect.it('to be', 'Simple, tracking errors.'),
 			log: expect.it('to be null'),
 			signals: expect.it('to be null'),
 			catchExceptions: expect.it('to be false'),
-			trackErrors: expect.it('to be true')
+			trackErrors: expect.it('to be true'),
 		});
 	});
 
@@ -35,27 +35,27 @@ describe('spawnpoint.initConfig', () => {
 		expect(app.config, 'to satisfy', {
 			name: expect.it('to be', 'Simple, debug mode enabled.'),
 			debug: expect.it('to be true'),
-			configOverride: expect.it('to be', 'dev-config.json')
+			configOverride: expect.it('to be', 'dev-config.json'),
 		});
 	});
 
-	it('resets config blacklist options', () => {
-		const app = new spawnpoint('config/resetConfigBlacklist');
+	it('resets config blocklist options', () => {
+		const app = new spawnpoint('config/resetConfigBlocklist');
 		app.initConfig();
 		expect(app.config, 'to satisfy', {
-			name: expect.it('to be', 'Simple, resetting the config blacklist.'),
-			resetConfigBlackListDefaults: expect.it('to be true')
+			name: expect.it('to be', 'Simple, resetting the config blocklist.'),
+			resetConfigBlockListDefaults: expect.it('to be true'),
 		});
-		expect(app.configBlacklist, 'to have values satisfying', 'to have values satisfying', 'to be empty');
+		expect(app.configBlocklist, 'to have values satisfying', 'to have values satisfying', 'to be empty');
 	});
 
-	it('is able to add a blacklist option', () => {
-		const app = new spawnpoint('config/configBlacklisting.json');
+	it('is able to add a blocklist option', () => {
+		const app = new spawnpoint('config/configBlocklisting.json');
 		app.initConfig();
 		expect(app.config, 'to satisfy', {
-			name: expect.it('to be', 'Simple, with a config blacklist.')
+			name: expect.it('to be', 'Simple, with a config blocklist.'),
 		});
-		expect(app.configBlacklist.env.list, 'to have an item satisfying', 'to equal', 'PATH');
+		expect(app.configBlocklist.env.list, 'to have an item satisfying', 'to equal', 'PATH');
 	});
 
 	it('successfully registers helper methods', (done) => {
@@ -77,8 +77,8 @@ describe('spawnpoint.initConfig', () => {
 		used = {};
 		async.times(app.config.numArray.length * 15, (i, cb) => {
 			app.config.getAndLock('numArray', (err, results, clear) => {
-				if(err){ return cb(err); }
-				if(used[results]){
+				if(err) { return cb(err); }
+				if(used[results]) {
 					clear();
 					return cb(new Error('Returned another result that is already in use.'));
 				}
@@ -101,7 +101,7 @@ describe('spawnpoint.loadConfig', () => {
 		app.loadConfig();
 		expect(app.config.test, 'to satisfy', {
 			test: false,
-			name: 'TestThing'
+			name: 'TestThing',
 		});
 	});
 });

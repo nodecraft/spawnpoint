@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
 const processVoid = require('process-void');
 const spawnpoint = require('..');
@@ -56,7 +56,7 @@ describe('spawnpoint setup', () => {
 	it('sync autoloading', (done) => {
 		const app = new spawnpoint('config/autoloading-sync.json');
 		app.setup((err) => {
-			if(err){ return done(err); }
+			if(err) { return done(err); }
 			assert(app.customHoistedVarFromAutoload);
 			done();
 		});
@@ -65,7 +65,7 @@ describe('spawnpoint setup', () => {
 	it('async autoloading', (done) => {
 		const app = new spawnpoint('config/autoloading-async.json');
 		app.setup((err) => {
-			if(err){ return done(err); }
+			if(err) { return done(err); }
 			assert(app.customHoistedVarFromAutoload);
 			done();
 		});
@@ -74,7 +74,7 @@ describe('spawnpoint setup', () => {
 	it('autoloading with folder only', (done) => {
 		const app = new spawnpoint('config/autoloading-noName.json');
 		app.setup((err) => {
-			if(err){ return done(err); }
+			if(err) { return done(err); }
 			expect(app.customHoistedVarFromAutoload, 'to be true');
 			done();
 		});
@@ -84,7 +84,7 @@ describe('spawnpoint setup', () => {
 		//const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
 		const app = new processVoid(done, require.resolve('..'), {'construct': true}, 'config/autoloading-error.json');
 		app.stderr.once('data', (data) => {
-			expect(data, 'when decoded as', 'utf-8', 'to contain', 'TypeError');
+			expect(data, 'when decoded as', 'utf8', 'to contain', 'TypeError');
 			void app.done();
 		});
 		//app.send({"command": 'setup'});
@@ -114,7 +114,7 @@ describe('spawnpoint registry', () => {
 			app.on('app.register', (data) => {
 				expect(app.register, 'to contain', data);
 			});
-			app.emit('app.register', "spawnpoint-redis");
+			app.emit('app.register', 'spawnpoint-redis');
 			done();
 		});
 
@@ -122,16 +122,16 @@ describe('spawnpoint registry', () => {
 			app.on('app.register', () => {
 				expect(app.register, 'to have length', 1);
 			});
-			app.emit('app.register', "spawnpoint-redis");
-			app.emit('app.register', "spawnpoint-redis");
+			app.emit('app.register', 'spawnpoint-redis');
+			app.emit('app.register', 'spawnpoint-redis');
 			done();
 		});
 	});
 
 	describe('app.deregister', () => {
 		beforeEach(() => {
-			app.emit('app.register', "spawnpoint-redis");
-			app.emit('app.register', "lodash");
+			app.emit('app.register', 'spawnpoint-redis');
+			app.emit('app.register', 'lodash');
 		});
 		it('app.deregister removes a plugin if it is on the list', (done) => {
 			app.on('app.deregister', (data) => {
@@ -204,8 +204,8 @@ describe('spawnpoint registry', () => {
 		});
 		it('sets values correctly and calls app.close', (done) => {
 			app.status.running = true;
-			app.register.push("lodash");
-			app.info = function(message, argument){
+			app.register.push('lodash');
+			app.info = function(message, argument) {
 				// mock this to see if it gets the correct values.
 				expect(message, 'to equal', 'Stopping %s gracefully');
 				expect(argument, 'to equal', app.config.name);
@@ -222,7 +222,7 @@ describe('spawnpoint registry', () => {
 			done();
 		});
 		it('does not call app.exit if something is in the registry', (done) => {
-			app.register.push("lodash");
+			app.register.push('lodash');
 			expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit');
 			done();
 		});
@@ -232,17 +232,17 @@ describe('spawnpoint registry', () => {
 			runs += 2;
 			index %= 2;
 			index += 2;
-			if(runs >= index){
+			if(runs >= index) {
 				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times', (done) => {
-					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
+					app.register.push('lodash'); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
 					_.times(index, () => expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit'));
 					expect(() => app.emit('app.stop'), 'to emit from', app, 'app.exit');
 					done();
 				});
-			}else if(runs < index){
+			}else if(runs < index) {
 				it('with ' + index + ' stopAttempts never stops with app.stop being called ' + runs + ' times', (done) => {
-					app.register.push("lodash"); // make sure the other way app.exit can be called doesn't happen.
+					app.register.push('lodash'); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
 					_.times(runs, () => expect(() => app.emit('app.stop'), 'not to emit from', app, 'app.exit'));
 					done();
@@ -252,20 +252,20 @@ describe('spawnpoint registry', () => {
 	});
 
 	describe('app.exit', () => {
-		it('allows the process to exit gracefully', function(done){
+		it('allows the process to exit gracefully', function(done) {
 			this.timeout(5000);
 			let message;
 			const testApp = new processVoid(() => {
-				expect(message, 'when decoded as', 'utf-8', 'to equal', 'Test gracefully closed.\n');
+				expect(message, 'when decoded as', 'utf8', 'to equal', 'Test gracefully closed.\n');
 				expect(testApp.exited, 'to have property', 'code', 0);
 				done();
 			}, require.resolve('..'), {construct: true});
 			testApp.config.name = 'Test';
-			testApp.config.log = {format: "{line}"};
+			testApp.config.log = {format: '{line}'};
 			testApp.initRegistry();
 			const date = /^\[\d{4}-[01]\d-[0-3]\dT[0-2](?:\d:[0-6]){2}\d[+-][01]\d:\d{2}]\n$/;
 			testApp.stdout.once('data', (data) => {
-				if(date.test(data)){
+				if(date.test(data)) {
 					testApp.stdout.once('data', (data) => { message = data; });
 				}else{
 					message = data;
@@ -274,7 +274,7 @@ describe('spawnpoint registry', () => {
 			testApp.emit('app.exit', true);
 		});
 
-		it('allows the process to exit unsafely', function(done){
+		it('allows the process to exit unsafely', function(done) {
 			this.timeout(5000);
 			const testApp = new processVoid(() => {
 				expect(testApp.exited, 'to have property', 'code', 1);

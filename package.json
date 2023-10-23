@@ -43,32 +43,32 @@
 	},
 	"homepage": "https://github.com/nodecraft/spawnpoint",
 	"engines": {
-		"node": ">=12",
-		"npm": ">=6.4.1"
+		"node": ">=18",
+		"npm": ">=8"
 	},
 	"dependencies": {
-		"async": "^2.6.3",
-		"chalk": "^4.1.0",
-		"dayjs": "^1.10.4",
+		"async": "^2.6.4",
+		"dayjs": "^1.11.10",
 		"json-lint": "^0.1.0",
 		"lodash": "^4.17.21",
-		"minimist": "^1.2.5",
-		"nanoid": "^3.1.20",
+		"minimist": "^1.2.8",
+		"nanoid": "^3.3.6",
 		"string-template": "^1.0.0",
 		"strip-json-comments": "^3.1.1"
 	},
 	"devDependencies": {
-		"coveralls": "^3.1.0",
-		"eslint": "^7.20.0",
-		"eslint-config-nodecraft": "^7.3.1",
-		"eslint-plugin-json": "^2.1.2",
+		"@nodecraft/eslint-config": "^28.0.0",
+		"coveralls": "^3.1.1",
+		"eslint": "^8.52.0",
+		"eslint-plugin-json": "^3.1.0",
 		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-unicorn": "^28.0.2",
-		"jsdoc-to-markdown": "^6.0.1",
-		"mocha": "^10.1.0",
+		"eslint-plugin-unicorn": "^48.0.1",
+		"jsdoc-to-markdown": "^8.0.0",
+		"kleur": "^4.1.5",
+		"mocha": "^10.2.0",
 		"nyc": "^15.1.0",
 		"process-void": "^1.0.2",
-		"unexpected": "^12.0.0",
-		"unexpected-eventemitter": "^2.2.0"
+		"unexpected": "^12.0.5",
+		"unexpected-eventemitter": "^2.4.0"
 	}
 }

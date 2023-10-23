@@ -1,15 +1,16 @@
 {
-	"name": "appframe test",
+	"name": "spawnpoint test",
 	"debug": true,
 	"plugins": [
-		"appframe-express"
+		"spawnpoint-express"
 	],
 	"autoload": [
 		{
 			"name": "models",
 			"folder": "/models",
 			"callback": true
-		}, {
+		},
+		{
 			"name": "controllers",
 			"folder": "/controllers"
 		}

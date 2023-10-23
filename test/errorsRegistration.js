@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/custom-error-definition */
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const spawnpoint = require('..');
 
 // resources for creating tests:
@@ -12,14 +12,14 @@ process.chdir(__dirname);
 
 // define custom error for testing
 class customError extends Error {
-	constructor(err){
+	constructor(err) {
 		super(err);
 		this.name = 'customError';
 	}
 }
 
 class anotherCustomError extends Error {
-	constructor(err){
+	constructor(err) {
 		super(err);
 		this.name = 'customErrorB';
 	}
@@ -85,14 +85,14 @@ describe('spawnpoint.loadErrorMap', () => {
 		app.setup(() => {
 			app.plugins = [
 				{
-					name: "fake plugin`",
+					name: 'fake plugin`',
 					errors: {
-						'test.code': customError
-					}
+						'test.code': customError,
+					},
 				},
 				{
-					name: "Another fake plugin"
-				}
+					name: 'Another fake plugin',
+				},
 			];
 			app.on('app.setup.loadErrorMap', () => {
 				assert(app.errorMaps['test.code']);

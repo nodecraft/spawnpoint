@@ -7,8 +7,8 @@ const spawnpoint = require.resolve('..');
 
 const timeFormat = {
 	format: '{date} {type}: {line}',
-	time: "HH:mm",
-	date: "dddd, MMMM DD YYYY"
+	time: 'HH:mm',
+	date: 'dddd, MMMM DD YYYY',
 };
 
 const datePattern = /\[(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day, (January ([0-2]\d|3[01])|February [0-2]\d|Ma(rch|y) ([0-2]\d|3[01])|April ([0-2]\d|30)|June ([0-2]\d|30)|July ([0-2]\d|3[01])|August ([0-2]\d|3[01])|(Sept|Nov)ember ([0-2]\d|30)|(Octo|Decem)ber ([0-2]\d|3[01])) \d{4}]/;
@@ -36,16 +36,16 @@ const subtractOneMinute = (time) => {
 	 *   time[minutes]--;
 	 *   ...
 	*/
-	if(tCopy[5] < 48){
+	if(tCopy[5] < 48) {
 		tCopy[5] = 57;
 		tCopy[4]--;
-		if(tCopy[4] < 48){
+		if(tCopy[4] < 48) {
 			tCopy[4] = 53;
 			tCopy[2]--;
-			if(tCopy[2] < 48){
+			if(tCopy[2] < 48) {
 				tCopy[2] = 57;
 				tCopy[1]--;
-				if(tCopy[1] < 48){
+				if(tCopy[1] < 48) {
 					tCopy[1] = 50;
 					tCopy[2] = 51;
 				}
@@ -66,10 +66,10 @@ const reformTimeData = (data, time) => {
 	const dataTime = [...data].slice(0, 7);
 	const remains = [...data].slice(7, [...data].length);
 
-	if(Buffer.from(dataTime).toString() !== time){
+	if(Buffer.from(dataTime).toString() !== time) {
 		const newTime = subtractOneMinute(dataTime);
 		const newTimeString = Buffer.from(newTime).toString();
-		if(newTimeString !== time){
+		if(newTimeString !== time) {
 			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from([...newTime, ...remains]).toString());
 		}
 		return Buffer.from([...newTime, ...remains]);
@@ -81,11 +81,11 @@ describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
 		const app = new processVoid(done, spawnpoint, {'construct': true});
 		void app.stdout.once('data', (data) => {
-			expect(data, 'when decoded as', 'utf-8', 'to equal', 'Test\n');
+			expect(data, 'when decoded as', 'utf8', 'to equal', 'Test\n');
 			void app.done();
 		});
 		app.config.debug = true;
-		void app.debug("Test");
+		void app.debug('Test');
 	});
 });
 
@@ -94,26 +94,26 @@ describe('spawnpoint.log', () => {
 		const app = new processVoid(done, spawnpoint, {'construct': true});
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
-			if(datePattern.test(data)){
+			if(datePattern.test(data)) {
 				const date = currentTime.format(timeFormat.date);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+				expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
 					const time = currentTime.format(timeFormat.time);
 					data = reformTimeData(data, time);
-					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
+					expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [LOG]: Test\n`);
 					void app.done();
 				});
 			}else{
 				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [LOG]: Test\n`);
+				expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [LOG]: Test\n`);
 				void app.done();
 			}
 		});
 		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
 		app.config.log = timeFormat;
 		//app.send({'command': 'log', args: ["Test"]});
-		app.log("Test");
+		app.log('Test');
 	});
 });
 
@@ -123,25 +123,25 @@ describe('spawnpoint.info', () => {
 		const app = new processVoid(done, spawnpoint, {'construct': true});
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
-			if(datePattern.test(data)){
+			if(datePattern.test(data)) {
 				const date = currentTime.format(timeFormat.date);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+				expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
 					const time = currentTime.format(timeFormat.time);
 					data = reformTimeData(data, time);
-					expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
+					expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [INFO]: Test\n`);
 					void app.done();
 				});
 			}else{
 				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
-				expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [INFO]: Test\n`);
+				expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [INFO]: Test\n`);
 				void app.done();
 			}
 		});
 		//app.send({"set": {'key': 'config.log', 'value': timeFormat}});
 		app.config.log = timeFormat;
-		app.info("Test");
+		app.info('Test');
 		//app.send({'command': 'info', args: ["Test"]});
 	});
 });
@@ -152,16 +152,16 @@ describe('spawnpoint.warn', () => {
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+			expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 		});
 		app.stderr.once('data', (data) => {
 			const time = currentTime.format(timeFormat.time);
 			data = reformTimeData(data, time);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [WARN]: Test\n`);
+			expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [WARN]: Test\n`);
 			void app.done();
 		});
 		app.config.log = timeFormat;
-		app.warn("Test");
+		app.warn('Test');
 	});
 });
 
@@ -171,15 +171,15 @@ describe('spawnpoint.error', () => {
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${date}]\n`);
+			expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 		});
 		app.stderr.once('data', (data) => {
 			const time = currentTime.format(timeFormat.time);
 			data = reformTimeData(data, time);
-			expect(data, 'when decoded as', 'utf-8', 'to equal', `[${time}] [ERROR]: Test\n`);
+			expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [ERROR]: Test\n`);
 			void app.done();
 		});
 		app.config.log = timeFormat;
-		app.error("Test");
+		app.error('Test');
 	});
 });

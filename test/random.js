@@ -1,5 +1,5 @@
 'use strict';
-const assert = require('assert');
+const assert = require('node:assert');
 const spawnpoint = require('..');
 describe('spawnpoint.random', () => {
 	const app = new spawnpoint();
@@ -9,12 +9,12 @@ describe('spawnpoint.random', () => {
 		assert.throws(() => app.random(true), Error);
 		assert.throws(() => app.random({foo: 'bar'}), Error);
 		assert.throws(() => app.random(['foo', 'bar']), Error);
-		assert.throws(() => app.random("five"), Error);
+		assert.throws(() => app.random('five'), Error);
 	});
 
 	it('successfully creates 10000 random strings', () => {
 		const randomStrings = [];
-		for(let i = 0; i < 10000; i++){
+		for(let i = 0; i < 10000; i++) {
 			randomStrings.push(app.random());
 		}
 		assert(!randomStrings.every(item => item === randomStrings[0]));

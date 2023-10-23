@@ -1,0 +1,6 @@
+{
+	"name": "Simple, resetting the config blocklist.",
+	"log": null,
+	"signals": null,
+	"resetConfigBlockListDefaults": true
+}
