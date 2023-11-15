@@ -1,6 +1,8 @@
 'use strict';
 const assert = require('node:assert');
+
 const _ = require('lodash');
+
 const spawnpoint = require('..');
 describe('spawnpoint.sample', () => {
 	const app = new spawnpoint();

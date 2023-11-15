@@ -1,7 +1,9 @@
 'use strict';
 const assert = require('node:assert');
-const expect = require('unexpected');
+
 const _ = require('lodash');
+const expect = require('unexpected');
+
 const spawnpoint = require('..');
 
 describe('spawnpoint.recursiveList', () => {
@@ -10,7 +12,7 @@ describe('spawnpoint.recursiveList', () => {
 		assert.throws(() => app.recursiveList(), Error);
 		assert.throws(() => app.recursiveList(false), Error);
 		assert.throws(() => app.recursiveList(true), Error);
-		assert.throws(() => app.recursiveList({foo: 'bar'}), Error);
+		assert.throws(() => app.recursiveList({ foo: 'bar' }), Error);
 		assert.throws(() => app.recursiveList(['foo', 'bar']), Error);
 
 		// REVIEW: these tests due to the way recursiveList suppresses empty results to an empty array.

@@ -1,9 +1,10 @@
 'use strict';
 
-const expect = require('unexpected');
-const spawnpoint = require('..');
-const _ = require('lodash');
 const async = require('async');
+const _ = require('lodash');
+const expect = require('unexpected');
+
+const spawnpoint = require('..');
 
 describe('spawnpoint.initConfig', () => {
 	it('successfully takes a configFile in the constructor', () => {
@@ -77,8 +78,8 @@ describe('spawnpoint.initConfig', () => {
 		used = {};
 		async.times(app.config.numArray.length * 15, (i, cb) => {
 			app.config.getAndLock('numArray', (err, results, clear) => {
-				if(err) { return cb(err); }
-				if(used[results]) {
+				if (err) { return cb(err); }
+				if (used[results]) {
 					clear();
 					return cb(new Error('Returned another result that is already in use.'));
 				}

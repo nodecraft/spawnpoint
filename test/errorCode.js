@@ -1,5 +1,6 @@
 'use strict';
 const assert = require('node:assert');
+
 const spawnpoint = require('..');
 
 process.chdir(__dirname);
@@ -33,7 +34,7 @@ describe('spawnpoint.errorCode', () => {
 		assert.throws(() => app.errorCode(), Error);
 		assert.throws(() => app.errorCode(null), Error);
 		assert.throws(() => app.errorCode(true), Error);
-		assert.throws(() => app.errorCode({foo: 'bar'}), Error);
+		assert.throws(() => app.errorCode({ foo: 'bar' }), Error);
 		assert.throws(() => app.errorCode(['foo', 'bar']), Error);
 	});
 	// TODO: print a plugin code
