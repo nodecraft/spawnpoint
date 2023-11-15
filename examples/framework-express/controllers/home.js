@@ -18,7 +18,7 @@ module.exports = function(app) {
 			email: app.joi.string().email(),
 		},
 	}), function(req, res) {
-		if(req.body.user.length < 2) {
+		if (req.body.user.length < 2) {
 			return res.invalid({
 				'user': app.code('user.username_length'),
 			});

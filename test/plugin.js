@@ -1,5 +1,6 @@
 'use strict';
 const assert = require('node:assert');
+
 const spawnpoint = require('..');
 
 describe('plugin registration', () => {

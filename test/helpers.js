@@ -1,10 +1,11 @@
 'use strict';
 const assert = require('node:assert');
-const expect = require('unexpected');
 
-const _ = require('lodash');
+
 const dayjs = require('dayjs');
 const kleur = require('kleur');
+const _ = require('lodash');
+const expect = require('unexpected');
 //const processVoid = require('process-void');
 //const spawnpoint = require.resolve('..');
 
@@ -34,7 +35,7 @@ describe('helpers.tag', () => {
 
 	it('throws with invalid input', () => {
 		assert.throws(() => helpers.tag(true), Error);
-		assert.throws(() => helpers.tag({foo: 'bar'}), Error);
+		assert.throws(() => helpers.tag({ foo: 'bar' }), Error);
 		assert.throws(() => helpers.tag(['foo', 'bar']), Error);
 		assert.throws(() => helpers.tag(1), Error);
 	});
@@ -44,7 +45,7 @@ describe('helpers.camelCase', () => {
 	it('throws with invalid input', () => {
 		assert.throws(() => helpers.camelCase(), Error);
 		assert.throws(() => helpers.camelCase(false), Error);
-		assert.throws(() => helpers.camelCase({foo: 'bar'}), Error);
+		assert.throws(() => helpers.camelCase({ foo: 'bar' }), Error);
 		assert.throws(() => helpers.camelCase(['foo', 'bar']), Error);
 	});
 
@@ -153,6 +154,6 @@ describe('helpers.omit', () => {
 		const output = helpers.omit(input, ['foo']);
 		assert(output.foo === undefined);
 		assert(output.bar === 'foo');
-		assert(output, {bar: 'foo'});
+		assert(output, { bar: 'foo' });
 	});
 });

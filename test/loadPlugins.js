@@ -1,5 +1,6 @@
 'use strict';
 const expect = require('unexpected');
+
 const spawnpoint = require('..');
 
 describe('spawnpoint.loadPlugins', () => {

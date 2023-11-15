@@ -1,6 +1,8 @@
 'use strict';
 const assert = require('node:assert');
+
 const _ = require('lodash');
+
 const spawnpoint = require('..');
 
 describe('spawnpoint.roundRobin', () => {
@@ -12,7 +14,7 @@ describe('spawnpoint.roundRobin', () => {
 		assert.throws(() => app.roundRobin(10), Error);
 		assert.throws(() => app.roundRobin(false), Error);
 		assert.throws(() => app.roundRobin(true), Error);
-		assert.throws(() => app.roundRobin({foo: 'bar'}), Error);
+		assert.throws(() => app.roundRobin({ foo: 'bar' }), Error);
 		assert.throws(() => app.roundRobin('five'), Error);
 	});
 
@@ -22,14 +24,14 @@ describe('spawnpoint.roundRobin', () => {
 		let used = [];
 
 		let i = 0;
-		while(i < (test.length * 15)) {
+		while (i < (test.length * 15)) {
 			i++;
 			const results = rr.next();
 			assert(!used.includes(results), 'roundRobin failed, item was reused unevenly');
 			used.push(results);
 
 			// reset when full
-			if(used.length === test.length) {
+			if (used.length === test.length) {
 				used = [];
 			}
 		}
@@ -41,14 +43,14 @@ describe('spawnpoint.roundRobin', () => {
 		let used = [];
 
 		let i = 0;
-		while(i < (test.length * 15)) {
+		while (i < (test.length * 15)) {
 			i++;
 			const results = rr.item;
 			assert(!used.includes(results), 'roundRobin failed, item was reused unevenly');
 			used.push(results);
 
 			// reset when full
-			if(used.length === test.length) {
+			if (used.length === test.length) {
 				used = [];
 			}
 		}
@@ -62,14 +64,14 @@ describe('spawnpoint.roundRobin', () => {
 		let used = [];
 
 		let i = 0;
-		while(i < (test.length * 15)) {
+		while (i < (test.length * 15)) {
 			i++;
 			const results = rr.item;
 			assert(!used.includes(results), 'roundRobin failed, item was reused unevenly');
 			used.push(results);
 
 			// reset when full
-			if(used.length === test.length) {
+			if (used.length === test.length) {
 				used = [];
 			}
 		}

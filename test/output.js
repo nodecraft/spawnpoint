@@ -1,8 +1,7 @@
 'use strict';
-const expect = require('unexpected');
 const dayjs = require('dayjs');
-
 const processVoid = require('process-void');
+const expect = require('unexpected');
 const spawnpoint = require.resolve('..');
 
 const timeFormat = {
@@ -36,16 +35,16 @@ const subtractOneMinute = (time) => {
 	 *   time[minutes]--;
 	 *   ...
 	*/
-	if(tCopy[5] < 48) {
+	if (tCopy[5] < 48) {
 		tCopy[5] = 57;
 		tCopy[4]--;
-		if(tCopy[4] < 48) {
+		if (tCopy[4] < 48) {
 			tCopy[4] = 53;
 			tCopy[2]--;
-			if(tCopy[2] < 48) {
+			if (tCopy[2] < 48) {
 				tCopy[2] = 57;
 				tCopy[1]--;
-				if(tCopy[1] < 48) {
+				if (tCopy[1] < 48) {
 					tCopy[1] = 50;
 					tCopy[2] = 51;
 				}
@@ -66,10 +65,10 @@ const reformTimeData = (data, time) => {
 	const dataTime = [...data].slice(0, 7);
 	const remains = [...data].slice(7, [...data].length);
 
-	if(Buffer.from(dataTime).toString() !== time) {
+	if (Buffer.from(dataTime).toString() !== time) {
 		const newTime = subtractOneMinute(dataTime);
 		const newTimeString = Buffer.from(newTime).toString();
-		if(newTimeString !== time) {
+		if (newTimeString !== time) {
 			return Buffer.from('Check reformTimeData(), result was: ' + Buffer.from([...newTime, ...remains]).toString());
 		}
 		return Buffer.from([...newTime, ...remains]);
@@ -79,7 +78,7 @@ const reformTimeData = (data, time) => {
 
 describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, {'construct': true});
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		void app.stdout.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf8', 'to equal', 'Test\n');
 			void app.done();
@@ -91,10 +90,10 @@ describe('spawnpoint.debug', () => {
 
 describe('spawnpoint.log', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, {'construct': true});
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
-			if(datePattern.test(data)) {
+			if (datePattern.test(data)) {
 				const date = currentTime.format(timeFormat.date);
 				expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
@@ -103,7 +102,7 @@ describe('spawnpoint.log', () => {
 					expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [LOG]: Test\n`);
 					void app.done();
 				});
-			}else{
+			} else {
 				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [LOG]: Test\n`);
@@ -120,10 +119,10 @@ describe('spawnpoint.log', () => {
 describe('spawnpoint.info', () => {
 	it('should output Test', (done) => {
 		//const app = fork('./autoload-void', [''], { 'silent': true });
-		const app = new processVoid(done, spawnpoint, {'construct': true});
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
-			if(datePattern.test(data)) {
+			if (datePattern.test(data)) {
 				const date = currentTime.format(timeFormat.date);
 				expect(data, 'when decoded as', 'utf8', 'to equal', `[${date}]\n`);
 				app.stdout.once('data', (data) => {
@@ -132,7 +131,7 @@ describe('spawnpoint.info', () => {
 					expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [INFO]: Test\n`);
 					void app.done();
 				});
-			}else{
+			} else {
 				const time = currentTime.format(timeFormat.time);
 				data = reformTimeData(data, time);
 				expect(data, 'when decoded as', 'utf8', 'to equal', `[${time}] [INFO]: Test\n`);
@@ -148,7 +147,7 @@ describe('spawnpoint.info', () => {
 
 describe('spawnpoint.warn', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, {'construct': true});
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);
@@ -167,7 +166,7 @@ describe('spawnpoint.warn', () => {
 
 describe('spawnpoint.error', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, {'construct': true});
+		const app = new processVoid(done, spawnpoint, { 'construct': true });
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);

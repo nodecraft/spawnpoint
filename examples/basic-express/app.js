@@ -1,6 +1,7 @@
 'use strict';
-const spawnpoint = require('../../');
 const express = require('express');
+
+const spawnpoint = require('../../');
 
 const app = new spawnpoint();
 
@@ -16,7 +17,7 @@ app.server.use(function(req, res) {
 });
 
 app.server.listen(8080, function(err) {
-	if(err) {
+	if (err) {
 		app.error('Failed to startup server');
 		app.debug(err);
 		// eslint-disable-next-line no-process-exit

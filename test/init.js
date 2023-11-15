@@ -1,9 +1,12 @@
 'use strict';
 const assert = require('node:assert');
-const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
-const processVoid = require('process-void');
-const spawnpoint = require('..');
+
 const _ = require('lodash');
+const processVoid = require('process-void');
+const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
+
+const spawnpoint = require('..');
+
 
 process.chdir(__dirname);
 describe('spawnpoint initialization', () => {
@@ -14,7 +17,7 @@ describe('spawnpoint initialization', () => {
 	});
 
 	it('fails with bad configFile', () => {
-		assert.throws(() => new spawnpoint({invalid: 'object'}), Error);
+		assert.throws(() => new spawnpoint({ invalid: 'object' }), Error);
 		assert.throws(() => new spawnpoint(['invalid', 'array']), Error);
 		assert.throws(() => new spawnpoint(null), Error);
 		assert.throws(() => new spawnpoint(true), Error);
@@ -56,7 +59,7 @@ describe('spawnpoint setup', () => {
 	it('sync autoloading', (done) => {
 		const app = new spawnpoint('config/autoloading-sync.json');
 		app.setup((err) => {
-			if(err) { return done(err); }
+			if (err) { return done(err); }
 			assert(app.customHoistedVarFromAutoload);
 			done();
 		});
@@ -65,7 +68,7 @@ describe('spawnpoint setup', () => {
 	it('async autoloading', (done) => {
 		const app = new spawnpoint('config/autoloading-async.json');
 		app.setup((err) => {
-			if(err) { return done(err); }
+			if (err) { return done(err); }
 			assert(app.customHoistedVarFromAutoload);
 			done();
 		});
@@ -74,7 +77,7 @@ describe('spawnpoint setup', () => {
 	it('autoloading with folder only', (done) => {
 		const app = new spawnpoint('config/autoloading-noName.json');
 		app.setup((err) => {
-			if(err) { return done(err); }
+			if (err) { return done(err); }
 			expect(app.customHoistedVarFromAutoload, 'to be true');
 			done();
 		});
@@ -82,7 +85,7 @@ describe('spawnpoint setup', () => {
 
 	it('sync autoloading error handles correctly', (done) => {
 		//const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
-		const app = new processVoid(done, require.resolve('..'), {'construct': true}, 'config/autoloading-error.json');
+		const app = new processVoid(done, require.resolve('..'), { 'construct': true }, 'config/autoloading-error.json');
 		app.stderr.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf8', 'to contain', 'TypeError');
 			void app.done();
@@ -232,7 +235,7 @@ describe('spawnpoint registry', () => {
 			runs += 2;
 			index %= 2;
 			index += 2;
-			if(runs >= index) {
+			if (runs >= index) {
 				it('with ' + index + ' stopAttempts forcefully stops once app.stop is called ' + index + ' times', (done) => {
 					app.register.push('lodash'); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
@@ -240,7 +243,7 @@ describe('spawnpoint registry', () => {
 					expect(() => app.emit('app.stop'), 'to emit from', app, 'app.exit');
 					done();
 				});
-			}else if(runs < index) {
+			} else if (runs < index) {
 				it('with ' + index + ' stopAttempts never stops with app.stop being called ' + runs + ' times', (done) => {
 					app.register.push('lodash'); // make sure the other way app.exit can be called doesn't happen.
 					app.config.stopAttempts = index;
@@ -259,15 +262,15 @@ describe('spawnpoint registry', () => {
 				expect(message, 'when decoded as', 'utf8', 'to equal', 'Test gracefully closed.\n');
 				expect(testApp.exited, 'to have property', 'code', 0);
 				done();
-			}, require.resolve('..'), {construct: true});
+			}, require.resolve('..'), { construct: true });
 			testApp.config.name = 'Test';
-			testApp.config.log = {format: '{line}'};
+			testApp.config.log = { format: '{line}' };
 			testApp.initRegistry();
 			const date = /^\[\d{4}-[01]\d-[0-3]\dT[0-2](?:\d:[0-6]){2}\d[+-][01]\d:\d{2}]\n$/;
 			testApp.stdout.once('data', (data) => {
-				if(date.test(data)) {
+				if (date.test(data)) {
 					testApp.stdout.once('data', (data) => { message = data; });
-				}else{
+				} else {
 					message = data;
 				}
 			});
@@ -279,7 +282,7 @@ describe('spawnpoint registry', () => {
 			const testApp = new processVoid(() => {
 				expect(testApp.exited, 'to have property', 'code', 1);
 				done();
-			}, require.resolve('..'), {construct: true});
+			}, require.resolve('..'), { construct: true });
 			testApp.initRegistry();
 			testApp.emit('app.exit', false);
 		});

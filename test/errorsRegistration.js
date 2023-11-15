@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/custom-error-definition */
 'use strict';
 const assert = require('node:assert');
+
 const spawnpoint = require('..');
 
 // resources for creating tests:
