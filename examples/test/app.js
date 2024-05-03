@@ -46,5 +46,4 @@ app.on('app.ready', function() {
 			setTimeout(clear, _.random(2000, 6000));
 		});
 	}
-
 });

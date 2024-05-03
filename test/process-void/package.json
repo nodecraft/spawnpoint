@@ -1,0 +1,57 @@
+{
+  "_from": "process-void@^1.0.2",
+  "_id": "process-void@1.0.2",
+  "_inBundle": false,
+  "_integrity": "sha512-vc3o69vUAVX8/v9+XMHUUCRSqXT/QBXzdqGMKHpRLr6xJ0ywtURJuOke7BoJfnlqR9G9CnBb5mTz9vSqmfSTvA==",
+  "_location": "/process-void",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "process-void@^1.0.2",
+    "name": "process-void",
+    "escapedName": "process-void",
+    "rawSpec": "^1.0.2",
+    "saveSpec": null,
+    "fetchSpec": "^1.0.2"
+  },
+  "_requiredBy": [
+    "#DEV:/"
+  ],
+  "_resolved": "https://registry.npmjs.org/process-void/-/process-void-1.0.2.tgz",
+  "_shasum": "582bfe377b9eea074ec13829794ffe644778b9ae",
+  "_spec": "process-void@^1.0.2",
+  "_where": "E:\\GitHub\\spawnpoint",
+  "bugs": {
+    "url": "https://gitlab.com/TheGreatKitsune/process-void/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "lodash": "^4.17.11"
+  },
+  "deprecated": false,
+  "description": "Runs a module in a child process and allows simple interactions with it.",
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.2.0",
+    "unexpected": "^11.0.1"
+  },
+  "homepage": "https://gitlab.com/TheGreatKitsune/process-void",
+  "keywords": [
+    "child-process"
+  ],
+  "license": "MIT",
+  "main": "void.js",
+  "name": "process-void",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/TheGreatKitsune/process-void.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "nyc": "nyc mocha",
+    "test": "npm run lint && npm run nyc"
+  },
+  "version": "1.0.2"
+}

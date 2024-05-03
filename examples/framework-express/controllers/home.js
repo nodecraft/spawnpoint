@@ -20,7 +20,7 @@ module.exports = function(app) {
 	}), function(req, res) {
 		if (req.body.user.length < 2) {
 			return res.invalid({
-				'user': app.code('user.username_length'),
+				user: app.code('user.username_length'),
 			});
 		}
 		res.success('user.valid', req.body);

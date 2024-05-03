@@ -2,15 +2,15 @@
 const assert = require('node:assert');
 
 const _ = require('lodash');
-const processVoid = require('process-void');
-const expect = require('unexpected').clone().use(require('unexpected-eventemitter'));
+const expectRaw = require('unexpected');
 
+const processVoid = require('./process-void/void.js');
 const spawnpoint = require('..');
 
+const expect = expectRaw.clone().use(require('unexpected-eventemitter'));
 
 process.chdir(__dirname);
 describe('spawnpoint initialization', () => {
-
 	it('Successfully initializes', () => {
 		assert.doesNotThrow(() => new spawnpoint());
 		assert.doesNotThrow(() => new spawnpoint('config/app.json'));
@@ -25,7 +25,6 @@ describe('spawnpoint initialization', () => {
 });
 
 describe('spawnpoint setup', () => {
-
 	it('Basic startup', (done) => {
 		const app = new spawnpoint();
 		app.setup(done);
@@ -85,7 +84,7 @@ describe('spawnpoint setup', () => {
 
 	it('sync autoloading error handles correctly', (done) => {
 		//const app = fork('./autoload-void', ['config/autoloading-error.json'], { 'silent': true });
-		const app = new processVoid(done, require.resolve('..'), { 'construct': true }, 'config/autoloading-error.json');
+		const app = new processVoid(done, require.resolve('..'), { construct: true }, 'config/autoloading-error.json');
 		app.stderr.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf8', 'to contain', 'TypeError');
 			void app.done();

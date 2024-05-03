@@ -1,7 +1,8 @@
 'use strict';
 const dayjs = require('dayjs');
-const processVoid = require('process-void');
 const expect = require('unexpected');
+
+const processVoid = require('./process-void/void.js');
 const spawnpoint = require.resolve('..');
 
 const timeFormat = {
@@ -78,7 +79,7 @@ const reformTimeData = (data, time) => {
 
 describe('spawnpoint.debug', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		const app = new processVoid(done, spawnpoint, { construct: true });
 		void app.stdout.once('data', (data) => {
 			expect(data, 'when decoded as', 'utf8', 'to equal', 'Test\n');
 			void app.done();
@@ -90,7 +91,7 @@ describe('spawnpoint.debug', () => {
 
 describe('spawnpoint.log', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		const app = new processVoid(done, spawnpoint, { construct: true });
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
 			if (datePattern.test(data)) {
@@ -119,7 +120,7 @@ describe('spawnpoint.log', () => {
 describe('spawnpoint.info', () => {
 	it('should output Test', (done) => {
 		//const app = fork('./autoload-void', [''], { 'silent': true });
-		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		const app = new processVoid(done, spawnpoint, { construct: true });
 		app.stdout.once('data', (data) => {
 			const currentTime = dayjs();
 			if (datePattern.test(data)) {
@@ -147,7 +148,7 @@ describe('spawnpoint.info', () => {
 
 describe('spawnpoint.warn', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		const app = new processVoid(done, spawnpoint, { construct: true });
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);
@@ -166,7 +167,7 @@ describe('spawnpoint.warn', () => {
 
 describe('spawnpoint.error', () => {
 	it('should output Test', (done) => {
-		const app = new processVoid(done, spawnpoint, { 'construct': true });
+		const app = new processVoid(done, spawnpoint, { construct: true });
 		const currentTime = dayjs();
 		app.stdout.once('data', (data) => {
 			const date = currentTime.format(timeFormat.date);

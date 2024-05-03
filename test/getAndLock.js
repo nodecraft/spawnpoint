@@ -107,5 +107,4 @@ describe('spawnpoint.getAndLock', () => {
 			done(err);
 		});
 	});
-
 });
