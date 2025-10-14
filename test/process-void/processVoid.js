@@ -1,5 +1,3 @@
-
-
 'use strict';
 const target = require(process.argv[2]);
 const _ = require('lodash');

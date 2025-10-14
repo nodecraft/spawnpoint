@@ -65,7 +65,9 @@ describe('spawnpoint.initConfig', () => {
 		expect(app.config.get, 'when called with', ['codes'], 'to equal', '/config/codes');
 		expect(app.config.has, 'when called with', ['log.format'], 'to be false');
 		app.initCodes();
-		expect(() => { app.config.getRandom('log.format'); }, 'to throw');
+		expect(() => {
+			app.config.getRandom('log.format');
+		}, 'to throw');
 		app.config.numArray = [1, 2, 3, 4, 5];
 		expect(app.config.getRandom, 'when called with', ['numArray'], 'to be one of', app.config.numArray);
 		let used = [];

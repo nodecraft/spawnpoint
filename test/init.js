@@ -4,8 +4,8 @@ const assert = require('node:assert');
 const _ = require('lodash');
 const expectRaw = require('unexpected');
 
-const processVoid = require('./process-void/void.js');
 const spawnpoint = require('..');
+const processVoid = require('./process-void/void.js');
 
 const expect = expectRaw.clone().use(require('unexpected-eventemitter'));
 
@@ -268,7 +268,9 @@ describe('spawnpoint registry', () => {
 			const date = /^\[\d{4}-[01]\d-[0-3]\dT[0-2](?:\d:[0-6]){2}\d[+-][01]\d:\d{2}]\n$/;
 			testApp.stdout.once('data', (data) => {
 				if (date.test(data)) {
-					testApp.stdout.once('data', (data) => { message = data; });
+					testApp.stdout.once('data', (data) => {
+						message = data;
+					});
 				} else {
 					message = data;
 				}
