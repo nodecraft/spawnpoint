@@ -1,6 +1,5 @@
 'use strict';
 
-/* eslint-disable node/no-extraneous-require */
 module.exports = require('../..').registerPlugin({
 	dir: __dirname,
 	name: 'TestWCallback',

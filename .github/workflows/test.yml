@@ -7,22 +7,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        node: [18, 20]
+        node: [20, 22]
     name: Node ${{ matrix.node }} ${{ matrix.os }} Test
     steps:
       - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-      - name: Restore NPM cache
-        uses: actions/cache@v3
-        continue-on-error: true
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          cache: "npm"
       - run: npm ci
       - run: npm test
       - run: npm run coverage
@@ -30,3 +23,15 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.github_token }}
+          parallel: true
+          flag-name: run-${{ join(matrix.*, '-') }}
+
+  finish:
+    needs: test
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true

@@ -1,6 +1,6 @@
 {
 	"name": "spawnpoint",
-	"version": "2.2.1",
+	"version": "2.3.0",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
 	"keywords": [
 		"app",
@@ -43,31 +43,31 @@
 		"test": "npm run lint && npm run nyc"
 	},
 	"dependencies": {
-		"async": "^2.6.4",
-		"dayjs": "^1.11.11",
+		"async": "^3.2.6",
+		"dayjs": "^1.11.18",
 		"json-lint": "^0.1.0",
 		"kleur": "^4.1.5",
 		"lodash": "^4.17.21",
 		"minimist": "^1.2.8",
-		"nanoid": "^3.3.7",
+		"nanoid": "^5.1.6",
 		"string-template": "^1.0.0",
 		"strip-json-comments": "^3.1.1"
 	},
 	"devDependencies": {
-		"@nodecraft/eslint-config": "^35.0.0",
+		"@nodecraft/eslint-config": "^46.0.0",
 		"coveralls": "^3.1.1",
-		"eslint": "^8.57.0",
-		"eslint-plugin-json": "^3.1.0",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-unicorn": "^52.0.0",
-		"jsdoc-to-markdown": "^8.0.1",
-		"mocha": "^10.4.0",
-		"nyc": "^15.1.0",
+		"eslint": "^8.57.1",
+		"eslint-plugin-json": "^4.0.1",
+		"eslint-plugin-n": "^17.23.1",
+		"eslint-plugin-unicorn": "^56.0.1",
+		"jsdoc-to-markdown": "^9.1.3",
+		"mocha": "^11.7.4",
+		"nyc": "^17.1.0",
 		"unexpected": "^13.2.1",
 		"unexpected-eventemitter": "^2.4.0"
 	},
 	"engines": {
-		"node": ">=18",
-		"npm": ">=8"
+		"node": ">=22",
+		"npm": ">=10"
 	}
 }

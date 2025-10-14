@@ -20,7 +20,7 @@ app.server.listen(8080, function(err) {
 	if (err) {
 		app.error('Failed to startup server');
 		app.debug(err);
-		// eslint-disable-next-line no-process-exit
+		// eslint-disable-next-line n/no-process-exit
 		return process.exit(1);
 	}
 	app.info('Server is online!');
