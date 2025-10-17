@@ -1,6 +1,6 @@
 {
 	"name": "spawnpoint",
-	"version": "2.3.0",
+	"version": "2.3.1",
 	"description": "Agnostic JS framework that empowers devs to focus on quickly building apps, rather than focusing on application config, health-checks, application structure, or architecture to build a 12 factor app in Docker.",
 	"keywords": [
 		"app",
