@@ -32,6 +32,13 @@
 	"license": "MIT",
 	"author": "Nodecraft, Inc.",
 	"main": "index.js",
+	"files": [
+		"index.js",
+		"lib",
+		"codes",
+		"config-blocklist.json",
+		"docs.md"
+	],
 	"scripts": {
 		"coverage": "vitest run --coverage",
 		"docs": "jsdoc2md lib/spawnpoint.js > docs.md",
