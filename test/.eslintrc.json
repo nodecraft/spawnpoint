@@ -3,7 +3,14 @@
 		"../.eslintrc.json"
 	],
 	"env": {
-		"node": true,
-		"mocha": true
-	}
+		"node": true
+	},
+	"overrides": [
+		{
+			"files": ["*.mjs"],
+			"parserOptions": {
+				"sourceType": "module"
+			}
+		}
+	]
 }

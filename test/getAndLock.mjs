@@ -1,25 +1,28 @@
-'use strict';
-const assert = require('node:assert');
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const async = require('async');
-const _ = require('lodash');
+import async from 'async';
+import _ from 'lodash';
+import { describe, expect, it } from 'vitest';
 
-const spawnpoint = require('..');
+import spawnpoint from '../index.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 describe('spawnpoint.getAndLock', () => {
-	const app = new spawnpoint();
+	const app = new spawnpoint({ cwd: __dirname });
 	const test = ['one', 'two', 'three', 'four', 'five'];
 
 	it('fails with bad/invalid options', () => {
-		assert.throws(() => app.getAndLock(''), Error);
-		assert.throws(() => app.getAndLock(10), Error);
-		assert.throws(() => app.getAndLock(false), Error);
-		assert.throws(() => app.getAndLock(true), Error);
-		assert.throws(() => app.getAndLock({ foo: 'bar' }), Error);
-		assert.throws(() => app.getAndLock('five'), Error);
+		expect(() => app.getAndLock('')).toThrow(Error);
+		expect(() => app.getAndLock(10)).toThrow(Error);
+		expect(() => app.getAndLock(false)).toThrow(Error);
+		expect(() => app.getAndLock(true)).toThrow(Error);
+		expect(() => app.getAndLock({ foo: 'bar' })).toThrow(Error);
+		expect(() => app.getAndLock('five')).toThrow(Error);
 	});
 
-	it('never calls the same locked value async', (done) => {
+	it('never calls the same locked value async', () => new Promise((resolve, reject) => {
 		const lock = app.getAndLock(test);
 
 		const used = {};
@@ -37,11 +40,14 @@ describe('spawnpoint.getAndLock', () => {
 					return cb();
 				}, _.random(10, 75));
 			});
-		}, done);
-	});
+		}, (err) => {
+			if (err) { return reject(err); }
+			resolve();
+		});
+	}));
 
-	it('Still works even when spawnpoint is initialized', (done) => {
-		const newApp = new spawnpoint();
+	it('Still works even when spawnpoint is initialized', () => new Promise((resolve, reject) => {
+		const newApp = new spawnpoint({ cwd: __dirname });
 		newApp.setup();
 		const lock = newApp.getAndLock(test);
 
@@ -60,24 +66,28 @@ describe('spawnpoint.getAndLock', () => {
 					return cb();
 				}, _.random(10, 75));
 			});
-		}, done);
-	});
+		}, (err) => {
+			if (err) { return reject(err); }
+			resolve();
+		});
+	}));
 
-	it('Correctly does not trigger timeout', (done) => {
+	it('Correctly does not trigger timeout', () => new Promise((resolve, reject) => {
 		const lock = app.getAndLock(test);
 		for (let i = 0; i < test.length; i++) {
 			lock.next((err, results, clear) => {
-				if (err) { return done(err); }
+				if (err) { return reject(err); }
 				setTimeout(clear, 1);
 			});
 		}
 		lock.next(50, (err, results, clear) => {
 			clear();
-			done(err);
+			if (err) { return reject(err); }
+			resolve();
 		});
-	});
+	}));
 
-	it('Correctly triggers timeout', (done) => {
+	it('Correctly triggers timeout', () => new Promise((resolve) => {
 		const lock = app.getAndLock(test);
 		for (let i = 0; i < test.length; i++) {
 			lock.next((err, results, clear) => {
@@ -85,26 +95,29 @@ describe('spawnpoint.getAndLock', () => {
 			});
 		}
 		lock.next(100, (err, results, clear) => {
-			assert(!results, 'Should not have returned results.');
-			assert(err && err.code === 'getAndLock.locked_timeout', 'Wrong error returned: ' + err.code);
+			expect(results).toBeFalsy();
+			expect(err).toBeTruthy();
+			expect(err.code).toBe('getAndLock.locked_timeout');
 			clear();
-			setTimeout(done, 750);
+			setTimeout(resolve, 750);
 		});
-	});
+	}));
 
-	it('Timeout doesn\'t hold up entire queue', (done) => {
+	it('Timeout doesn\'t hold up entire queue', () => new Promise((resolve, reject) => {
 		const lock = app.getAndLock(['singleItem']);
 		lock.next((err, results, clear) => {
 			setTimeout(clear, 100);
 		});
 		lock.next(50, (err, results, clear) => {
-			assert(!results, 'Should not have returned results.');
-			assert(err && err.code === 'getAndLock.locked_timeout', 'Wrong error returned: ' + err.code);
+			expect(results).toBeFalsy();
+			expect(err).toBeTruthy();
+			expect(err.code).toBe('getAndLock.locked_timeout');
 			setTimeout(clear, 500);
 		});
 		lock.next(1000, (err, results, clear) => {
 			clear();
-			done(err);
+			if (err) { return reject(err); }
+			resolve();
 		});
-	});
+	}));
 });

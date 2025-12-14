@@ -21,6 +21,7 @@ class ProcessVoid {
 		const self = {};
 		const forkOptions = {
 			silent: true,
+			cwd: options.cwd || process.cwd(),
 		};
 		if (typeof(callback) === 'function') {
 			self.callback = callback;
