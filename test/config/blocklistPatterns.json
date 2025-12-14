@@ -1,0 +1,20 @@
+{
+	"name": "Simple, with blocklist patterns.",
+	"log": null,
+	"signals": null,
+	"catchExceptions": false,
+	"configBlocklist": {
+		"env": {
+			"list": ["BLOCKED_VAR"],
+			"patterns": ["^SECRET_", "^PRIVATE_"]
+		},
+		"secrets": {
+			"list": [],
+			"patterns": ["^api_key"]
+		},
+		"args": {
+			"list": ["blocked-arg"],
+			"patterns": ["^secret-"]
+		}
+	}
+}

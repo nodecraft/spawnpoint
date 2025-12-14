@@ -1,6 +1,6 @@
-'use strict';
-const spawnpoint = require('..');
-//const expect = require('unexpected');
+import { describe, it } from 'vitest';
+
+import spawnpoint from '../index.js';
 
 describe('spawnpoint.isSecure', () => {
 	if (typeof(process.getuid) === 'function' && process.getuid() === 0) {

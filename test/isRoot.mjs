@@ -1,5 +1,6 @@
-'use strict';
-const spawnpoint = require('..');
+import { describe, it } from 'vitest';
+
+import spawnpoint from '../index.js';
 
 describe('spawnpoint.isRoot', () => {
 	it('Should run successfully', function() {
