@@ -59,6 +59,7 @@ describe('spawnpoint.recursiveList', () => {
 				'json/badLint.json',
 				'json/commented.json',
 				'json/good.json',
+				'json/urls.json',
 			],
 		};
 		const results = {

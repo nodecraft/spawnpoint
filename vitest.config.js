@@ -7,11 +7,6 @@ module.exports = defineConfig({
 		testTimeout: 10000,
 		hookTimeout: 10000,
 		pool: 'forks',
-		poolOptions: {
-			forks: {
-				singleFork: true,
-			},
-		},
 		fileParallelism: false,
 		include: ['test/**/*.mjs'],
 		exclude: [

@@ -1,0 +1,5 @@
+{
+	"url": "https://example.com//path",
+	"glob": "src/**/*.js",
+	"block": "/* not a comment */"
+}

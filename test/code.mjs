@@ -37,6 +37,19 @@ describe('spawnpoint.code', () => {
 	it('should print a app code', () => {
 		expect(app.code('test.code')).toEqual(tests.custom);
 	});
+	it('fills in code and message without overriding provided values', () => {
+		const data = { message: 'custom', extra: 1 };
+		expect(app.code('test.code', data)).toBe(data);
+		expect(data).toEqual({ message: 'custom', extra: 1, code: 'test.code' });
+	});
+	it('returns a new code object when data is null', () => {
+		expect(app.code('test.code', null)).toEqual(tests.custom);
+	});
+	it('does not throw on frozen data', () => {
+		const data = Object.freeze({ extra: 1 });
+		expect(app.code('test.code', data)).toBe(data);
+		expect(data).toEqual({ extra: 1 });
+	});
 	it('Throws on an unset code', () => {
 		expect(() => app.code('invalid.unset.code')).toThrow(Error);
 	});

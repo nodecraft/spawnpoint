@@ -41,6 +41,9 @@ class voidBridge extends EventEmitter {
 				this.emit('result', id);
 				this.emit(`result_${id}`);
 			}
+		});
+		// stdio can still be open when 'exit' fires, so wait for 'close' or tests may miss the child's final output
+		this.bridge.on('close', () => {
 			this.emit('exit');
 		});
 	}

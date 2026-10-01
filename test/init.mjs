@@ -346,28 +346,23 @@ describe('spawnpoint registry', () => {
 	});
 
 	describe('app.exit', () => {
-		it('allows the process to exit gracefully', { timeout: 5000 }, () => new Promise((resolve) => {
-			let message;
-			const testApp = new processVoid(() => {
-				expect(message.toString('utf8')).toBe('Test gracefully closed.\n');
-				expect(testApp.exited).toHaveProperty('code', 0);
-				resolve();
-			}, require.resolve('..'), { construct: true });
-			testApp.config.name = 'Test';
-			testApp.config.log = { format: '{line}' };
-			testApp.initRegistry();
-			const date = /^\[\d{4}-[01]\d-[0-3]\dT[0-2](?:\d:[0-6]){2}\d[+-][01]\d:\d{2}]\n$/;
-			testApp.stdout.once('data', (data) => {
-				if (date.test(data)) {
-					testApp.stdout.once('data', (data) => {
-						message = data;
-					});
-				} else {
-					message = data;
-				}
+		it('allows the process to exit gracefully', { timeout: 5000 }, async () => {
+			let output = '';
+			let testApp;
+			await new Promise((resolve) => {
+				testApp = new processVoid(resolve, require.resolve('..'), { construct: true });
+				// the date and message lines can arrive in one chunk or several, so check the full output
+				testApp.stdout.on('data', (data) => {
+					output += data;
+				});
+				testApp.config.name = 'Test';
+				testApp.config.log = { format: '{line}' };
+				testApp.initRegistry();
+				testApp.emit('app.exit', true);
 			});
-			testApp.emit('app.exit', true);
-		}));
+			expect(output).toMatch(/^\[\d{4}-[01]\d-[0-3]\dT[0-2](?:\d:[0-6]){2}\d[+-][01]\d:\d{2}]\nTest gracefully closed\.\n$/);
+			expect(testApp.exited).toHaveProperty('code', 0);
+		});
 
 		it('allows the process to exit unsafely', { timeout: 5000 }, () => new Promise((resolve) => {
 			const testApp = new processVoid(() => {
