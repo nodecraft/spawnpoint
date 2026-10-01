@@ -12,6 +12,18 @@ describe('JSON-handler', () => {
 		expect(() => require('./json/commented.json')).not.toThrow();
 	});
 
+	it('strips comments from commented files', () => {
+		expect(require('./json/commented.json')).toEqual({ this: 'is a valid JSON file' });
+	});
+
+	it('leaves comment-like sequences inside strings untouched', () => {
+		expect(require('./json/urls.json')).toEqual({
+			url: 'https://example.com//path',
+			glob: 'src/**/*.js',
+			block: '/* not a comment */',
+		});
+	});
+
 	it('should throw a syntax error on a bad file', () => {
 		expect(() => require('./json/badLint.json')).toThrow(SyntaxError);
 		expect(() => require('./json/bad.json')).toThrow(SyntaxError);

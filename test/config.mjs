@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +9,7 @@ import { describe, expect, it } from 'vitest';
 import spawnpoint from '../index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 describe('spawnpoint.initConfig', () => {
 	it('successfully takes a configFile in the constructor', () => {
@@ -107,5 +109,15 @@ describe('spawnpoint.loadConfig', () => {
 			test: false,
 			name: 'TestThing',
 		});
+	});
+
+	it('does not share objects with the cached JSON files it loads', () => {
+		const app = new spawnpoint({ cwd: __dirname, configFile: 'config/app' });
+		app.initConfig();
+		app.loadConfig();
+		const cached = require('./config/blocklistPatterns.json');
+		expect(app.config.blocklistPatterns).toEqual(cached);
+		app.config.blocklistPatterns.configBlocklist.env.list.push('MUTATED');
+		expect(cached.configBlocklist.env.list).toEqual(['BLOCKED_VAR']);
 	});
 });
